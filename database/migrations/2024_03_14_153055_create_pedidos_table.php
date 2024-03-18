@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('pedidos', function (Blueprint $table) {
             $table->id();
-            $table->date('fecha_pedido')->default(new DateTime());
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('area_id')->constrained('areas')->onDelete('cascade');
+            $table->date('fecha_pedido');
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('area_id')->constrained();
             $table->string('receptor', 100)->nullable();
             $table->string('solicitante', 100)->nullable();
             $table->text('observaciones')->nullable();
-            $table->enum('estado', ['solicitado', 'rechazado', 'entregado'])->nullable()->default(['solicitado']);
+            $table->enum('estado', ['solicitado', 'rechazado', 'entregado'])->nullable();
             $table->timestamps();
         });
     }

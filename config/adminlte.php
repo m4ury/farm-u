@@ -313,7 +313,7 @@ return [
 
         [
             'text' => 'Farmacos',
-            'url' => '#',
+            'route' => 'farmacos.index',
             'icon' => 'fas fa-fw fa-pills',
         ],
 
@@ -375,7 +375,7 @@ return [
             ],
         ],
         'Select2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
@@ -400,7 +400,7 @@ return [
             ],
         ],
         'Sweetalert2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
