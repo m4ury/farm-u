@@ -35,6 +35,42 @@
             @enderror
         </div>
 
+        {{-- ApellidoP field --}}
+        <div class="input-group mb-3">
+            <input type="text" name="apellido_p" class="form-control @error('apellido_p') is-invalid @enderror"
+                   value="{{ old('apellido_p') }}" placeholder="Apellido paterno" autofocus>
+
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-user {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                </div>
+            </div>
+
+            @error('apellido_p')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+
+        {{-- Rut field --}}
+        <div class="input-group mb-3">
+            <input type="text" name="rut" class="form-control @error('rut') is-invalid @enderror"
+                   value="{{ old('rut') }}" placeholder="Ej.: 16000000-k">
+
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-fingerprint text-info"></span>
+                </div>
+            </div>
+
+            @error('rut')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+
         {{-- Email field --}}
         <div class="input-group mb-3">
             <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
