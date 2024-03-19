@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Area;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -23,6 +25,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        //$areas = DB::table('areas')->pluck('nombre_area','id')->first();
+        //$areas = new Area();
+        $areas = Area::with('farmacos')->get();
+        return view('home', compact('areas'));
     }
 }
+
+

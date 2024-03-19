@@ -215,7 +215,7 @@ return [
     */
 
     'sidebar_mini' => 'lg',
-    'sidebar_collapse' => false,
+    'sidebar_collapse' => true,
     'sidebar_collapse_auto_size' => false,
     'sidebar_collapse_remember' => false,
     'sidebar_collapse_remember_no_transition' => true,
@@ -310,6 +310,12 @@ return [
             'type' => 'sidebar-menu-search',
             'text' => 'search',
         ], */
+
+        [
+            'text' => 'Areas',
+            'route' => 'areas.index',
+            'icon' => 'fas fa-fw fa-hospital',
+        ],
 
         [
             'text' => 'Farmacos',

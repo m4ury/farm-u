@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\FarmacoRequest;
-use Carbon\Carbon;
 use App\Models\Farmaco;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class FarmacoController extends Controller
 {
@@ -30,7 +27,7 @@ class FarmacoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, FarmacoRequest $farmacoRequest)
+    public function store(Request $request)
     {
         $farmaco = new Farmaco($request->except('_token'));
         $farmaco->controlado = $request->controlado ?? null;
@@ -63,6 +60,7 @@ class FarmacoController extends Controller
     {
 
         $farmaco->update($request->all());
+        $farmaco->controlado = $request->controlado ?? null;
         $farmaco->save();
         return redirect('farmacos')->withSuccess('Solicitud actualizado con exito!');
     }

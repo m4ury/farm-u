@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Farmacos index')
+@section('title', '')
 
 @section('content')
     <div class="container-fluid my-3">
@@ -12,46 +12,26 @@
                         Volver
                     </a>
                     <i class="fas fa-pills px-2" style="color:rgb(38, 0, 255)"></i>
-                    FARMACOS
+                    AREAS
                 </h3>
             </div>
             <div class="col-md-12 table-responsive py-3">
-                <table id="farmacos" class="table table-hover table-md-responsive table-bordered">
+                <table id="areas" class="table table-hover table-md-responsive table-bordered">
                     <thead class="thead-light">
                         <tr>
-                            <th>Farmaco</th>
-                            <th>Forma Farmaceutica</th>
-                            <th>Dosis</th>
-                            <th>Stock maximo</th>
-                            <th>Stock fisico</th>
-                            <th>Fecha vencimiento</th>
+                            <th>Nombre</th>
+                            <th>Descripcion</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($farmacos as $farmaco)
-                            <tr
-                                class ="{{ Carbon\Carbon::create(Carbon\Carbon::now())->diffInDays($farmaco->fecha_vencimiento) < 30 ? 'bg-gradient-secondary' : '' }}">
-                                <td class="text-uppercase">{{ $farmaco->descripcion }} @if ($farmaco->controlado)
-                                        <p class="btn rounded-pill bg-gradient-warning btn-xs text-bold ml-3">controlado</P>
-                                    @endif
-                                </td>
-                                <td>{{ $farmaco->forma_farmaceutica }}</td>
-                                <td>{{ $farmaco->dosis }}</td>
-                                <td>{{ $farmaco->stock_maximo }}</td>
-                                <td>
-                                    {{ $farmaco->stock_fisico }}
-                                    @if ($farmaco->stock_fisico < 5)
-                                        <span class="btn rounded-pill bg-gradient-warning btn-xs text-bold ml-3">bajo
-                                            stock</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    {{ $farmaco->fecha_vencimiento }}
-                                </td>
+                        @foreach ($areas as $area)
+                            <tr>
+                                <td class="text-uppercase">{{ $area->nombre_area }}</td>
+                                <td>{{ $area->descripcion_area }}</td>
                                 <td>
                                     {!! Form::open([
-                                        'route' => ['farmacos.destroy', $farmaco->id],
+                                        'route' => ['areas.destroy', $area->id],
                                         'method' => 'DELETE',
                                         'class' => 'confirm',
                                     ]) !!}
@@ -66,7 +46,7 @@
                                         data-target="#edit-farmaco"><i class="fas fa-pen"></i>
                                     </button> --}}
                                     <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-placement="top"
-                                        title="Editar" href="{{ route('farmacos.edit', $farmaco) }}">
+                                        title="Editar" href="{{ route('areas.edit', $area) }}">
                                         <i class="fas fa-pen">
                                         </i>
                                     </a>
@@ -81,16 +61,16 @@
                     </tbody>
                 </table>
                 <div class="form-group d-inline-flex align-self-stretch">
-                    <button type="button" class="btn btn-primary my-3" data-toggle="modal" data-target="#new-farmaco"><i
+                    <button type="button" class="btn btn-primary my-3" data-toggle="modal" data-target="#new-area"><i
                             class="fas fa-calendar-check"></i>
-                        Nuevo Farmaco
+                        Nueva area
                     </button>
                 </div>
             </div>
         </div>
     </div>
 @endsection
-@include('farmacos.modal')
+@include('areas.modal')
 @section('plugins.Datatables', true)
 @section('js')
     {{-- <script src="//cdn.datatables.net/plug-ins/1.12.1/sorting/datetime-moment.js"></script> --}}
@@ -102,7 +82,7 @@
     </script>
     <script>
         // $.fn.dataTable.moment('DD-MM-YYYY');
-        $("#farmacos").DataTable({
+        $("#areas").DataTable({
             paging: true,
             pagingType: 'first_last_numbers',
             pageLength: 8,
@@ -135,9 +115,6 @@
                     "sortDescending": ": Activar para ordenar la columna de manera descendente"
                 }
             },
-            order: [
-                [5, 'asc']
-            ],
         });
     </script>
 
