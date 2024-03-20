@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Area;
+use App\Models\Farmaco;
 use Illuminate\Http\Request;
 
 class AreaController extends Controller
@@ -56,9 +57,37 @@ class AreaController extends Controller
         return back()->withErrors('Area eliminada con exito!');
     }
 
-    public function botiquinLIst(){
-        $areas = Area::with('farmacos')->where('area.nombre_area' ,'botiquín urgencias')
-        ->select('farmacos.descripcion', 'farmacos.stock_maximo', 'farmacos.stock_fisico')
+    public function botiquinList(){
+
+        $areas = Farmaco::join('area_farmaco','area_farmaco.farmaco_id','farmacos.id')
+        ->join('areas','areas.id','area_farmaco.area_id')
+        ->select('areas.nombre_area','farmacos.descripcion','farmacos.stock_maximo','farmacos.controlado','farmacos.fecha_vencimiento','areas.id', 'farmacos.id', 'farmacos.forma_farmaceutica', 'farmacos.dosis')
+        ->where('nombre_area' ,'botiquín urgencias')
         ->get();
+//dd($areas);
+        return view('areas.botiquin', compact('areas'));
+    }
+
+    public function carroList(){
+        $areas = Farmaco::join('area_farmaco','area_farmaco.farmaco_id','farmacos.id')
+        ->join('areas','areas.id','area_farmaco.area_id')
+        ->select('areas.nombre_area','farmacos.descripcion','farmacos.stock_maximo','farmacos.controlado','farmacos.fecha_vencimiento','areas.id', 'farmacos.id', 'farmacos.forma_farmaceutica', 'farmacos.dosis')
+        ->where('nombre_area' ,'carro de paro urgencias')
+        ->get();
+//dd($areas);
+        return view('areas.carro', compact('areas'));
+    }
+
+    public function maletinList(){
+        $areas = Farmaco::join('area_farmaco','area_farmaco.farmaco_id','farmacos.id')
+        ->join('areas','areas.id','area_farmaco.area_id')
+        ->select('areas.nombre_area','farmacos.descripcion','farmacos.stock_maximo','farmacos.controlado','farmacos.fecha_vencimiento','areas.id', 'farmacos.id', 'farmacos.forma_farmaceutica', 'farmacos.dosis')
+        ->where('nombre_area' ,'maletín urgencias')
+        ->get();
+//dd($areas);
+        return view('areas.maletin', compact('areas'));
     }
 }
+
+/* select `areas`.`nombre_area`, `farmacos`.`descripcion`, `farmacos`.`stock_maximo`, `farmacos`.`controlado`, `farmacos`.`fecha_vencimiento`, `areas`.`area_id` from `farmacos` inner join `area_farmaco` on `area_farmaco`.`farmaco_id` = `farmacos`.`id` inner join `areas` on `areas`.`id` = `area_farmaco`.`area_id` where `nombre_area` = ?
+ */

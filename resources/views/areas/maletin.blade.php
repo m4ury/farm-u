@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Farmacos Botiquin Urgencias')
+@section('title', 'Farmacos Maletin Urgencias')
 
 @section('content')
     <div class="container-fluid my-3">
@@ -12,7 +12,7 @@
                         Volver
                     </a>
                     <i class="fas fa-pills px-2" style="color:rgb(38, 0, 255)"></i>
-                    Botiquin Urgencias
+                    Maletin Urgencias
                 </h3>
             </div>
             <div class="col-md-12 table-responsive py-3">

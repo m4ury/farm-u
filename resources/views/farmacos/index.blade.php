@@ -18,20 +18,20 @@
             <div class="col-md-12 table-responsive py-3">
                 <table id="farmacos" class="table table-hover table-md-responsive table-bordered">
                     <thead class="thead-light">
-                        <tr>
+                        <tr class="text-center">
                             <th>Farmaco</th>
                             <th>Forma Farmaceutica</th>
                             <th>Dosis</th>
                             <th>Stock maximo</th>
                             <th>Stock fisico</th>
                             <th>Fecha vencimiento</th>
+                            <th>Area</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($farmacos as $farmaco)
-                            <tr
-                                class ="{{ Carbon\Carbon::create(Carbon\Carbon::now())->diffInDays($farmaco->fecha_vencimiento) < 30 ? 'bg-gradient-secondary' : '' }}">
+                            <tr>
                                 <td class="text-uppercase">{{ $farmaco->descripcion }} @if ($farmaco->controlado)
                                         <p class="btn rounded-pill bg-gradient-warning btn-xs text-bold ml-3">controlado</P>
                                     @endif
@@ -48,6 +48,13 @@
                                 </td>
                                 <td>
                                     {{ $farmaco->fecha_vencimiento }}
+                                    @if (Carbon\Carbon::create(Carbon\Carbon::now())->diffInDays($farmaco->fecha_vencimiento) < 30)
+                                        <span class="btn rounded-pill bg-gradient-danger btn-xs text-bold ml-3">pronto a
+                                            vencer</span>
+                                    @endif
+                                </td>
+                                <td class="text-bold text-uppercase text-muted text-center">
+                                    {{ $farmaco->areas->pluck('nombre_area')->first() }}
                                 </td>
                                 <td>
                                     {!! Form::open([
