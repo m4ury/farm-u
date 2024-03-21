@@ -58,7 +58,6 @@ class FarmacoController extends Controller
      */
     public function update(Request $request, Farmaco $farmaco)
     {
-
         $farmaco->update($request->all());
         $farmaco->controlado = $request->controlado ?? null;
         $farmaco->save();

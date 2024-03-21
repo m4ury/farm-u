@@ -30,23 +30,25 @@ class HomeController extends Controller
         //$areas = new Area();
         $botiquin = Farmaco::join('area_farmaco','area_farmaco.farmaco_id','farmacos.id')
         ->join('areas','areas.id','area_farmaco.area_id')
-        ->select('areas.nombre_area','farmacos.descripcion','farmacos.stock_maximo','farmacos.controlado','farmacos.fecha_vencimiento','areas.id', 'farmacos.id', 'farmacos.forma_farmaceutica', 'farmacos.dosis')
+        ->select('areas.nombre_area','farmacos.descripcion','farmacos.stock_maximo','farmacos.controlado','farmacos.fecha_vencimiento','areas.id', 'farmacos.id', 'farmacos.forma_farmaceutica', 'farmacos.dosis', 'farmacos.stock_fisico')
         ->where('nombre_area' ,'botiquín urgencias')
         ->get();
 
         $carro = Farmaco::join('area_farmaco','area_farmaco.farmaco_id','farmacos.id')
         ->join('areas','areas.id','area_farmaco.area_id')
-        ->select('areas.nombre_area','farmacos.descripcion','farmacos.stock_maximo','farmacos.controlado','farmacos.fecha_vencimiento','areas.id', 'farmacos.id', 'farmacos.forma_farmaceutica', 'farmacos.dosis')
+        ->select('areas.nombre_area','farmacos.descripcion','farmacos.stock_maximo','farmacos.controlado','farmacos.fecha_vencimiento','areas.id', 'farmacos.id', 'farmacos.forma_farmaceutica', 'farmacos.dosis', 'farmacos.stock_fisico')
         ->where('nombre_area' ,'carro de paro urgencias')
         ->get();
 
         $maletin = Farmaco::join('area_farmaco','area_farmaco.farmaco_id','farmacos.id')
         ->join('areas','areas.id','area_farmaco.area_id')
-        ->select('areas.nombre_area','farmacos.descripcion','farmacos.stock_maximo','farmacos.controlado','farmacos.fecha_vencimiento','areas.id', 'farmacos.id', 'farmacos.forma_farmaceutica', 'farmacos.dosis')
+        ->select('areas.nombre_area','farmacos.descripcion','farmacos.stock_maximo','farmacos.controlado','farmacos.fecha_vencimiento','areas.id', 'farmacos.id', 'farmacos.forma_farmaceutica', 'farmacos.dosis', 'farmacos.stock_fisico')
         ->where('nombre_area' ,'maletín urgencias')
         ->get();
 
-        return view('home', compact('botiquin', 'carro', 'maletin'));
+        $farmaco = new Farmaco;
+
+        return view('home', compact('botiquin', 'carro', 'maletin', 'farmaco'));
     }
 }
 

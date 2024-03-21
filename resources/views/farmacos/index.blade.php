@@ -41,7 +41,12 @@
                                 <td>{{ $farmaco->stock_maximo }}</td>
                                 <td>
                                     {{ $farmaco->stock_fisico }}
-                                    @if ($farmaco->stock_fisico < 5)
+
+                                    @php
+                                        $diferencia = $farmaco->stock_maximo - $farmaco->stock_fisico;
+                                    @endphp
+
+                                    @if ($farmaco->stock_maximo >= 1 and $diferencia > 1)
                                         <span class="btn rounded-pill bg-gradient-warning btn-xs text-bold ml-3">bajo
                                             stock</span>
                                     @endif

@@ -19,6 +19,7 @@
                                     {!! Form::text('descripcion', old('descripcion', $farmaco->descripcion), [
                                         'class' => 'form-control form-control-sm' . ($errors->has('descripcion') ? 'is-invalid' : ''),
                                         'placeholder' => 'ej.: paracetamol',
+                                        'disabled' => 'disabled',
                                     ]) !!}
                                     @if ($errors->has('descripcion'))
                                         <span class="invalid-feedback">
@@ -53,6 +54,7 @@
                                             'class' => 'form-control form-control-sm' . ($errors->has('forma_farmaceutica') ? 'is-invalid' : ''),
                                             'placeholder' => 'seleccione',
                                             'id' => 'forma',
+                                            'disabled' => 'disabled',
                                         ],
                                     ) !!}
                                     @if ($errors->has('forma_farmaceutica'))
@@ -68,6 +70,7 @@
                                     {!! Form::text('dosis', old('dosis', $farmaco->dosis), [
                                         'class' => 'form-control form-control-sm' . ($errors->has('dosis') ? 'is-invalid' : ''),
                                         'placeholder' => 'ej.: 100 mg',
+                                        'disabled' => 'disabled',
                                     ]) !!}
                                     @if ($errors->has('dosis'))
                                         <span class="invalid-feedback">
@@ -80,6 +83,7 @@
                                     {!! Form::checkbox('controlado', 1, old('controlado', $farmaco->controlado ? true : null), [
                                         'class' => 'form-control my-2 controlado',
                                         'id' => 'controlado',
+                                        'disabled' => 'disabled',
                                     ]) !!}
                                     @if ($errors->has('controlado'))
                                         <span class="invalid-feedback">
@@ -105,6 +109,7 @@
                                 <div class="col-sm">
                                     {!! Form::number('stock_maximo', old('stock_maximo', $farmaco->stock_maximo), [
                                         'class' => 'form-control form-control-sm' . ($errors->has('stock_maximo') ? 'is-invalid' : ''),
+                                        'disabled' => 'disabled',
                                     ]) !!}
                                     @if ($errors->has('stock_maximo'))
                                         <span class="invalid-feedback">
