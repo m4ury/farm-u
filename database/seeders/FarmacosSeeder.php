@@ -14,7 +14,7 @@ class FarmacosSeeder extends Seeder
     public function run(): void
     {
         $farmacos = [
-            /* ['descripcion' =>	'AC. ACETIL-SALICILICO',	'forma_farmaceutica' =>	'Comprimido',	'dosis' =>	'100 mg',	'stock_maximo' =>	 10 	,'controlado' =>	 null 	],
+            ['descripcion' =>	'AC. ACETIL-SALICILICO',	'forma_farmaceutica' =>	'Comprimido',	'dosis' =>	'100 mg',	'stock_maximo' =>	 10 	,'controlado' =>	 null 	],
             ['descripcion' =>	'AC. ACETIL-SALICILICO',	'forma_farmaceutica' =>	'Comprimido',	'dosis' =>	'500 mg',	'stock_maximo' =>	 10 	,'controlado' =>	 null 	],
             ['descripcion' =>	'AC. TRANEXÁMICO',	'forma_farmaceutica' =>	'Solución inyectable',	'dosis' =>	'1000 mg/10 mL',	'stock_maximo' =>	 6 	,'controlado' =>	 null 	],
             ['descripcion' =>	'ADIFENINA/PROPIFENAZONA',	'forma_farmaceutica' =>	'Supositorio',	'dosis' =>	'50/440 mg',	'stock_maximo' =>	 20 	,'controlado' =>	 null 	],
@@ -129,7 +129,7 @@ class FarmacosSeeder extends Seeder
             ['descripcion' =>	'SODIO BICARBONATO',	'forma_farmaceutica' =>	'Solución inyectable',	'dosis' =>	'8,4%',	'stock_maximo' =>	 8 	,'controlado' =>	 null 	],
             ['descripcion' =>	'TIAMINA ',	'forma_farmaceutica' =>	'Solución inyectable',	'dosis' =>	'30 mg/mL',	'stock_maximo' =>	 30 	,'controlado' =>	 null 	],
             ['descripcion' =>	'AEROCAMARA',	'forma_farmaceutica' =>	'Unidad',	'dosis' =>	'Pediátrica',	'stock_maximo' =>	 20 	,'controlado' =>	 null 	],
-            ['descripcion' =>	'AEROCAMARA',	'forma_farmaceutica' =>	'Unidad',	'dosis' =>	'Adulto',	'stock_maximo' =>	 20 	,'controlado' =>	 null 	], */
+            ['descripcion' =>	'AEROCAMARA',	'forma_farmaceutica' =>	'Unidad',	'dosis' =>	'Adulto',	'stock_maximo' =>	 20 	,'controlado' =>	 null 	],
 
             //carro de urgencias
 ['descripcion' =>	'AC. ACETIL-SALICILICO',	'forma_farmaceutica' =>	'Comprimido',	'dosis' =>	'500 mg',	'stock_maximo' =>	 10 	,	'controlado' =>	null],
