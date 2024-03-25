@@ -322,7 +322,11 @@ return [
             'route' => 'farmacos.index',
             'icon' => 'fas fa-fw fa-pills',
         ],
-
+        [
+            'text' => 'Salidas',
+            'route' => 'salidas.index',
+            'icon' => 'fas fa-fw fa-share',
+        ],
     ],
 
     /*

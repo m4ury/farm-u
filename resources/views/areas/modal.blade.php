@@ -1,5 +1,4 @@
-<div class="modal fade py-3" id="new-area" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
-     aria-hidden="true">
+<div class="modal fade py-3" id="new-area" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -49,9 +48,10 @@
                                 {{ Form::submit('Guardar', ['class' => 'btn bg-gradient-success btn-sm btn-block']) }}
                             </div>
                             <div class="col">
-                                <a href="{{ url('areas') }}" style="text-decoration:none">
-                                    {{ Form::button('Cancelar', ['class' => 'btn bg-gradient-secondary btn-sm btn-block']) }}
-                                </a>
+                                <div class="col">
+                                    <button type="button" class="btn bg-gradient-secondary btn-sm btn-block"
+                                        data-dismiss="modal">Cancelar</button>
+                                </div>
                             </div>
                         </div>
                     </div>

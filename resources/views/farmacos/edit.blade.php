@@ -129,6 +129,21 @@
                                     @endif
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                {!! Form::label('area_label', 'Area: ', ['class' => 'col-sm col-form-label']) !!}
+                                <div class="col">
+                                    {!! Form::select('area_id', $areas, old('area_id', $farmaco->areas), [
+                                        'class' => 'form-control form-control-sm' . ($errors->has('area_id') ? 'is-invalid' : ''),
+                                        'placeholder' => 'seleccione',
+                                        'id' => 'area',
+                                    ]) !!}
+                                    @if ($errors->has('area_id'))
+                                        <span class="invalid-feedback">
+                                            <strong>{{ $errors->first('area_id') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
                             <hr>
                         </div>
                         <div class="row py-3 px-3">
@@ -136,7 +151,7 @@
                                 {{ Form::submit('Actualizar', ['class' => 'btn bg-gradient-success btn-sm btn-block']) }}
                             </div>
                             <div class="col">
-                                <a href="{{ url('farmacos') }}" style="text-decoration:none">
+                                <a href="{{ url()->previous() }}" style="text-decoration:none">
                                     {{ Form::button('Cancelar', ['class' => 'btn bg-gradient-secondary btn-sm btn-block']) }}
                                 </a>
                             </div>
@@ -151,7 +166,7 @@
 @stop
 @section('js')
     <script>
-        $('#forma').select2({
+        $('#forma, #area').select2({
             theme: "classic",
             width: '100%',
         });

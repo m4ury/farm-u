@@ -78,11 +78,11 @@
                                         <i class="fas fa-pen">
                                         </i>
                                     </a>
+                                    <a class="btn btn-outline-warning btn-sm {{ $area->stock_fisico < 1 ? 'disabled' : '' }}"
+                                        href="#" data-toggle="modal" data-target="#productModal{{ $area->id }}"
+                                        title="Generar Salida"><i class="fas fa-share-square"></i>
+                                    </a>
                                     {!! Form::close() !!}
-                                    {{-- <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-placement="bottom"
-                                    title="farmaco" href="{{ route('farmacos.show', $farmaco) }}" target="_blank"><i
-                                        class="fas fa-envelope"></i>
-                                </a> --}}
                                 </td>
                             </tr>
                         @endforeach

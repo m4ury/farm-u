@@ -1,26 +1,26 @@
 @extends('adminlte::page')
 
-@section('title', 'Farmacos Carro de paro urgencias')
+@section('title', 'Salidas index')
 
 @section('content')
     <div class="container-fluid my-3">
         <div class="card card-primary card-outline">
             <div class="card-header">
                 <h3 class="card-title">
-                    <a class="btn bg-gradient-info btn-sm mr-3" title="Volver" href="{{ url()->previous() }}">
+                    <a class="btn bg-gradient-info btn-sm mr-3" title="Volver" href="{{ route('home') }}">
                         <i class="fas fa-arrow-alt-circle-left"></i>
                         Volver
                     </a>
                     <i class="fas fa-pills px-2" style="color:rgb(38, 0, 255)"></i>
-                    Carro de paro Urgencias
+                    SALIDAS
                 </h3>
             </div>
             <div class="col-md-12 table-responsive py-3">
-                <table id="areas" class="table table-hover table-md-responsive table-bordered">
+                <table id="farmacos" class="table table-hover table-md-responsive table-bordered">
                     <thead class="thead-light">
                         <tr class="text-center">
+                            <th>Fecha</th>
                             <th>Farmaco</th>
-                            <th>Forma Farmaceutica</th>
                             <th>Dosis</th>
                             <th>Stock maximo</th>
                             <th>Stock fisico</th>
@@ -30,36 +30,38 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($areas as $area)
+                        @foreach ($fsalidas as $salida)
                             <tr>
-                                <td class="text-uppercase">{{ $area->descripcion ?? '' }}
-                                    @if ($area->controlado)
-                                        <p class="btn rounded-pill bg-gradient-warning btn-xs text-bold ml-3">controlado</P>
-                                    @endif
+                                <td>{{ $salida->fecha_salida }}
                                 </td>
-                                <td>{{ $area->forma_farmaceutica }}</td>
-                                <td>{{ $area->dosis }}</td>
-                                <td>{{ $area->stock_maximo }}</td>
+                                <td>{{ $salida->forma_farmaceutica }}</td>
+                                <td>{{ $salida->dosis }}</td>
+                                <td>{{ $salida->stock_maximo }}</td>
                                 <td>
-                                    {{ $area->stock_fisico }}
-                                    @if ($area->stock_fisico < 5)
+                                    {{ $salida->stock_fisico }}
+
+                                    @php
+                                        $diferencia = $salida->stock_maximo - $salida->stock_fisico;
+                                    @endphp
+
+                                    @if ($salida->stock_maximo >= 1 and $diferencia > 1)
                                         <span class="btn rounded-pill bg-gradient-warning btn-xs text-bold ml-3">bajo
                                             stock</span>
                                     @endif
                                 </td>
                                 <td>
-                                    {{ $area->fecha_vencimiento }}
-                                    @if (Carbon\Carbon::create(Carbon\Carbon::now())->diffInDays($area->fecha_vencimiento) < 30)
+                                    {{ $salida->fecha_vencimiento }}
+                                    @if (Carbon\Carbon::create(Carbon\Carbon::now())->diffInDays($salida->fecha_vencimiento) < 30)
                                         <span class="btn rounded-pill bg-gradient-danger btn-xs text-bold ml-3">pronto a
                                             vencer</span>
                                     @endif
                                 </td>
                                 <td class="text-bold text-uppercase text-muted text-center">
-                                    {{ $area->nombre_area }}
+                                    {{ $salida->areas->pluck('nombre_area')->first() }}
                                 </td>
                                 <td>
                                     {!! Form::open([
-                                        'route' => ['farmacos.destroy', $area],
+                                        'route' => ['farmacos.destroy', $salida->id],
                                         'method' => 'DELETE',
                                         'class' => 'confirm',
                                     ]) !!}
@@ -71,39 +73,46 @@
                                         'title' => 'Eliminar',
                                     ]) !!}
                                     {{-- <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal"
-                                    data-target="#edit-area><i class="fas fa-pen"></i>
-                                </button> --}}
+                                        data-target="#edit-farmaco"><i class="fas fa-pen"></i>
+                                    </button> --}}
                                     <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-placement="top"
-                                        title="Editar" href="{{ route('farmacos.edit', $area) }}">
+                                        title="Editar" href="{{ route('farmacos.edit', $farmaco) }}">
                                         <i class="fas fa-pen">
                                         </i>
                                     </a>
-                                    <a class="btn btn-outline-warning btn-sm {{ $area->stock_fisico < 1 ? 'disabled' : '' }}"
-                                        href="#" data-toggle="modal" data-target="#productModal{{ $area->id }}"
-                                        title="Generar Salida"><i class="fas fa-share-square"></i>
-                                    </a>
                                     {!! Form::close() !!}
+                                    {{-- <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-placement="bottom"
+                                        title="farmaco" href="{{ route('farmacos.show', $farmaco) }}" target="_blank"><i
+                                            class="fas fa-envelope"></i>
+                                    </a> --}}
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+                <div class="form-group d-inline-flex align-self-stretch">
+                    <button type="button" class="btn btn-primary my-3" data-toggle="modal" data-target="#new-farmaco"><i
+                            class="fas fa-calendar-check"></i>
+                        Nuevo Farmaco
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 @endsection
+@include('farmacos.modal')
 @section('plugins.Datatables', true)
 @section('js')
     {{-- <script src="//cdn.datatables.net/plug-ins/1.12.1/sorting/datetime-moment.js"></script> --}}
     <script>
-        $('#forma').select2({
+        $('#forma, #area').select2({
             theme: "classic",
             width: "100%"
         })
     </script>
     <script>
         // $.fn.dataTable.moment('DD-MM-YYYY');
-        $("#areas").DataTable({
+        $("#farmacos").DataTable({
             paging: true,
             pagingType: 'first_last_numbers',
             pageLength: 8,
@@ -136,6 +145,9 @@
                     "sortDescending": ": Activar para ordenar la columna de manera descendente"
                 }
             },
+            order: [
+                [5, 'asc']
+            ],
         });
     </script>
 

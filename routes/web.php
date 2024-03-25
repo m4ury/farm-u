@@ -4,6 +4,8 @@ use App\Models\Farmaco;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\FarmacoController;
+use App\Http\Controllers\SalidaController;
+use App\Models\Salida;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +40,7 @@ Route::resource('farmacos', FarmacoController::class);
 })->name('areas.botiquin'); */
 
 Route::resource('areas', AreaController::class);
+Route::resource('salidas', SalidaController::class);
 Route::get('areas.botiquin', [App\Http\Controllers\AreaController::class,'botiquinList'])->name('areas.botiquin');
 Route::get('areas.carro', [App\Http\Controllers\AreaController::class,'carroList'])->name('areas.carro');
 Route::get('areas.maletin', [App\Http\Controllers\AreaController::class,'maletinList'])->name('areas.maletin');

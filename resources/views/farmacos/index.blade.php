@@ -7,7 +7,7 @@
         <div class="card card-primary card-outline">
             <div class="card-header">
                 <h3 class="card-title">
-                    <a class="btn bg-gradient-info btn-sm mr-3" title="Volver" href="{{ url()->previous() }}">
+                    <a class="btn bg-gradient-info btn-sm mr-3" title="Volver" href="{{ route('home') }}">
                         <i class="fas fa-arrow-alt-circle-left"></i>
                         Volver
                     </a>
@@ -94,7 +94,7 @@
                 </table>
                 <div class="form-group d-inline-flex align-self-stretch">
                     <button type="button" class="btn btn-primary my-3" data-toggle="modal" data-target="#new-farmaco"><i
-                            class="fas fa-calendar-check"></i>
+                            class="fas fa-pills"></i>
                         Nuevo Farmaco
                     </button>
                 </div>
@@ -107,7 +107,7 @@
 @section('js')
     {{-- <script src="//cdn.datatables.net/plug-ins/1.12.1/sorting/datetime-moment.js"></script> --}}
     <script>
-        $('#forma').select2({
+        $('#forma, #area').select2({
             theme: "classic",
             width: "100%"
         })

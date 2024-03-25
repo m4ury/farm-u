@@ -15,4 +15,8 @@ class Farmaco extends Model
     public function areas(){
         return $this->belongsToMany(Area::class);
     }
+
+    public function salida(){
+        return $this->hasOne(Salida::class);
+    }
 }

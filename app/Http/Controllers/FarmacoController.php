@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Area;
 use App\Models\Farmaco;
 use Illuminate\Http\Request;
 
@@ -34,7 +35,7 @@ class FarmacoController extends Controller
 
         $farmaco->save();
 
-        return back()->withSuccess('Farmaco creado con exito!');
+        return back()->with('success', 'Farmaco creado con exito!');
     }
 
     /**
@@ -50,7 +51,9 @@ class FarmacoController extends Controller
      */
     public function edit(Farmaco $farmaco)
     {
-        return view('farmacos.edit', compact('farmaco'));
+        $areas = Area::orderBy('nombre_area', 'ASC')->pluck('nombre_area', 'id');
+        //$patologias = Patologia::orderBy('nombre_patologia', 'ASC')->pluck('nombre_patologia', 'id');
+        return view('farmacos.edit', compact('farmaco', 'areas'));
     }
 
     /**
@@ -58,8 +61,10 @@ class FarmacoController extends Controller
      */
     public function update(Request $request, Farmaco $farmaco)
     {
+        //dd($request->all());
         $farmaco->update($request->all());
         $farmaco->controlado = $request->controlado ?? null;
+        $farmaco->areas()->sync($request->area_id);
         $farmaco->save();
         return redirect('farmacos')->withSuccess('Solicitud actualizado con exito!');
     }
