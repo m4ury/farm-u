@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Salida;
 use App\Models\Farmaco;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +15,9 @@ class SalidaController extends Controller
      */
     public function index()
     {
-        $salida = Salida::orderBy('fecha_salida', 'desc')->get();
+        $salidas = Salida::with('farmacos')->get();
+
+        return view('salidas.index', compact('salidas'));
     }
 
     /**
@@ -29,24 +32,25 @@ class SalidaController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-
-    /* $farmaco = new Farmaco($request->except('_token'));
-        $farmaco->controlado = $request->controlado ?? null;
-
-        $farmaco->save(); */
     {
         //dd($request->all());
-        $salida = new Salida($request->except('_token'));
-        $salida->user_id = Auth::user()->id;
-        $salida->farmaco_id = $request->input("id");
-        $farmaco = Farmaco::findOrFail($salida->farmaco_id);
+        //$farmaco->areas()->sync($request->area_id);
+        //$salida->farmaco_id = $request->input("id");
+        $farmaco = Farmaco::findOrFail($request->input("id"));
         if ($request->cantidad_salida > $farmaco->stock_fisico) {
-            return redirect()->back()->withError("error","No es posible realizar, sin stock suficiente");
+            return back()->withError("No es posible realizar, no hay stock suficiente");
         } else {
-            $nuevo_stock = $farmaco->stock_fisico - $request->cantidad_salida;
-            $farmaco->update(["stock_fisico"=> $nuevo_stock]);
+            $salida = Salida::create($request->except('_token'));
+            $salida->user_id = Auth::user()->id;
+            $salida->fecha_salida = Carbon::now();
+            //$salida->stock_actual = $farmaco->stock_fisico;
             $salida->save();
-            return redirect()->back()->withSuccess("Realizado con exito");
+
+            $nuevo_stock = $farmaco->stock_fisico - $request->cantidad_salida;
+            $farmaco->update(["stock_fisico" => $nuevo_stock]);
+            $salida->farmacos()->sync($request->input("id"));
+
+            return back()->withSuccess("Realizado con exito");
         }
     }
 

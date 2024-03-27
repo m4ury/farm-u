@@ -20,6 +20,7 @@
                                 {!! Form::text('numero_dau', old('numero_dau'), [
                                     'class' => 'form-control form-control-sm' . ($errors->has('numero_dau') ? 'is-invalid' : ''),
                                     'placeholder' => 'Num DAU urgencias / receta',
+                                    'required' => 'true',
                                 ]) !!}
                                 @if ($errors->has('numero_dau'))
                                     <span class="invalid-feedback">

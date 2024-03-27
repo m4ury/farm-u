@@ -35,7 +35,7 @@ class FarmacoController extends Controller
 
         $farmaco->save();
 
-        return back()->with('success', 'Farmaco creado con exito!');
+        return back()->withSuccess('Farmaco creado con exito!');
     }
 
     /**
@@ -66,7 +66,7 @@ class FarmacoController extends Controller
         $farmaco->controlado = $request->controlado ?? null;
         $farmaco->areas()->sync($request->area_id);
         $farmaco->save();
-        return redirect('farmacos')->withSuccess('Solicitud actualizado con exito!');
+        return redirect('farmacos')->withSuccess('Farmaco actualizado con exito!');
     }
 
     /**
@@ -75,6 +75,6 @@ class FarmacoController extends Controller
     public function destroy(Farmaco $farmaco)
     {
         Farmaco::destroy($farmaco->id);
-        return back()->withErrors('Farmaco eliminado con exito!');
+        return back()->withSuccess('Farmaco eliminado con exito!');
     }
 }

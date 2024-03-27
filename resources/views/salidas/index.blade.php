@@ -19,88 +19,44 @@
                 <table id="farmacos" class="table table-hover table-md-responsive table-bordered">
                     <thead class="thead-light">
                         <tr class="text-center">
-                            <th>Fecha</th>
+                            <th>Fecha / Hora</th>
                             <th>Farmaco</th>
+                            <th>Forma farmaceutica</th>
                             <th>Dosis</th>
                             <th>Stock maximo</th>
                             <th>Stock fisico</th>
-                            <th>Fecha vencimiento</th>
-                            <th>Area</th>
-                            <th>Acciones</th>
+                            <th>Cantidad salida</th>
+                            <th>Usuario</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($fsalidas as $salida)
+                        @foreach ($salidas as $salida)
                             <tr>
-                                <td>{{ $salida->fecha_salida }}
+                                <td>{{ $salida->created_at }}
                                 </td>
-                                <td>{{ $salida->forma_farmaceutica }}</td>
-                                <td>{{ $salida->dosis }}</td>
-                                <td>{{ $salida->stock_maximo }}</td>
-                                <td>
-                                    {{ $salida->stock_fisico }}
-
-                                    @php
-                                        $diferencia = $salida->stock_maximo - $salida->stock_fisico;
-                                    @endphp
-
-                                    @if ($salida->stock_maximo >= 1 and $diferencia > 1)
-                                        <span class="btn rounded-pill bg-gradient-warning btn-xs text-bold ml-3">bajo
-                                            stock</span>
-                                    @endif
+                                <td>{{ $salida->farmacos->pluck('descripcion')->first() }}</td>
+                                <td>{{ $salida->farmacos->pluck('forma_farmaceutica')->first() }}</td>
+                                <td>{{ $salida->farmacos->pluck('dosis')->first() }}</td>
+                                <td class="text-success text-bold">
+                                    {{ $salida->farmacos->pluck('stock_maximo')->first() }}
                                 </td>
-                                <td>
-                                    {{ $salida->fecha_vencimiento }}
-                                    @if (Carbon\Carbon::create(Carbon\Carbon::now())->diffInDays($salida->fecha_vencimiento) < 30)
-                                        <span class="btn rounded-pill bg-gradient-danger btn-xs text-bold ml-3">pronto a
-                                            vencer</span>
-                                    @endif
+                                <td class="text-primary text-bold">
+                                    {{ $salida->farmacos->pluck('stock_fisico')->first() }}
+                                </td>
+                                <td class="text-danger text-bold">
+                                    {{ $salida->cantidad_salida }}
                                 </td>
                                 <td class="text-bold text-uppercase text-muted text-center">
-                                    {{ $salida->areas->pluck('nombre_area')->first() }}
-                                </td>
-                                <td>
-                                    {!! Form::open([
-                                        'route' => ['farmacos.destroy', $salida->id],
-                                        'method' => 'DELETE',
-                                        'class' => 'confirm',
-                                    ]) !!}
-                                    {!! Form::button('<i class="fas fa-trash"></i>', [
-                                        'type' => 'submit',
-                                        'class' => 'btn btn-outline-danger btn-sm',
-                                        'data-toggle' => 'tooltip',
-                                        'data-placement' => 'top',
-                                        'title' => 'Eliminar',
-                                    ]) !!}
-                                    {{-- <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal"
-                                        data-target="#edit-farmaco"><i class="fas fa-pen"></i>
-                                    </button> --}}
-                                    <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-placement="top"
-                                        title="Editar" href="{{ route('farmacos.edit', $farmaco) }}">
-                                        <i class="fas fa-pen">
-                                        </i>
-                                    </a>
-                                    {!! Form::close() !!}
-                                    {{-- <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-placement="bottom"
-                                        title="farmaco" href="{{ route('farmacos.show', $farmaco) }}" target="_blank"><i
-                                            class="fas fa-envelope"></i>
-                                    </a> --}}
+                                    {{ $salida->user->fullUserName() }}
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
-                <div class="form-group d-inline-flex align-self-stretch">
-                    <button type="button" class="btn btn-primary my-3" data-toggle="modal" data-target="#new-farmaco"><i
-                            class="fas fa-calendar-check"></i>
-                        Nuevo Farmaco
-                    </button>
-                </div>
             </div>
         </div>
     </div>
 @endsection
-@include('farmacos.modal')
 @section('plugins.Datatables', true)
 @section('js')
     {{-- <script src="//cdn.datatables.net/plug-ins/1.12.1/sorting/datetime-moment.js"></script> --}}

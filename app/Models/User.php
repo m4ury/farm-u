@@ -44,4 +44,24 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function adminlte_desc()
+    {
+        return strtoupper($this->type);
+    }
+
+    public function salidas()
+    {
+        return $this->hasMany(Salida::class);
+    }
+
+    public function fullUserName()
+    {
+        return ucfirst($this->name) . " " . ucfirst($this->apellido_p) . " " . ucfirst($this->apellido_m);
+    }
+
+    function isAdmin(){
+        return $this->type === 'admin';
+
+    }
 }

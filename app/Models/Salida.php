@@ -11,6 +11,10 @@ class Salida extends Model
     protected $fillable = ['fecha_salida', 'cantidad_salida','numero_dau', 'farmaco_id', 'user_id'];
 
     public function farmacos(){
-        return $this->belongsToMany(Farmaco::class);
+        return $this->belongsToMany(Farmaco::class)->withTimestamps();
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 }

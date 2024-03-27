@@ -59,28 +59,10 @@
                                 </td>
 
                                 <td>
-                                    {!! Form::open([
-                                        'route' => ['farmacos.destroy', $area],
-                                        'method' => 'DELETE',
-                                        'class' => 'confirm',
-                                    ]) !!}
-                                    {!! Form::button('<i class="fas fa-trash"></i>', [
-                                        'type' => 'submit',
-                                        'class' => 'btn btn-outline-danger btn-sm',
-                                        'data-toggle' => 'tooltip',
-                                        'data-placement' => 'top',
-                                        'title' => 'Eliminar',
-                                    ]) !!}
-                                    <a class="btn btn-outline-primary btn-sm" title="Editar"
-                                        href="{{ route('farmacos.edit', $area) }}">
-                                        <i class="fas fa-pen">
-                                        </i>
-                                    </a>
                                     <a class="btn btn-outline-warning btn-sm {{ $area->stock_fisico < 1 ? 'disabled' : '' }}"
                                         href="#" data-toggle="modal" data-target="#productModal{{ $area->id }}"
                                         title="Generar Salida"><i class="fas fa-share-square"></i>
                                     </a>
-                                    {!! Form::close() !!}
                                 </td>
                             </tr>
                             @include('salidas.modal')
