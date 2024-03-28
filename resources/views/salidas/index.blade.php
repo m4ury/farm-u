@@ -24,7 +24,7 @@
                             <th>Forma farmaceutica</th>
                             <th>Dosis</th>
                             <th>Stock maximo</th>
-                            <th>Stock fisico</th>
+                            <th>Stock fisico (actual)</th>
                             <th>Cantidad salida</th>
                             <th>Usuario</th>
                         </tr>
@@ -41,7 +41,7 @@
                                     {{ $salida->farmacos->pluck('stock_maximo')->first() }}
                                 </td>
                                 <td class="text-primary text-bold">
-                                    {{ $salida->farmacos->pluck('stock_fisico')->first() }}
+                                    {{ $salida->stock_actual }}
                                 </td>
                                 <td class="text-danger text-bold">
                                     {{ $salida->cantidad_salida }}

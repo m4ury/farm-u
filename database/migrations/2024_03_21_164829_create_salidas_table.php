@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('salidas', function (Blueprint $table) {
             $table->id();
-            $table->date('fecha_salida')->nullable()->default(now());
+            $table->date('fecha_salida')->nullable();
             $table->integer('cantidad_salida')->unsigned()->nullable()->default(0);
             $table->string('numero_dau', 100)->nullable();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('farmaco_id')->constrained();
+            //$table->foreignId('farmaco_id')->constrained();
             $table->timestamps();
         });
     }

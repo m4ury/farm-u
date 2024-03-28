@@ -120,7 +120,7 @@
             pageLength: 8,
             dom: 'Bfrtip',
             buttons: [
-                'colvis',
+
                 'excel',
                 'pdf',
                 'print',

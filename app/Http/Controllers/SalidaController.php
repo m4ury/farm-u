@@ -34,8 +34,7 @@ class SalidaController extends Controller
     public function store(Request $request)
     {
         //dd($request->all());
-        //$farmaco->areas()->sync($request->area_id);
-        //$salida->farmaco_id = $request->input("id");
+
         $farmaco = Farmaco::findOrFail($request->input("id"));
         if ($request->cantidad_salida > $farmaco->stock_fisico) {
             return back()->withError("No es posible realizar, no hay stock suficiente");
@@ -43,11 +42,13 @@ class SalidaController extends Controller
             $salida = Salida::create($request->except('_token'));
             $salida->user_id = Auth::user()->id;
             $salida->fecha_salida = Carbon::now();
-            //$salida->stock_actual = $farmaco->stock_fisico;
             $salida->save();
 
             $nuevo_stock = $farmaco->stock_fisico - $request->cantidad_salida;
+            $salida->stock_actual = $nuevo_stock;
+            $salida->save();
             $farmaco->update(["stock_fisico" => $nuevo_stock]);
+
             $salida->farmacos()->sync($request->input("id"));
 
             return back()->withSuccess("Realizado con exito");
