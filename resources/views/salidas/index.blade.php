@@ -26,6 +26,7 @@
                             <th>Stock maximo</th>
                             <th>Stock fisico (actual)</th>
                             <th>Cantidad salida</th>
+                            <th>Num. DAU / Receta</th>
                             <th>Usuario</th>
                         </tr>
                     </thead>
@@ -46,6 +47,7 @@
                                 <td class="text-danger text-bold">
                                     {{ $salida->cantidad_salida }}
                                 </td>
+                                <td>{{ $salida->numero_dau }}</td>
                                 <td class="text-bold text-uppercase text-muted text-center">
                                     {{ $salida->user->fullUserName() }}
                                 </td>
@@ -69,15 +71,12 @@
     <script>
         // $.fn.dataTable.moment('DD-MM-YYYY');
         $("#farmacos").DataTable({
+            dom: 'Bfrtip',
             paging: true,
             pagingType: 'first_last_numbers',
             pageLength: 8,
-            dom: 'Bfrtip',
             buttons: [
-                'colvis',
-                'excel',
-                'pdf',
-                'print',
+                'csv', 'excel', 'pdf'
             ],
             language: {
                 "processing": "Procesando...",

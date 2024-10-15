@@ -370,14 +370,22 @@ return [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    //'location' => '../node_modules/datatables.net-dt/js/dataTables.dataTables.min.js',
                     'location' => 'https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.13.4/af-2.5.3/b-2.3.6/b-colvis-2.3.6/b-html5-2.3.6/b-print-2.3.6/datatables.min.js'
                 ],
                 [
                     'type' => 'css',
                     'asset' => false,
-                    //'location' => '../node_modules/datatables.net-dt/css/jquery.dataTables.min.css',
                     'location' => 'https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.13.4/af-2.5.3/b-2.3.6/b-colvis-2.3.6/b-html5-2.3.6/b-print-2.3.6/datatables.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js',
                 ],
             ],
         ],
