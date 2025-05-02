@@ -12,7 +12,7 @@
                         Volver
                     </a>
                     <i class="fas fa-pills px-2" style="color:rgb(38, 0, 255)"></i>
-                    Botiquin Urgencias
+                    <span class="text-bold">Botiquin Urgencias</span>
                 </h3>
             </div>
             <div class="col-md-12 table-responsive py-3">
@@ -25,39 +25,37 @@
                             <th>Stock maximo</th>
                             <th>Stock fisico</th>
                             <th>Fecha vencimiento</th>
-                            <th>Area</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($areas as $area)
                             <tr>
-                                <td class="text-uppercase">{{ $area->descripcion ?? '' }}
+                                <td class="text-uppercase" nowrap>{{ $area->descripcion ?? '' }}
                                     @if ($area->controlado)
-                                        <p class="btn rounded-pill bg-gradient-warning btn-xs text-bold ml-3">controlado</P>
+                                        <p class="btn rounded-pill bg-gradient-warning btn-xs text-bold ml-3">Controlado</P>
                                     @endif
                                 </td>
                                 <td>{{ $area->forma_farmaceutica }}</td>
-                                <td>{{ $area->dosis }}</td>
+                                <td nowrap>{{ $area->dosis }}</td>
                                 <td>{{ $area->stock_maximo }}</td>
-                                <td>
+                                <td nowrap>
                                     {{ $area->stock_fisico }}
-                                    @if ($area->stock_fisico < 5)
-                                        <span class="btn rounded-pill bg-gradient-warning btn-xs text-bold ml-3">bajo
-                                            stock</span>
+                                    @if ($area->stock_fisico < 5 && $area->stock_fisico > 0)
+                                        <span class="btn rounded-pill bg-gradient-warning btn-xs text-bold ml-3">Bajo
+                                            Stock</span>
                                     @endif
                                 </td>
-                                <td>
+                                <td nowrap>
                                     {{ $area->fecha_vencimiento }}
-                                    @if (Carbon\Carbon::create(Carbon\Carbon::now())->diffInDays($area->fecha_vencimiento) < 30)
-                                        <span class="btn rounded-pill bg-gradient-danger btn-xs text-bold ml-3">pronto a
-                                            vencer</span>
+                                    @if (Carbon\Carbon::create(Carbon\Carbon::now())->diffInDays($area->fecha_vencimiento) < 20 && $area->fecha_vencimiento)
+                                        <span class="btn rounded-pill bg-gradient-danger btn-xs text-bold ml-3">Pronto a
+                                            Vencer</span>
+                                    @elseif (Carbon\Carbon::create(Carbon\Carbon::now())->diffInDays($area->fecha_vencimiento) < 0)
+                                        <span
+                                            class="btn rounded-pill bg-gradient-danger btn-xs text-bold ml-3">Vencido</span>
                                     @endif
                                 </td>
-                                <td class="text-bold text-uppercase text-muted text-center">
-                                    {{ $area->nombre_area }}
-                                </td>
-
                                 <td>
                                     <a class="btn btn-outline-warning btn-sm {{ $area->stock_fisico < 1 ? 'disabled' : '' }}"
                                         href="#" data-toggle="modal" data-target="#productModal{{ $area->id }}"
@@ -89,6 +87,9 @@
             pagingType: 'first_last_numbers',
             pageLength: 8,
             dom: 'Bfrtip',
+            order: [
+                [4, "desc"]
+            ],
             buttons: [
                 'colvis',
                 'excel',

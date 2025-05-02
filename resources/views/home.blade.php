@@ -94,27 +94,13 @@
                 <tbody>
                     @foreach ($bajo as $b)
                         <tr>
-                            <td>
-                                {{ $b->descripcion }}
-                            </td>
-                            <td>
-                                {{ $b->forma_farmaceutica }}
-                            </td>
-                            <td>
-                                {{ $b->dosis }}
-                            </td>
-                            <td>
-                                {{ $b->stock_maximo }}
-                            </td>
-                            <td>
-                                {{ $b->stock_fisico }}
-                            </td>
-                            <td>
-                                {{ $b->areas->pluck('nombre_area')->first() ?? '' }}
-                            </td>
-                            <td>
-                                {{ $b->stock_maximo - $b->stock_fisico }}
-                            </td>
+                            <td>{{ $b->descripcion }}</td>
+                            <td>{{ $b->forma_farmaceutica }}</td>
+                            <td>{{ $b->dosis }}</td>
+                            <td>{{ $b->stock_maximo }}</td>
+                            <td>{{ $b->stock_fisico }}</td>
+                            <td>{{ $b->areas->pluck('nombre_area')->first() ?? '' }}</td>
+                            <td>{{ $b->stock_maximo - $b->stock_fisico }}</td>
                         </tr>
                     @endforeach
                 </tbody>

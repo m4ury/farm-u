@@ -33,25 +33,29 @@ class SalidaController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
-
         $farmaco = Farmaco::findOrFail($request->input("id"));
+
         if ($request->cantidad_salida > $farmaco->stock_fisico) {
             return back()->withError("No es posible realizar, no hay stock suficiente");
         } else {
-            $salida = Salida::create($request->except('_token'));
-            $salida->user_id = Auth::user()->id;
+            // Crear la instancia de Salida y asignar los valores necesarios
+            $salida = new Salida($request->except('_token'));
+            $salida->user_id = Auth::user()->id; // Asignar el user_id
             $salida->fecha_salida = Carbon::now();
             $salida->save();
 
+            // Calcular el nuevo stock
             $nuevo_stock = $farmaco->stock_fisico - $request->cantidad_salida;
             $salida->stock_actual = $nuevo_stock;
             $salida->save();
+
+            // Actualizar el stock del fármaco
             $farmaco->update(["stock_fisico" => $nuevo_stock]);
 
+            // Sincronizar la relación con los fármacos
             $salida->farmacos()->sync($request->input("id"));
 
-            return back()->withSuccess("Realizado con exito");
+            return back()->withSuccess("Realizado con éxito");
         }
     }
 

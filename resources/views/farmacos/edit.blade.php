@@ -29,34 +29,10 @@
                                 </div>
                                 {!! Form::label('forma_farmaceutica_label', 'Forma farmaceutica: ', ['class' => 'col-sm-2 col-form-label']) !!}
                                 <div class="col-sm">
-                                    {!! Form::select(
-                                        'forma_farmaceutica',
-                                        [
-                                            'comprimidos' => 'Comprimidos',
-                                            'Solucion inyectable' => 'Solucion inyectable',
-                                            'Supositorio' => 'Supositorio',
-                                            'Capsula' => 'Capsula',
-                                            'Polvo para suspension oral' => 'Polvo para suspension oral',
-                                            'Polvo para suspension inyectable' => 'Polvo para suspension inyectable',
-                                            'Aerosol para inhalacion' => 'Aerosol para inhalacion',
-                                            'Solucion oftalmica' => 'Solucion oftalmica',
-                                            'Unguentooftalmico' => 'Unguentooftalmico',
-                                            'Capsula o comprimido' => 'Capsula o comprimido',
-                                            'Supositorio infantil' => 'Supositorio infantil',
-                                            'Solucion para gotas' => 'Solucion para gotas',
-                                            'Solucion laxante rectal' => 'Solucion laxante rectal',
-                                            'Solucion para nebulizacion' => 'Solucion para nebulizacion',
-                                            'Frasco ampolla + solvente' => 'Frasco ampolla + solvente',
-                                            'Unidad' => 'Unidad',
-                                        ],
-                                        old('forma_farmaceutica', $farmaco->forma_farmaceutica),
-                                        [
-                                            'class' => 'form-control form-control-sm' . ($errors->has('forma_farmaceutica') ? 'is-invalid' : ''),
-                                            'placeholder' => 'seleccione',
-                                            'id' => 'forma',
-                                            'disabled' => 'disabled',
-                                        ],
-                                    ) !!}
+                                    {!! Form::select('forma_farmaceutica', [$farmaco->forma_farmaceutica], $farmaco->forma_farmaceutica, [
+                                        'id' => 'forma',
+                                        'disabled' => 'disabled',
+                                    ]) !!}
                                     @if ($errors->has('forma_farmaceutica'))
                                         <span class="invalid-feedback">
                                             <strong>{{ $errors->first('forma_farmaceutica') }}</strong>

@@ -294,38 +294,29 @@ return [
     */
 
     'menu' => [
-        // Navbar items:
-        /* [
-            'type' => 'navbar-search',
-            'text' => 'search',
-            'topnav_right' => true,
-        ], */
-        /* [
-            'type' => 'fullscreen-widget',
-            'topnav_right' => true,
-        ], */
-
-        // Sidebar items:
-        /* [
-            'type' => 'sidebar-menu-search',
-            'text' => 'search',
-        ], */
+        [
+            'type' => 'darkmode-widget',
+            'topnav_right' => true,     // Or "topnav => true" to place on the left.
+        ],
 
         [
             'text' => 'Areas',
             'route' => 'areas.index',
             'icon' => 'fas fa-fw fa-hospital',
+            'can' => 'admin'
         ],
 
         [
             'text' => 'Farmacos',
             'route' => 'farmacos.index',
             'icon' => 'fas fa-fw fa-pills',
+            'can' => 'farmacia'
         ],
         [
             'text' => 'Salidas',
             'route' => 'salidas.index',
             'icon' => 'fas fa-fw fa-share',
+            'can' => 'urgencia'
         ],
     ],
 
