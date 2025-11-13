@@ -303,20 +303,19 @@ return [
             'text' => 'Areas',
             'route' => 'areas.index',
             'icon' => 'fas fa-fw fa-hospital',
-            'can' => 'admin'
+            'can' => 'areas'
         ],
 
         [
             'text' => 'Farmacos',
             'route' => 'farmacos.index',
             'icon' => 'fas fa-fw fa-pills',
-            'can' => 'farmacia'
+            'can' => 'farmacos'
         ],
         [
             'text' => 'Salidas',
             'route' => 'salidas.index',
             'icon' => 'fas fa-fw fa-share',
-            'can' => 'urgencia'
         ],
     ],
 
