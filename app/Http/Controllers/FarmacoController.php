@@ -61,10 +61,10 @@ class FarmacoController extends Controller
      */
     public function update(Request $request, Farmaco $farmaco)
     {
-        //dd($request->all());
         $farmaco->update($request->all());
         $farmaco->controlado = $request->controlado ?? null;
         $farmaco->areas()->sync($request->area_id);
+        Log::info('UPDATE FARMACO  ' . $farmaco . 'USER: ' . auth()->user()->rut. ' - ' . 'HORA/FECHA: ' . now());
         $farmaco->save();
         return redirect('farmacos')->withSuccess('Farmaco actualizado con exito!');
     }
@@ -75,6 +75,7 @@ class FarmacoController extends Controller
     public function destroy(Farmaco $farmaco)
     {
         // Detach related areas to avoid foreign key constraint errors
+        Log::info('DELETE FARMACO  ' . $farmaco . 'USER: ' . auth()->user()->rut. ' - ' . 'HORA/FECHA: ' . now());
         $farmaco->areas()->detach();
         $farmaco->delete();
         return back()->withSuccess('Farmaco eliminado con exito!');

@@ -53,7 +53,9 @@ class AreaController extends Controller
      */
     public function destroy(Area $area)
     {
-        Area::destroy($area->id);
+        // Detach related farmacos to avoid foreign key constraint errors
+        $area->farmacos()->detach();
+        $area->delete();
         return back()->withErrors('Area eliminada con exito!');
     }
 
