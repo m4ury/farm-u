@@ -74,7 +74,9 @@ class FarmacoController extends Controller
      */
     public function destroy(Farmaco $farmaco)
     {
-        Farmaco::destroy($farmaco->id);
+        // Detach related areas to avoid foreign key constraint errors
+        $farmaco->areas()->detach();
+        $farmaco->delete();
         return back()->withSuccess('Farmaco eliminado con exito!');
     }
 }
