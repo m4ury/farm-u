@@ -57,35 +57,69 @@ class AreaController extends Controller
         return back()->withErrors('Area eliminada con exito!');
     }
 
-    public function botiquinList(){
-
-        $areas = Farmaco::join('area_farmaco','area_farmaco.farmaco_id','farmacos.id')
-        ->join('areas','areas.id','area_farmaco.area_id')
-        ->select('areas.nombre_area','farmacos.descripcion','farmacos.stock_maximo','farmacos.controlado','farmacos.fecha_vencimiento','areas.id', 'farmacos.id', 'farmacos.forma_farmaceutica', 'farmacos.dosis', 'farmacos.stock_fisico')
-        ->where('nombre_area' ,'botiquín urgencias')
-        ->get();
-//dd($areas);
-        return view('areas.botiquin', compact('areas'));
+    /**
+     * Obtener configuración de áreas desde la BD dinámicamente
+     */
+    private function getAreaConfig(){
+        $areas = Area::all();
+        $config = [];
+        
+        foreach($areas as $area){
+            // Generar slug automáticamente del nombre_area
+            $slug = \Illuminate\Support\Str::slug($area->nombre_area, '-');
+            // Capitalizar el nombre para el título
+            $titulo = ucwords($area->nombre_area);
+            
+            $config[$slug] = [$area->nombre_area, $titulo];
+        }
+        
+        return $config;
     }
 
-    public function carroList(){
-        $areas = Farmaco::join('area_farmaco','area_farmaco.farmaco_id','farmacos.id')
-        ->join('areas','areas.id','area_farmaco.area_id')
-        ->select('areas.nombre_area','farmacos.descripcion','farmacos.stock_maximo','farmacos.controlado','farmacos.fecha_vencimiento','areas.id', 'farmacos.id', 'farmacos.forma_farmaceutica', 'farmacos.dosis', 'farmacos.stock_fisico')
-        ->where('nombre_area' ,'carro de paro urgencias')
-        ->get();
-//dd($areas);
-        return view('areas.carro', compact('areas'));
+    /**
+     * Obtener mapeo de nombre_area a slug
+     */
+    public function getAreaSlugMapping(){
+        $config = $this->getAreaConfig();
+        $mapping = [];
+        foreach($config as $slug => $data){
+            $mapping[$data[0]] = $slug; // $data[0] es el nombre_area
+        }
+        return $mapping;
     }
 
-    public function maletinList(){
+    /**
+     * Mostrar medicamentos de un área de forma dinámica
+     * @param string $areaType - Tipo de área (botiquin, carro, maletin, etc)
+     */
+    public function showArea($areaType){
+        $config = $this->getAreaConfig();
+        
+        if(!isset($config[$areaType])){
+            abort(404, "Área no encontrada");
+        }
+        
+        [$areaName, $titulo] = $config[$areaType];
+        return $this->showAreaMedicamentos($areaName, 'areas.show', $titulo);
+    }
+
+    /**
+     * Mostrar medicamentos de un área dinámicamente
+     * @param string $areaName - Nombre del área a buscar
+     * @param string $viewName - Nombre de la vista a renderizar
+     * @param string $titulo - Título a mostrar en la vista
+     */
+    public function showAreaMedicamentos($areaName, $viewName, $titulo){
         $areas = Farmaco::join('area_farmaco','area_farmaco.farmaco_id','farmacos.id')
-        ->join('areas','areas.id','area_farmaco.area_id')
-        ->select('areas.nombre_area','farmacos.descripcion','farmacos.stock_maximo','farmacos.controlado','farmacos.fecha_vencimiento','areas.id', 'farmacos.id', 'farmacos.forma_farmaceutica', 'farmacos.dosis', 'farmacos.stock_fisico')
-        ->where('nombre_area' ,'maletín urgencias')
-        ->get();
-//dd($areas);
-        return view('areas.maletin', compact('areas'));
+            ->join('areas','areas.id','area_farmaco.area_id')
+            ->select('areas.nombre_area','farmacos.descripcion','farmacos.stock_maximo',
+                     'farmacos.controlado','farmacos.fecha_vencimiento','areas.id', 
+                     'farmacos.id', 'farmacos.forma_farmaceutica', 'farmacos.dosis', 
+                     'farmacos.stock_fisico')
+            ->where('nombre_area', $areaName)
+            ->get();
+        
+        return view($viewName, compact('areas', 'titulo'));
     }
 }
 

@@ -34,16 +34,11 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::resource('farmacos', FarmacoController::class);
 
-
-/* Route::get('/areas.botiquin', function() {
-    return Farmaco::with('areas')->get();
-})->name('areas.botiquin'); */
+// Ruta dinámica para áreas (DEBE estar ANTES del resource)
+Route::get('areas/{areaType}', [AreaController::class, 'showArea'])->name('areas.show');
 
 Route::resource('areas', AreaController::class);
 Route::resource('salidas', SalidaController::class);
-Route::get('areas.botiquin', [App\Http\Controllers\AreaController::class,'botiquinList'])->name('areas.botiquin');
-Route::get('areas.carro', [App\Http\Controllers\AreaController::class,'carroList'])->name('areas.carro');
-Route::get('areas.maletin', [App\Http\Controllers\AreaController::class,'maletinList'])->name('areas.maletin');
 
 
 

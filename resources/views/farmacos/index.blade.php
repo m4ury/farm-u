@@ -54,13 +54,11 @@
                                 </td>
                                 <td>
                                     {{ $farmaco->fecha_vencimiento }}
-                                    @if (Carbon\Carbon::create(Carbon\Carbon::now())->diffInDays($farmaco->fecha_vencimiento) < 20 &&
-                                            $farmaco->fecha_vencimiento)
-                                        <span class="btn rounded-pill bg-gradient-danger btn-xs text-bold ml-3">pronto a
+                                    @if ($farmaco->fecha_vencimiento && Carbon\Carbon::parse($farmaco->fecha_vencimiento)->isPast())
+                                        <span class="btn rounded-pill bg-gradient-danger btn-xs text-bold ml-3 text-uppercase">Vencido</span>
+                                    @elseif ($farmaco->fecha_vencimiento && Carbon\Carbon::now()->diffInDays(Carbon\Carbon::parse($farmaco->fecha_vencimiento)) < 20)
+                                        <span class="btn rounded-pill bg-gradient-warning btn-xs text-bold ml-3 text-uppercase">Pronto a
                                             vencer</span>
-                                    @elseif (Carbon\Carbon::create(Carbon\Carbon::now())->diffInDays($farmaco->fecha_vencimiento) < 0)
-                                        <span
-                                            class="btn rounded-pill bg-gradient-danger btn-xs text-bold ml-3">Vencido</span>
                                     @endif
                                 </td>
                                 <td class="text-bold text-uppercase text-muted text-center">

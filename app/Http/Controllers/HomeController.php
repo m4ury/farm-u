@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Area;
 use App\Models\Farmaco;
 use Illuminate\Http\Request;
 
@@ -24,18 +25,15 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $botiquin = Farmaco::whereHas('areas', function ($query) {
-            $query->where('nombre_area', 'botiquín urgencias');
-        })->get();
-        $carro = Farmaco::whereHas('areas', function ($query) {
-            $query->where('nombre_area', 'carro de paro urgencias');
-        })->get();
-        $maletin = Farmaco::whereHas('areas', function ($query) {
-            $query->where('nombre_area', 'maletín urgencias');
-        })->get();
+        // Obtener todas las áreas con sus fármacos
+        $areas = Area::with('farmacos')->get();
 
+        // Mapeo de nombre_area a slug para URLs
+        $areaSlugMapping = (new \App\Http\Controllers\AreaController)->getAreaSlugMapping();
+
+        // Fármacos con bajo stock
         $bajo = Farmaco::whereColumn('stock_fisico', '<', 'stock_maximo')->with('areas')->get();
 
-        return view('home', compact('botiquin', 'carro', 'maletin', 'bajo'));
+        return view('home', compact('areas', 'areaSlugMapping', 'bajo'));
     }
 }
