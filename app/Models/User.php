@@ -64,4 +64,14 @@ class User extends Authenticatable
         return $this->type === 'admin';
 
     }
+
+    function isFarmacia(){
+        return $this->type === 'farmacia';
+
+    }
+
+    function isUrgencias(){
+        return $this->type === 'urgencias';
+
+    }
 }

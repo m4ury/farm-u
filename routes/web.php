@@ -30,15 +30,15 @@ Route::get('/home', function() {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
 
-Route::resource('farmacos', FarmacoController::class);
+Route::resource('farmacos', FarmacoController::class)->middleware('auth');
 
 // Ruta dinámica para áreas (DEBE estar ANTES del resource)
-Route::get('areas/{areaType}', [AreaController::class, 'showArea'])->name('areas.show');
+Route::get('areas/{areaType}', [AreaController::class, 'showArea'])->name('areas.show')->middleware('auth');
 
-Route::resource('areas', AreaController::class);
-Route::resource('salidas', SalidaController::class);
+Route::resource('areas', AreaController::class)->middleware('auth');
+Route::resource('salidas', SalidaController::class)->middleware('auth');
 
 
 

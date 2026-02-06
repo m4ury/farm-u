@@ -42,7 +42,7 @@
                     </td>
                     @if ($showActions)
                         <td>
-                            <a class="btn btn-outline-warning btn-sm {{ $item->stock_fisico < 1 ? 'disabled' : '' }} {{ $item->fecha_vencimiento && Carbon\Carbon::parse($item->fecha_vencimiento)->isPast() ? 'disabled' : '' }}"
+                            <a class="btn btn-outline-warning btn-sm {{ $item->stock_fisico < 1 ? 'disabled' : '' }} {{ $item->fecha_vencimiento && Carbon\Carbon::parse($item->fecha_vencimiento)->isPast() ? 'disabled' : '' }} {{ auth()->user()->type == 'farmacia' ? 'disabled' : '' }}"
                                 href="#" data-toggle="modal" data-target="#productModal{{ $item->id }}"
                                 title="Generar Salida"><i class="fas fa-share-square"></i>
                             </a>

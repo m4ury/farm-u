@@ -31,7 +31,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('farmacos', function ($user) {
-            if ($user->type == 'admin' || $user->type == 'qf' || $user->type == 'farmacia') {
+            if ($user->type == 'admin' || $user->type == 'farmacia') {
                 return true;
             }
             return false;
