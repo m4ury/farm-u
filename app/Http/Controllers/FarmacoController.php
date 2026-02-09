@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Area;
 use App\Models\Farmaco;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class FarmacoController extends Controller
 {

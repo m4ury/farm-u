@@ -223,6 +223,8 @@ return [
     'sidebar_scrollbar_auto_hide' => 'l',
     'sidebar_nav_accordion' => true,
     'sidebar_nav_animation_speed' => 300,
+    'classes_sidebar_nav_active' => 'bg-primary bg-opacity-10',
+
 
     /*
     |--------------------------------------------------------------------------
@@ -302,21 +304,32 @@ return [
         [
             'text' => 'Areas',
             'route' => 'areas.index',
-            'icon' => 'fas fa-fw fa-hospital',
+            'icon' => 'fas fa-fw fa-hospital text-secondary',
             'can' => 'areas'
         ],
 
         [
             'text' => 'Farmacos',
             'route' => 'farmacos.index',
-            'icon' => 'fas fa-fw fa-pills',
+            'icon' => 'fas fa-fw fa-pills text-success',
             'can' => 'farmacos'
         ],
         [
             'text' => 'Salidas',
             'route' => 'salidas.index',
-            'icon' => 'fas fa-fw fa-share',
+            'icon' => 'fas fa-fw fa-share text-primary',
+            'can' => 'salidas'
         ],
+        [
+            'header' => 'ADMINISTRACION',
+            'can' => 'users'
+        ],
+        [
+            'text' => 'Gestionar Usuarios',
+            'route' => 'users.index',
+            'icon' => 'fas fa-fw fa-users-cog text-warning',
+            'can' => 'users'
+        ]
     ],
 
     /*
