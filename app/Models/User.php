@@ -59,6 +59,11 @@ class User extends Authenticatable
         return $this->hasMany(Salida::class);
     }
 
+    public function pedidos()
+    {
+        return $this->hasMany(Pedido::class);
+    }
+
     public function fullUserName()
     {
         return ucfirst($this->name) . " " . ucfirst($this->apellido_p) . " " . ucfirst($this->apellido_m);

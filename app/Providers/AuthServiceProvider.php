@@ -44,7 +44,7 @@ class AuthServiceProvider extends ServiceProvider
             return false;
         });
 
-        Gate::define('users', function ($user) {
+        Gate::define('admin', function ($user) {
             if ($user->type == 'admin') {
                 return true;
             }

@@ -19,4 +19,11 @@ class Farmaco extends Model
     public function salidas(){
         return $this->belongsToMany(Salida::class);
     }
+
+    public function pedidos()
+    {
+        return $this->belongsToMany(Pedido::class, 'farmaco_pedido')
+                    ->withPivot('cantidad_pedida')
+                    ->withTimestamps();
+    }
 }

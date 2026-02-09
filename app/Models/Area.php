@@ -16,4 +16,9 @@ class Area extends Model
     {
         return $this->belongsToMany(Farmaco::class);
     }
+
+    public function pedidos()
+    {
+        return $this->hasMany(Pedido::class);
+    }
 }

@@ -322,14 +322,20 @@ return [
         ],
         [
             'header' => 'ADMINISTRACION',
-            'can' => 'users'
+            'can' => 'admin'
         ],
         [
             'text' => 'Gestionar Usuarios',
             'route' => 'users.index',
             'icon' => 'fas fa-fw fa-users-cog text-warning',
-            'can' => 'users'
-        ]
+            'can' => 'admin'
+        ],
+        [
+            'text' => 'Gestionar Pedidos',
+            'route' => 'pedidos.index',
+            'icon' => 'fas fa-fw fa-clipboard-list text-info',
+            'can' => 'admin'
+        ],
     ],
 
     /*
