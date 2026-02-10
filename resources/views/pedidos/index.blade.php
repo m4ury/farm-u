@@ -65,14 +65,10 @@
                                     <a href="{{ route('pedidos.edit', $pedido) }}" class="btn btn-warning btn-sm" title="Editar">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form method="POST" action="{{ route('pedidos.destroy', $pedido) }}" style="display:inline;">
+                                    {{ html()->form('DELETE', route('pedidos.destroy', $pedido))->class('d-inline')->open() }}
                                         @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" title="Eliminar" 
-                                            onclick="return confirm('¿Está seguro de que desea eliminar este pedido?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
+                                        {{ html()->button('<i class="fas fa-trash"></i>')->class('btn btn-danger btn-sm')->type('submit')->attribute('title', 'Eliminar')->attribute('onclick', "return confirm('¿Está seguro de que desea eliminar este pedido?')") }}
+                                    {{ html()->form()->close() }}
                                 </td>
                             </tr>
                         @endforeach

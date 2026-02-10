@@ -111,7 +111,7 @@
                             @foreach($farmacos as $index => $farmaco)
                                 <tr>
                                     <td>
-                                        <input type="checkbox" name="farmacos[{{ $index }}][farmaco_id]" 
+                                        <input type="checkbox" name="farmacos[{{ $index }}][farmaco_id]"
                                             value="{{ $farmaco->id }}" class="farmaco-select">
                                     </td>
                                     <td>{{ $farmaco->descripcion }}</td>
@@ -135,8 +135,8 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <input type="number" name="farmacos[{{ $index }}][cantidad]" 
-                                            class="form-control form-control-sm farmaco-cantidad" 
+                                        <input type="number" name="farmacos[{{ $index }}][cantidad]"
+                                            class="form-control form-control-sm farmaco-cantidad"
                                             value="{{ $farmaco->cantidad_a_pedir }}"
                                             data-max="{{ $farmaco->cantidad_a_pedir }}"
                                             data-farmaco-nombre="{{ $farmaco->descripcion }}"
@@ -170,13 +170,13 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const cantidadInputs = document.querySelectorAll('.farmaco-cantidad');
-            
+
             cantidadInputs.forEach(input => {
                 input.addEventListener('change', function() {
                     const maxValue = parseInt(this.dataset.max);
                     const currentValue = parseInt(this.value) || 0;
                     const farmacoNombre = this.dataset.farmacoNombre;
-                    
+
                     if (currentValue > maxValue) {
                         Swal.fire({
                             icon: 'warning',

@@ -61,9 +61,9 @@
                                         {{ __('Logout') }}
                                     </a>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    {{ html()->form('POST', route('logout'))->id('logout-form')->class('d-none')->open() }}
                                         @csrf
-                                    </form>
+                                    {{ html()->form()->close() }}
                                 </div>
                             </li>
                         @endguest

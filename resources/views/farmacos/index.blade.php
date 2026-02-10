@@ -65,18 +65,14 @@
                                     {{ $farmaco->areas->pluck('nombre_area')->first() }}
                                 </td>
                                 <td>
-                                    {!! Form::open([
-                                        'route' => ['farmacos.destroy', $farmaco->id],
-                                        'method' => 'DELETE',
-                                        'class' => 'confirm',
-                                    ]) !!}
-                                    {!! Form::button('<i class="fas fa-trash"></i>', [
-                                        'type' => 'submit',
-                                        'class' => 'btn btn-outline-danger btn-sm',
-                                        'data-toggle' => 'tooltip',
-                                        'data-placement' => 'top',
-                                        'title' => 'Eliminar',
-                                    ]) !!}
+                                    {{ html()->form('DELETE', route('farmacos.destroy', $farmaco->id))->class('confirm')->open() }}
+                                    {{ html()
+                                        ->button('<i class="fas fa-trash"></i>')
+                                        ->class('btn btn-outline-danger btn-sm')
+                                        ->type('submit')
+                                        ->attribute('data-toggle', 'tooltip')
+                                        ->attribute('data-placement', 'top')
+                                        ->attribute('title', 'Eliminar') }}
                                     {{-- <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal"
                                         data-target="#edit-farmaco"><i class="fas fa-pen"></i>
                                     </button> --}}
@@ -85,7 +81,7 @@
                                         <i class="fas fa-pen">
                                         </i>
                                     </a>
-                                    {!! Form::close() !!}
+                                    {{ html()->form()->close() }}
                                     {{-- <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-placement="bottom"
                                         title="farmaco" href="{{ route('farmacos.show', $farmaco) }}" target="_blank"><i
                                             class="fas fa-envelope"></i>

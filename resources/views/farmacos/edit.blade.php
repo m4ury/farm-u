@@ -8,31 +8,35 @@
                 <div class="card card-default">
                     <div class="card-header">Actualizando Farmaco</div>
                     <div class="card-body">
-                        {{ Form::open(['action' => 'farmacoController@update', 'method' => 'POST', 'url' => 'farmacos/' . $farmaco->id, 'class' => 'form-horizontal']) }}
+                        {{ html()->form('PATCH', url('farmacos/' . $farmaco->id))->class('form-horizontal')->open() }}
                         {{-- Form::open(['action' => 'SolicitudController@update', 'method' => 'POST', 'url' => 'solicitudes/'.$solicitud->id, 'class' => 'form-horizontal']) --}}
                         @csrf
-                        @method('PATCH')
                         <div class="form-horizontal">
                             <div class="form-group row">
-                                {!! Form::label('descripcion_label', 'Descripción: ', ['class' => 'col-sm-2 col-form-label']) !!}
+                                {{ html()->label('Descripción: ', 'descripcion')->class('col-sm-2 col-form-label') }}
                                 <div class="col-sm">
-                                    {!! Form::text('descripcion', old('descripcion', $farmaco->descripcion), [
-                                        'class' => 'form-control form-control-sm' . ($errors->has('descripcion') ? 'is-invalid' : ''),
-                                        'placeholder' => 'ej.: paracetamol',
-                                        'disabled' => 'disabled',
-                                    ]) !!}
+                                    {{ html()
+                                        ->text('descripcion')
+                                        ->value(old('descripcion', $farmaco->descripcion))
+                                        ->class('form-control form-control-sm' . ($errors->has('descripcion') ? ' is-invalid' : ''))
+                                        ->placeholder('ej.: paracetamol')
+                                        ->disabled() }}
                                     @if ($errors->has('descripcion'))
                                         <span class="invalid-feedback">
                                             <strong>{{ $errors->first('descripcion') }}</strong>
                                         </span>
                                     @endif
                                 </div>
-                                {!! Form::label('forma_farmaceutica_label', 'Forma farmaceutica: ', ['class' => 'col-sm-2 col-form-label']) !!}
+                                {{ html()->label('Forma farmaceutica: ', 'forma_farmaceutica')->class('col-sm-2 col-form-label') }}
                                 <div class="col-sm">
-                                    {!! Form::select('forma_farmaceutica', [$farmaco->forma_farmaceutica], $farmaco->forma_farmaceutica, [
-                                        'id' => 'forma',
-                                        'disabled' => 'disabled',
-                                    ]) !!}
+                                    {{ html()
+                                        ->select('forma_farmaceutica', [
+                                            $farmaco->forma_farmaceutica => $farmaco->forma_farmaceutica,
+                                        ])
+                                        ->value($farmaco->forma_farmaceutica)
+                                        ->class('form-control form-control-sm' . ($errors->has('forma_farmaceutica') ? ' is-invalid' : ''))
+                                        ->id('forma')
+                                        ->disabled() }}
                                     @if ($errors->has('forma_farmaceutica'))
                                         <span class="invalid-feedback">
                                             <strong>{{ $errors->first('forma_farmaceutica') }}</strong>
@@ -41,26 +45,28 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                {!! Form::label('dosis_label', 'Dosis: ', ['class' => 'col-sm-2 col-form-label']) !!}
+                                {{ html()->label('Dosis: ', 'dosis')->class('col-sm-2 col-form-label') }}
                                 <div class="col-sm">
-                                    {!! Form::text('dosis', old('dosis', $farmaco->dosis), [
-                                        'class' => 'form-control form-control-sm' . ($errors->has('dosis') ? 'is-invalid' : ''),
-                                        'placeholder' => 'ej.: 100 mg',
-                                        'disabled' => 'disabled',
-                                    ]) !!}
+                                    {{ html()
+                                        ->text('dosis')
+                                        ->value(old('dosis', $farmaco->dosis))
+                                        ->class('form-control form-control-sm' . ($errors->has('dosis') ? ' is-invalid' : ''))
+                                        ->placeholder('ej.: 100 mg')
+                                        ->disabled() }}
                                     @if ($errors->has('dosis'))
                                         <span class="invalid-feedback">
                                             <strong>{{ $errors->first('dosis') }}</strong>
                                         </span>
                                     @endif
                                 </div>
-                                {!! Form::label('controlado_label', 'Controlado: ', ['class' => 'col-sm-2 col-form-label']) !!}
+                                {{ html()->label('Controlado: ', 'controlado')->class('col-sm-2 col-form-label') }}
                                 <div class="col-sm">
-                                    {!! Form::checkbox('controlado', 1, old('controlado', $farmaco->controlado ? true : null), [
-                                        'class' => 'form-control my-2 controlado',
-                                        'id' => 'controlado',
-                                        'disabled' => 'disabled',
-                                    ]) !!}
+                                    {{ html()
+                                        ->checkbox('controlado', old('controlado', $farmaco->controlado ? true : null))
+                                        ->value(1)
+                                        ->class('form-control my-2 controlado')
+                                        ->id('controlado')
+                                        ->disabled() }}
                                     @if ($errors->has('controlado'))
                                         <span class="invalid-feedback">
                                             <strong>{{ $errors->first('controlado') }}</strong>
@@ -69,35 +75,38 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                {!! Form::label('fecha_vencimiento_label', 'Vencimiento: ', ['class' => 'col-sm-2 col-form-label']) !!}
+                                {{ html()->label('Vencimiento: ', 'fecha_vencimiento')->class('col-sm-2 col-form-label') }}
                                 <div class="col-sm-2">
-                                    {!! Form::date('fecha_vencimiento', old('fecha_vencimiento', $farmaco->fecha_vencimiento), [
-                                        'class' => 'form-control form-control-sm' . ($errors->has('fecha_vencimiento') ? 'is-invalid' : ''),
-                                        'placeholder' => 'ej.: paracetamol',
-                                    ]) !!}
+                                    {{ html()
+                                        ->date('fecha_vencimiento')
+                                        ->value(old('fecha_vencimiento', $farmaco->fecha_vencimiento))
+                                        ->class('form-control form-control-sm' . ($errors->has('fecha_vencimiento') ? ' is-invalid' : ''))
+                                        ->placeholder('ej.: paracetamol') }}
                                     @if ($errors->has('fecha_vencimiento'))
                                         <span class="invalid-feedback">
                                             <strong>{{ $errors->first('fecha_vencimiento') }}</strong>
                                         </span>
                                     @endif
                                 </div>
-                                {!! Form::label('stock_maximo_label', 'Stock maximo: ', ['class' => 'col-sm-2 col-form-label']) !!}
+                                {{ html()->label('Stock maximo: ', 'stock_maximo')->class('col-sm-2 col-form-label') }}
                                 <div class="col-sm">
-                                    {!! Form::number('stock_maximo', old('stock_maximo', $farmaco->stock_maximo), [
-                                        'class' => 'form-control form-control-sm' . ($errors->has('stock_maximo') ? 'is-invalid' : ''),
-                                        'disabled' => 'disabled',
-                                    ]) !!}
+                                    {{ html()
+                                        ->number('stock_maximo')
+                                        ->value(old('stock_maximo', $farmaco->stock_maximo))
+                                        ->class('form-control form-control-sm' . ($errors->has('stock_maximo') ? ' is-invalid' : ''))
+                                        ->disabled() }}
                                     @if ($errors->has('stock_maximo'))
                                         <span class="invalid-feedback">
                                             <strong>{{ $errors->first('stock_maximo') }}</strong>
                                         </span>
                                     @endif
                                 </div>
-                                {!! Form::label('stock_fisico_label', 'Stock fisico: ', ['class' => 'col-sm-2 col-form-label']) !!}
+                                {{ html()->label('Stock fisico: ', 'stock_fisico')->class('col-sm-2 col-form-label') }}
                                 <div class="col-sm">
-                                    {!! Form::number('stock_fisico', old('stock_maximo', $farmaco->stock_fisico), [
-                                        'class' => 'form-control form-control-sm' . ($errors->has('stock_fisico') ? 'is-invalid' : ''),
-                                    ]) !!}
+                                    {{ html()
+                                        ->number('stock_fisico')
+                                        ->value(old('stock_maximo', $farmaco->stock_fisico))
+                                        ->class('form-control form-control-sm' . ($errors->has('stock_fisico') ? ' is-invalid' : '')) }}
                                     @if ($errors->has('stock_fisico'))
                                         <span class="invalid-feedback">
                                             <strong>{{ $errors->first('stock_fisico') }}</strong>
@@ -106,13 +115,14 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                {!! Form::label('area_label', 'Area: ', ['class' => 'col-sm col-form-label']) !!}
+                                {{ html()->label('Area: ', 'area_id')->class('col-sm col-form-label') }}
                                 <div class="col">
-                                    {!! Form::select('area_id', $areas, old('area_id', $farmaco->areas), [
-                                        'class' => 'form-control form-control-sm' . ($errors->has('area_id') ? 'is-invalid' : ''),
-                                        'placeholder' => 'seleccione',
-                                        'id' => 'area',
-                                    ]) !!}
+                                    {{ html()
+                                        ->select('area_id', $areas)
+                                        ->value(old('area_id', $farmaco->areas))
+                                        ->class('form-control form-control-sm' . ($errors->has('area_id') ? ' is-invalid' : ''))
+                                        ->placeholder('seleccione')
+                                        ->id('area') }}
                                     @if ($errors->has('area_id'))
                                         <span class="invalid-feedback">
                                             <strong>{{ $errors->first('area_id') }}</strong>
@@ -124,16 +134,16 @@
                         </div>
                         <div class="row py-3 px-3">
                             <div class="col">
-                                {{ Form::submit('Actualizar', ['class' => 'btn bg-gradient-success btn-sm btn-block']) }}
+                                {{ html()->submit('Actualizar')->class('btn bg-gradient-success btn-sm btn-block') }}
                             </div>
                             <div class="col">
                                 <a href="{{ url()->previous() }}" style="text-decoration:none">
-                                    {{ Form::button('Cancelar', ['class' => 'btn bg-gradient-secondary btn-sm btn-block']) }}
+                                    {{ html()->button('Cancelar')->class('btn bg-gradient-secondary btn-sm btn-block')->type('button') }}
                                 </a>
                             </div>
                         </div>
 
-                        {{ Form::close() }}
+                        {{ html()->form()->close() }}
                     </div>
                 </div>
             </div>

@@ -17,15 +17,15 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <p>
-                                <strong>Fecha:</strong> 
+                                <strong>Fecha:</strong>
                                 <span class="badge badge-info">{{ $pedido->fecha_pedido->format('d/m/Y') }}</span>
                             </p>
                             <p>
-                                <strong>Área:</strong> 
+                                <strong>Área:</strong>
                                 {{ $pedido->area->nombre_area }}
                             </p>
                             <p>
-                                <strong>Usuario Responsable:</strong> 
+                                <strong>Usuario Responsable:</strong>
                                 <span class="badge badge-secondary">{{ $pedido->user->fullUserName() }}</span>
                             </p>
                         </div>
@@ -41,7 +41,7 @@
                                 @endif
                             </p>
                             <p>
-                                <strong>Solicitante:</strong> 
+                                <strong>Solicitante:</strong>
                                 {{ $pedido->solicitante ?? 'N/A' }}
                             </p>
                         </div>
@@ -88,14 +88,10 @@
                     <a href="{{ route('pedidos.edit', $pedido) }}" class="btn btn-warning">
                         <i class="fas fa-edit"></i> Editar
                     </a>
-                    <form method="POST" action="{{ route('pedidos.destroy', $pedido) }}" style="display:inline;">
+                    {{ html()->form('DELETE', route('pedidos.destroy', $pedido))->class('d-inline')->open() }}
                         @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger" 
-                            onclick="return confirm('¿Está seguro de que desea eliminar este pedido?')">
-                            <i class="fas fa-trash"></i> Eliminar
-                        </button>
-                    </form>
+                        {{ html()->button('<i class="fas fa-trash"></i> Eliminar')->class('btn btn-danger')->type('submit')->attribute('onclick', "return confirm('¿Está seguro de que desea eliminar este pedido?')") }}
+                    {{ html()->form()->close() }}
                     <a href="{{ route('pedidos.index') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Volver
                     </a>

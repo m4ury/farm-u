@@ -68,7 +68,7 @@
                     @foreach ($bajo as $b)
                         <tr>
                             <td class="text-center">
-                                <input type="checkbox" class="farmaco-checkbox" data-farmaco-id="{{ $b->id }}" 
+                                <input type="checkbox" class="farmaco-checkbox" data-farmaco-id="{{ $b->id }}"
                                     data-farmaco-nombre="{{ $b->descripcion }}"
                                     data-stock-maximo="{{ $b->stock_maximo }}"
                                     data-stock-fisico="{{ $b->stock_fisico }}"
@@ -98,27 +98,27 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="orderForm">
+                {{ html()->form('POST')->attribute('id', 'orderForm')->open() }}
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="fecha_pedido">Fecha del Pedido <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" id="fecha_pedido" name="fecha_pedido" required>
+                            {{ html()->label()->html('Fecha del Pedido <span class="text-danger">*</span>')->for('fecha_pedido') }}
+                            {{ html()->date('fecha_pedido')->class('form-control')->required()->id('fecha_pedido') }}
                         </div>
 
                         <div class="form-group">
-                            <label for="solicitante">Solicitante</label>
-                            <input type="text" class="form-control" id="solicitante" name="solicitante" placeholder="Nombre del solicitante" maxlength="100">
+                            {{ html()->label('Solicitante', 'solicitante') }}
+                            {{ html()->text('solicitante')->class('form-control')->placeholder('Nombre del solicitante')->maxlength('100')->id('solicitante') }}
                         </div>
 
                         <div class="form-group">
-                            <label for="observaciones">Observaciones</label>
-                            <textarea class="form-control" id="observaciones" name="observaciones" rows="3" placeholder="Notas adicionales"></textarea>
+                            {{ html()->label('Observaciones', 'observaciones') }}
+                            {{ html()->textarea('observaciones')->class('form-control')->rows(3)->placeholder('Notas adicionales')->id('observaciones') }}
                         </div>
 
                         <!-- Sección de fármacos seleccionados -->
                         <div class="form-group">
-                            <label>Fármacos Seleccionados <span class="text-danger">*</span></label>
+                            {{ html()->label()->html('Fármacos Seleccionados <span class="text-danger">*</span>') }}
                             <div id="farmacosList" class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
                                 <!-- Los fármacos se agregarán aquí dinámicamente -->
                             </div>
@@ -126,12 +126,10 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Guardar Pedido
-                        </button>
+                        {{ html()->button('Cancelar')->class('btn btn-secondary')->type('button')->attribute('data-dismiss', 'modal') }}
+                        {{ html()->submit('<i class="fas fa-save"></i> Guardar Pedido')->class('btn btn-primary') }}
                     </div>
-                </form>
+                {{ html()->form()->close() }}
             </div>
         </div>
     </div>
@@ -240,7 +238,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="cantidad_${index}">Cantidad a pedir</label>
-                                    <input type="number" class="form-control cantidad-input" id="cantidad_${index}" 
+                                    <input type="number" class="form-control cantidad-input" id="cantidad_${index}"
                                         name="farmacos[${index}][cantidad]"
                                         data-max="${farmaco.stock_maximo}"
                                         data-farmaco-nombre="${farmaco.nombre}"
@@ -263,14 +261,14 @@
             // Enviar el formulario del pedido
             $('#orderForm').on('submit', function(e) {
                 e.preventDefault();
-                
+
                 // Validar que las cantidades no excedan el stock máximo
                 let isValid = true;
                 $('.cantidad-input').each(function() {
                     const cantidad = parseInt($(this).val());
                     const maxStock = parseInt($(this).data('max'));
                     const nombreFarmaco = $(this).data('farmaco-nombre');
-                    
+
                     if (cantidad > maxStock) {
                         isValid = false;
                         Swal.fire('Error', `La cantidad para ${nombreFarmaco} no puede ser mayor al stock máximo (${maxStock})`, 'error');
@@ -279,7 +277,7 @@
                 });
 
                 if (!isValid) return;
-                
+
                 const formData = {
                     _token: $('input[name="_token"]').val(),
                     fecha_pedido: $('#fecha_pedido').val(),
@@ -330,7 +328,7 @@
                 const cantidad = parseInt($(this).val());
                 const maxStock = parseInt($(this).data('max'));
                 const nombreFarmaco = $(this).data('farmaco-nombre');
-                
+
                 if (cantidad > maxStock) {
                     $(this).addClass('is-invalid');
                     $(this).after(`<div class="invalid-feedback d-block">No puede exceder ${maxStock}</div>`);

@@ -10,18 +10,19 @@
             </div>
             <div class="modal-body">
                 <!-- Aquí puedes mostrar los detalles específicos del producto -->
-                <form method="POST" action={{ route('salidas.store') }}>
+                {{ html()->form('POST', route('salidas.store'))->open() }}
                     @csrf
-                    {!! Form::hidden('id', $area->id) !!}
+                    {{ html()->hidden('id', $area->id) }}
                     <div class="form-horizontal">
                         <div class="form-group row">
-                            {!! Form::label('dau_label', 'Numero DAU o Receta: ', ['class' => 'col-sm-4 col-form-label']) !!}
+                            {{ html()->label('Numero DAU o Receta: ', 'numero_dau')->class('col-sm-4 col-form-label') }}
                             <div class="col-sm">
-                                {!! Form::text('numero_dau', old('numero_dau'), [
-                                    'class' => 'form-control form-control-sm' . ($errors->has('numero_dau') ? 'is-invalid' : ''),
-                                    'placeholder' => 'Num DAU urgencias / receta',
-                                    'required' => 'true',
-                                ]) !!}
+                                {{ html()
+                                    ->text('numero_dau')
+                                    ->value(old('numero_dau'))
+                                    ->class('form-control form-control-sm' . ($errors->has('numero_dau') ? ' is-invalid' : ''))
+                                    ->placeholder('Num DAU urgencias / receta')
+                                    ->required() }}
                                 @if ($errors->has('numero_dau'))
                                     <span class="invalid-feedback">
                                         <strong>{{ $errors->first('numero_dau') }}</strong>
@@ -31,13 +32,13 @@
                         </div>
 
                         <div class="form-group row">
-                            {!! Form::label('cantidad_salida_label', 'Cantidad a rebajar: ', ['class' => 'col-sm-4 col-form-label']) !!}
+                            {{ html()->label('Cantidad a rebajar: ', 'cantidad_salida')->class('col-sm-4 col-form-label') }}
                             <div class="col-sm">
-                                {!! Form::number('cantidad_salida', null, [
-                                    'class' => 'form-control form-control-sm' . ($errors->has('cantidad_salida') ? 'is-invalid' : ''),
-                                    'placeholder' => '' . $area->stock_fisico,
-                                    /* 'placeholder' => 'Nº ultima ficha creada ' . Str::replace(['{', '}', '"ficha"'], '', $paciente->ultFicha()->last()), */
-                                ]) !!}
+                                {{ html()
+                                    ->number('cantidad_salida')
+                                    ->value(old('cantidad_salida'))
+                                    ->class('form-control form-control-sm' . ($errors->has('cantidad_salida') ? ' is-invalid' : ''))
+                                    ->placeholder('' . $area->stock_fisico) }}
                                 @if ($errors->has('cantidad_salida'))
                                     <span class="invalid-feedback">
                                         <strong>{{ $errors->first('cantidad_salida') }}</strong>
@@ -50,15 +51,18 @@
                     <!-- Puedes agregar un pie de página con botones de acción si es necesario -->
                     <div class="modal-footer">
                         <div class="col">
-                            {{ Form::submit('Guardar', ['class' => 'btn bg-gradient-success btn-sm btn-block']) }}
+                            {{ html()->submit('Guardar')->class('btn bg-gradient-success btn-sm btn-block') }}
                         </div>
                         <div class="col">
-                            <button type="button" class="btn btn-secondary btn-sm btn-block"
-                                data-dismiss="modal">Cancelar</button>
+                            {{ html()
+                                ->button('Cancelar')
+                                ->class('btn btn-secondary btn-sm btn-block')
+                                ->type('button')
+                                ->attribute('data-dismiss', 'modal') }}
                         </div>
                         <!-- Otros botones de acción -->
                     </div>
-                </form>
+                {{ html()->form()->close() }}
             </div>
         </div>
     </div>

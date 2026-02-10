@@ -37,29 +37,22 @@
                                     </td>
                                     <td>{{ $user->email }}</td>
                                     <td>{{ $user->type }}</td>
-                                    
+
                                     <td class="text-center text-uppercase">
                                         @if ($user->trashed())
-                                            <form action="{{ route('users.restore', $user->id) }}" method="POST"
-                                                style="display:inline;">
+                                            {{ html()->form('POST', route('users.restore', $user->id))->class('d-inline')->open() }}
                                                 @csrf
-                                                <button type="submit" class="btn btn-success btn-sm">Restaurar</button>
-                                            </form>
+                                                {{ html()->button('Restaurar')->class('btn btn-success btn-sm')->type('submit') }}
+                                            {{ html()->form()->close() }}
                                         @else
                                             <a class="btn btn-primary btn-sm" title="Editar Usuario"
                                                 href="{{ route('users.edit', $user->id) }}">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST"
-                                                class="d-inline">
+                                            {{ html()->form('DELETE', route('users.destroy', $user->id))->class('d-inline')->open() }}
                                                 @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                    title="Deshabilitar Usuario"
-                                                    onclick="return confirm('¿Estás seguro de que deseas deshabilitar este usuario?')">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
+                                                {{ html()->button('<i class="fas fa-trash"></i>')->class('btn btn-danger btn-sm')->type('submit')->attribute('title', 'Deshabilitar Usuario')->attribute('onclick', "return confirm('¿Estás seguro de que deseas deshabilitar este usuario?')") }}
+                                            {{ html()->form()->close() }}
                                         @endif
                                     </td>
                                 </tr>

@@ -8,17 +8,17 @@
                 <div class="card card-default">
                     <div class="card-header">Actualizando Area</div>
                     <div class="card-body">
-                        {{ Form::open(['action' => 'areaController@update', 'method' => 'POST', 'url' => 'areas/' . $area->id, 'class' => 'form-horizontal']) }}
+                        {{ html()->form('PATCH', url('areas/' . $area->id))->class('form-horizontal')->open() }}
                         {{-- Form::open(['action' => 'SolicitudController@update', 'method' => 'POST', 'url' => 'solicitudes/'.$solicitud->id, 'class' => 'form-horizontal']) --}}
                         @csrf
-                        @method('PATCH')
                         <div class="form-horizontal">
                             <div class="form-group row">
-                                {!! Form::label('nombre_area_label', 'nombre area: ', ['class' => 'col-sm-2 col-form-label']) !!}
+                                {{ html()->label('nombre area: ', 'nombre_area')->class('col-sm-2 col-form-label') }}
                                 <div class="col-sm">
-                                    {!! Form::text('nombre_area', old('nombre_area', $area->nombre_area), [
-                                        'class' => 'form-control form-control-sm' . ($errors->has('nombre_area') ? 'is-invalid' : ''),
-                                    ]) !!}
+                                    {{ html()
+                                        ->text('nombre_area')
+                                        ->value(old('nombre_area', $area->nombre_area))
+                                        ->class('form-control form-control-sm' . ($errors->has('nombre_area') ? ' is-invalid' : '')) }}
                                     @if ($errors->has('nombre_area'))
                                         <span class="invalid-feedback">
                                             <strong>{{ $errors->first('nombre_area') }}</strong>
@@ -27,11 +27,12 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                {!! Form::label('descripcion_area_label', 'Descripcion area: ', ['class' => 'col-sm-2 col-form-label']) !!}
+                                {{ html()->label('Descripcion area: ', 'descripcion_area')->class('col-sm-2 col-form-label') }}
                                 <div class="col-sm">
-                                    {!! Form::textarea('descripcion_area', old('descripcion_area', $area->descripcion_area), [
-                                        'class' => 'form-control form-control-sm' . ($errors->has('descripcion_area') ? 'is-invalid' : ''),
-                                    ]) !!}
+                                    {{ html()
+                                        ->textarea('descripcion_area')
+                                        ->value(old('descripcion_area', $area->descripcion_area))
+                                        ->class('form-control form-control-sm' . ($errors->has('descripcion_area') ? ' is-invalid' : '')) }}
                                     @if ($errors->has('descripcion_area'))
                                         <span class="invalid-feedback">
                                             <strong>{{ $errors->first('descripcion_area') }}</strong>
@@ -43,16 +44,16 @@
                         </div>
                         <div class="row py-3 px-3">
                             <div class="col">
-                                {{ Form::submit('Actualizar', ['class' => 'btn bg-gradient-success btn-sm btn-block']) }}
+                                {{ html()->submit('Actualizar')->class('btn bg-gradient-success btn-sm btn-block') }}
                             </div>
                             <div class="col">
                                 <a href="{{ url('areas') }}" style="text-decoration:none">
-                                    {{ Form::button('Cancelar', ['class' => 'btn bg-gradient-secondary btn-sm btn-block']) }}
+                                    {{ html()->button('Cancelar')->class('btn bg-gradient-secondary btn-sm btn-block')->type('button') }}
                                 </a>
                             </div>
                         </div>
 
-                        {{ Form::close() }}
+                        {{ html()->form()->close() }}
                     </div>
                 </div>
             </div>
