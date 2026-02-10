@@ -76,5 +76,7 @@
             @yield('content')
         </main>
     </div>
+
+    @include('components.confirm-delete-script')
 </body>
 </html>

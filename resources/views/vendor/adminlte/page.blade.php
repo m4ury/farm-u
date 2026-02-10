@@ -55,4 +55,5 @@
 @section('adminlte_js')
     @stack('js')
     @yield('js')
+    @include('components.confirm-delete-script')
 @stop

@@ -7,6 +7,8 @@
 @endsection
 
 @section('content')
+    @include('components.sweetalert')
+    
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Lista de Pedidos</h3>
@@ -17,12 +19,6 @@
             </div>
         </div>
         <div class="card-body">
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    {{ session('success') }}
-                </div>
-            @endif
 
             @if($pedidos->isEmpty())
                 <div class="alert alert-info">
@@ -65,9 +61,9 @@
                                     <a href="{{ route('pedidos.edit', $pedido) }}" class="btn btn-warning btn-sm" title="Editar">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    {{ html()->form('DELETE', route('pedidos.destroy', $pedido))->class('d-inline')->open() }}
+                                    {{ html()->form('DELETE', route('pedidos.destroy', $pedido))->class('d-inline confirm')->attribute('data-mensaje', '¿Está seguro de que desea eliminar este pedido? Esta acción no se puede deshacer.')->open() }}
                                         @csrf
-                                        {{ html()->button('<i class="fas fa-trash"></i>')->class('btn btn-danger btn-sm')->type('submit')->attribute('title', 'Eliminar')->attribute('onclick', "return confirm('¿Está seguro de que desea eliminar este pedido?')") }}
+                                        {{ html()->button('<i class="fas fa-trash"></i>')->class('btn btn-danger btn-sm')->type('submit')->attribute('title', 'Eliminar') }}
                                     {{ html()->form()->close() }}
                                 </td>
                             </tr>

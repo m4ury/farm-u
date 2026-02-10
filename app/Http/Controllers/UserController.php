@@ -55,6 +55,12 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::find($id);
+        
+        // Si es una petición AJAX, retornar JSON
+        if (request()->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json(['user' => $user]);
+        }
+        
         return view('user.edit', compact('user'));
     }
 

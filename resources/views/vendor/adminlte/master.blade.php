@@ -112,6 +112,8 @@
     {{-- Custom Scripts --}}
     @yield('adminlte_js')
 
+    @include('components.confirm-delete-script')
+
 </body>
 
 </html>

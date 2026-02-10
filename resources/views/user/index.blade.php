@@ -45,13 +45,12 @@
                                                 {{ html()->button('Restaurar')->class('btn btn-success btn-sm')->type('submit') }}
                                             {{ html()->form()->close() }}
                                         @else
-                                            <a class="btn btn-primary btn-sm" title="Editar Usuario"
-                                                href="{{ route('users.edit', $user->id) }}">
+                                            <button type="button" class="btn btn-primary btn-sm edit-user-btn" title="Editar Usuario" data-user-id="{{ $user->id }}">
                                                 <i class="fas fa-edit"></i>
-                                            </a>
-                                            {{ html()->form('DELETE', route('users.destroy', $user->id))->class('d-inline')->open() }}
+                                            </button>
+                                            {{ html()->form('DELETE', route('users.destroy', $user->id))->class('d-inline confirm')->attribute('data-mensaje', '¿Estás seguro de que deseas deshabilitar este usuario? Esta acción no se puede deshacer.')->open() }}
                                                 @csrf
-                                                {{ html()->button('<i class="fas fa-trash"></i>')->class('btn btn-danger btn-sm')->type('submit')->attribute('title', 'Deshabilitar Usuario')->attribute('onclick', "return confirm('¿Estás seguro de que deseas deshabilitar este usuario?')") }}
+                                                {{ html()->button('<i class="fas fa-trash"></i>')->class('btn btn-danger btn-sm')->type('submit')->attribute('title', 'Deshabilitar Usuario') }}
                                             {{ html()->form()->close() }}
                                         @endif
                                     </td>
@@ -62,6 +61,7 @@
                 </div>
             </div>
         @stop
+        @include('user.modal-edit')
         @section('plugins.Datatables', true)
         @section('js')
             <script>

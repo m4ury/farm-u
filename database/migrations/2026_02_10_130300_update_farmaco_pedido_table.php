@@ -1,0 +1,29 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('farmaco_pedido', function (Blueprint $table) {
+            $table->integer('cantidad_aprobada')->unsigned()->nullable()->after('cantidad_pedida');
+            $table->integer('cantidad_despachada')->unsigned()->default(0)->after('cantidad_aprobada');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('farmaco_pedido', function (Blueprint $table) {
+            $table->dropColumn(['cantidad_aprobada', 'cantidad_despachada']);
+        });
+    }
+};

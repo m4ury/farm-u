@@ -53,6 +53,15 @@ class FarmacoController extends Controller
      */
     public function edit(Farmaco $farmaco)
     {
+        // Si es una petición AJAX, retornar JSON
+        if (request()->header('X-Requested-With') === 'XMLHttpRequest') {
+            $areas = Area::orderBy('nombre_area', 'ASC')->get();
+            return response()->json([
+                'farmaco' => $farmaco,
+                'areas' => $areas
+            ]);
+        }
+        
         $areas = Area::orderBy('nombre_area', 'ASC')->pluck('nombre_area', 'id');
         //$patologias = Patologia::orderBy('nombre_patologia', 'ASC')->pluck('nombre_patologia', 'id');
         return view('farmacos.edit', compact('farmaco', 'areas'));
@@ -66,7 +75,7 @@ class FarmacoController extends Controller
         $farmaco->update($request->all());
         $farmaco->controlado = $request->controlado ?? null;
         $farmaco->areas()->sync($request->area_id);
-        Log::info('UPDATE FARMACO  ' . $farmaco . 'USER: ' . auth()->user()->rut. ' - ' . 'HORA/FECHA: ' . now());
+        Log::info('UPDATE FARMACO:  ' . $farmaco . 'USER: ' . auth()->user()->rut. ' - ' . 'HORA/FECHA: ' . now());
         $farmaco->save();
         return redirect('farmacos')->withSuccess('Farmaco actualizado con exito!');
     }
@@ -77,7 +86,7 @@ class FarmacoController extends Controller
     public function destroy(Farmaco $farmaco)
     {
         // Detach related areas to avoid foreign key constraint errors
-        Log::info('DELETE FARMACO  ' . $farmaco . 'USER: ' . auth()->user()->rut. ' - ' . 'HORA/FECHA: ' . now());
+        Log::info('DELETE FARMACO:  ' . $farmaco . 'USER: ' . auth()->user()->rut. ' - ' . 'HORA/FECHA: ' . now());
         $farmaco->areas()->detach();
         $farmaco->delete();
         return back()->withSuccess('Farmaco eliminado con exito!');

@@ -72,15 +72,12 @@
                                         ->type('submit')
                                         ->attribute('data-toggle', 'tooltip')
                                         ->attribute('data-placement', 'top')
-                                        ->attribute('title', 'Eliminar') }}
-                                    {{-- <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal"
-                                        data-target="#edit-farmaco"><i class="fas fa-pen"></i>
-                                    </button> --}}
-                                    <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-placement="top"
-                                        title="Editar" href="{{ route('farmacos.edit', $farmaco) }}">
-                                        <i class="fas fa-pen">
-                                        </i>
-                                    </a>
+                                        ->attribute('title', 'Eliminar')
+                                        ->attribute('data-mensaje', 'Este farmaco será eliminado permanentemente. ¿Estás seguro?') }}
+                                    <button type="button" class="btn btn-outline-primary btn-sm edit-farmaco-btn" data-toggle="tooltip" data-placement="top"
+                                        title="Editar" data-farmaco-id="{{ $farmaco->id }}">
+                                        <i class="fas fa-pen"></i>
+                                    </button>
                                     {{ html()->form()->close() }}
                                     {{-- <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-placement="bottom"
                                         title="farmaco" href="{{ route('farmacos.show', $farmaco) }}" target="_blank"><i
@@ -102,6 +99,7 @@
     </div>
 @endsection
 @include('farmacos.modal')
+@include('farmacos.modal-edit')
 @section('plugins.Datatables', true)
 @section('js')
     {{-- <script src="//cdn.datatables.net/plug-ins/1.12.1/sorting/datetime-moment.js"></script> --}}

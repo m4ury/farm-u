@@ -37,15 +37,12 @@
                                         ->type('submit')
                                         ->attribute('data-toggle', 'tooltip')
                                         ->attribute('data-placement', 'top')
-                                        ->attribute('title', 'Eliminar') }}
-                                    {{-- <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal"
-                                        data-target="#edit-farmaco"><i class="fas fa-pen"></i>
-                                    </button> --}}
-                                    <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-placement="top"
-                                        title="Editar" href="{{ route('areas.edit', $area) }}">
-                                        <i class="fas fa-pen">
-                                        </i>
-                                    </a>
+                                        ->attribute('title', 'Eliminar')
+                                        ->attribute('data-mensaje', 'Esta área será eliminada permanentemente. ¿Estás seguro?') }}
+                                    <button type="button" class="btn btn-outline-primary btn-sm edit-area-btn" data-toggle="tooltip" data-placement="top"
+                                        title="Editar" data-area-id="{{ $area->id }}" data-area-name="{{ $area->nombre_area }}" data-area-description="{{ $area->descripcion_area }}">
+                                        <i class="fas fa-pen"></i>
+                                    </button>
                                     {{ html()->form()->close() }}
                                     {{-- <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-placement="bottom"
                                         title="farmaco" href="{{ route('farmacos.show', $farmaco) }}" target="_blank"><i
@@ -67,6 +64,7 @@
     </div>
 @endsection
 @include('areas.modal')
+@include('areas.modal-edit')
 @section('plugins.Datatables', true)
 @section('js')
     {{-- <script src="//cdn.datatables.net/plug-ins/1.12.1/sorting/datetime-moment.js"></script> --}}
