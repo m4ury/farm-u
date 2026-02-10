@@ -55,6 +55,7 @@ class FarmacoController extends Controller
     {
         // Si es una petición AJAX, retornar JSON
         if (request()->header('X-Requested-With') === 'XMLHttpRequest') {
+            $farmaco->load('areas'); // Cargar las áreas asociadas
             $areas = Area::orderBy('nombre_area', 'ASC')->get();
             return response()->json([
                 'farmaco' => $farmaco,
@@ -72,11 +73,43 @@ class FarmacoController extends Controller
      */
     public function update(Request $request, Farmaco $farmaco)
     {
-        $farmaco->update($request->all());
-        $farmaco->controlado = $request->controlado ?? null;
-        $farmaco->areas()->sync($request->area_id);
-        Log::info('UPDATE FARMACO:  ' . $farmaco . 'USER: ' . auth()->user()->rut. ' - ' . 'HORA/FECHA: ' . now());
+        // Validar datos
+        $request->validate([
+            'descripcion' => 'sometimes|string|max:255',
+            'dosis' => 'sometimes|string|max:100',
+            'forma_farmaceutica' => 'sometimes|string|max:100',
+            'stock_maximo' => 'sometimes|integer|min:0',
+            'stock_fisico' => 'sometimes|integer|min:0',
+            'controlado' => 'sometimes|boolean',
+            'fecha_vencimiento' => 'sometimes|nullable|date',
+            'area_id' => 'sometimes|nullable|exists:areas,id'
+        ]);
+
+        // Actualizar farmaco (excluye area_id para manejarlo por separado)
+        $farmaco->update($request->except('area_id'));
+        $farmaco->controlado = $request->input('controlado', 0);
+        
+        // Sincronizar áreas
+        $areaId = $request->area_id;
+        if ($areaId) {
+            $farmaco->areas()->sync([$areaId]);
+        } else {
+            $farmaco->areas()->detach();
+        }
+        
         $farmaco->save();
+        
+        Log::info('UPDATE FARMACO: ' . $farmaco->descripcion . ' USER: ' . auth()->user()->rut . ' - HORA/FECHA: ' . now());
+        
+        // Si es AJAX, retornar JSON
+        if (request()->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json([
+                'success' => true,
+                'message' => 'Fármaco actualizado correctamente',
+                'farmaco' => $farmaco
+            ]);
+        }
+        
         return redirect('farmacos')->withSuccess('Farmaco actualizado con exito!');
     }
 

@@ -92,7 +92,7 @@ class PedidoController extends Controller
             'area_id' => $request->area_id,
             'solicitante' => $request->solicitante,
             'observaciones' => $request->observaciones,
-            'estado' => 'solicitado',
+            'estado' => 'pendiente',
         ]);
 
         // Agregar los fármacos al pedido
@@ -193,7 +193,7 @@ class PedidoController extends Controller
             'area_id' => $areaId,
             'solicitante' => $request->solicitante,
             'observaciones' => $request->observaciones,
-            'estado' => 'solicitado',
+            'estado' => 'pendiente',
         ]);
 
         // Agregar los fármacos al pedido
@@ -388,7 +388,7 @@ class PedidoController extends Controller
         $pedido->load(['farmacos', 'area']);
 
         // Obtener lotes disponibles para cada farmaco
-        $farmacos_despacho = [];
+        $farmacos_despacho = collect();
         foreach ($pedido->farmacos as $farmaco) {
             $cantidad_aprobada = $farmaco->pivot->cantidad_aprobada ?? 0;
             $cantidad_despachada = $farmaco->pivot->cantidad_despachada ?? 0;
@@ -397,13 +397,13 @@ class PedidoController extends Controller
             if ($cantidad_pendiente > 0) {
                 $lotes = $farmaco->lotesDisponibles()->get();
 
-                $farmacos_despacho[$farmaco->id] = [
+                $farmacos_despacho->put($farmaco->id, [
                     'farmaco' => $farmaco,
                     'cantidad_aprobada' => $cantidad_aprobada,
                     'cantidad_despachada' => $cantidad_despachada,
                     'cantidad_pendiente' => $cantidad_pendiente,
                     'lotes' => $lotes
-                ];
+                ]);
             }
         }
 

@@ -5,12 +5,23 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Casts\Attribute;
 class Farmaco extends Model
 {
-    protected $fillable = ['descripcion', 'dosis', 'forma_farmaceutica', 'stock_maximo', 'stock_fisico', 'controlado'];
+    protected $fillable = ['descripcion', 'dosis', 'forma_farmaceutica', 'stock_maximo', 'stock_fisico', 'controlado', 'fecha_vencimiento'];
 
     use HasFactory;
+
+    /**
+     * Accessor para stock_fisico - devuelve el valor calculado dinámicamente
+     * en lugar del valor estático de la BD
+     */
+    protected function stockFisico(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->getStockFisicoCalculado()
+        );
+    }
 
     public function areas(){
         return $this->belongsToMany(Area::class);

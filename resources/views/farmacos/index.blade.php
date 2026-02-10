@@ -24,7 +24,6 @@
                             <th>Dosis</th>
                             <th>Stock maximo</th>
                             <th>Stock fisico</th>
-                            <th>Fecha vencimiento</th>
                             <th>Area</th>
                             <th>Acciones</th>
                         </tr>
@@ -41,24 +40,15 @@
                                 <td>{{ $farmaco->dosis }}</td>
                                 <td>{{ $farmaco->stock_maximo }}</td>
                                 <td>
-                                    {{ $farmaco->stock_fisico }}
+                                    {{ $stock_fisico = $farmaco->getStockFisicoCalculado() }}
 
                                     @php
-                                        $diferencia = $farmaco->stock_maximo - $farmaco->stock_fisico; // Diferencia entre stock máximo y físico
-                                        $umbral = $farmaco->stock_fisico * 0.5; // 50% del stock físico
+                                        $diferencia = $farmaco->stock_maximo - $stock_fisico; // Diferencia entre stock máximo y físico calculado
+                                        $umbral = $stock_fisico * 0.5; // 50% del stock físico calculado
                                     @endphp
-                                    @if ($farmaco->stock_fisico > 0 && $diferencia > 0 && $diferencia > $umbral)
+                                    @if ($stock_fisico > 0 && $diferencia > 0 && $diferencia > $umbral)
                                         <span class="btn rounded-pill bg-gradient-warning btn-xs text-bold ml-3">Bajo
                                             Stock</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    {{ $farmaco->fecha_vencimiento }}
-                                    @if ($farmaco->fecha_vencimiento && Carbon\Carbon::parse($farmaco->fecha_vencimiento)->isPast())
-                                        <span class="btn rounded-pill bg-gradient-danger btn-xs text-bold ml-3 text-uppercase">Vencido</span>
-                                    @elseif ($farmaco->fecha_vencimiento && Carbon\Carbon::now()->diffInDays(Carbon\Carbon::parse($farmaco->fecha_vencimiento)) < 20)
-                                        <span class="btn rounded-pill bg-gradient-warning btn-xs text-bold ml-3 text-uppercase">Pronto a
-                                            vencer</span>
                                     @endif
                                 </td>
                                 <td class="text-bold text-uppercase text-muted text-center">

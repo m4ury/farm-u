@@ -45,13 +45,25 @@
                                 <td>{{ $pedido->area->nombre_area }}</td>
                                 <td>{{ $pedido->user->name }}</td>
                                 <td>
-                                    @if($pedido->estado === 'solicitado')
-                                        <span class="badge badge-warning">Solicitado</span>
-                                    @elseif($pedido->estado === 'entregado')
-                                        <span class="badge badge-success">Entregado</span>
-                                    @else
-                                        <span class="badge badge-danger">Rechazado</span>
-                                    @endif
+                                    @php
+                                        $estado_badge = [
+                                            'pendiente' => 'warning',
+                                            'aprobado' => 'success',
+                                            'parcial' => 'info',
+                                            'rechazado' => 'danger',
+                                            'completado' => 'success'
+                                        ];
+                                        $estado_label = [
+                                            'pendiente' => 'Pendiente',
+                                            'aprobado' => 'Aprobado',
+                                            'parcial' => 'Parcial',
+                                            'rechazado' => 'Rechazado',
+                                            'completado' => 'Completado'
+                                        ];
+                                    @endphp
+                                    <span class="badge badge-{{ $estado_badge[$pedido->estado] ?? 'secondary' }}">
+                                        {{ $estado_label[$pedido->estado] ?? strtoupper($pedido->estado) }}
+                                    </span>
                                 </td>
                                 <td>{{ $pedido->farmacos->count() }}</td>
                                 <td>

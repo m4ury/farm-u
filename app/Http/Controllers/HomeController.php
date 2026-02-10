@@ -32,26 +32,26 @@ class HomeController extends Controller
         $areaSlugMapping = (new \App\Http\Controllers\AreaController)->getAreaSlugMapping();
 
         // Fármacos con bajo stock
-        $bajo = Farmaco::whereColumn('stock_fisico', '<', 'stock_maximo')->with('areas')->get();
+       // $bajo = Farmaco::whereColumn('stock_fisico', '<', 'stock_maximo')->with('areas')->get();
         
         // Medicamentos próximos a vencer (menos de 20 días)
-        $proximosVencer = Farmaco::where('fecha_vencimiento', '>', now())
+        /* $proximosVencer = Farmaco::where('fecha_vencimiento', '>', now())
             ->where('fecha_vencimiento', '<=', now()->addDays(20))
             ->with('areas')
             ->orderBy('fecha_vencimiento', 'asc')
             ->get();
         
         // Medicamentos vencidos
-        $vencidos = Farmaco::where('fecha_vencimiento', '<', now())->with('areas')->get();
+        $vencidos = Farmaco::where('fecha_vencimiento', '<', now())->with('areas')->get(); */
         
         // Medicamentos controlados
         $controlados = Farmaco::where('controlado', true)->with('areas')->get();
         
         // Medicamentos con mayor stock disponible
-        $mayorStock = Farmaco::orderBy('stock_fisico', 'desc')
+        /* $mayorStock = Farmaco::orderBy('stock_fisico', 'desc')
             ->with('areas')
             ->limit(5)
-            ->get();
+            ->get(); */
         
         // Medicamentos con mayor salida - suma total de cantidad_salida
         $mayorSalida = Farmaco::withSum('salidas', 'cantidad_salida')
@@ -60,6 +60,6 @@ class HomeController extends Controller
             ->limit(5)
             ->get();
 
-        return view('home', compact('areas', 'areaSlugMapping', 'bajo', 'proximosVencer', 'vencidos', 'controlados', 'mayorStock', 'mayorSalida'));
+        return view('home', compact('areas', 'areaSlugMapping', 'controlados', 'mayorSalida'));
     }
 }

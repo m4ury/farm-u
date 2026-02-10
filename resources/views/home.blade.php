@@ -21,9 +21,9 @@
                         <div class="icon">
                             <i class="fas fa-pills"></i>
                         </div>
-                        <div class="small-box-footer" style="padding: 8px; font-size: 12px;">
+                        <!-- <div class="small-box-footer" style="padding: 8px; font-size: 12px;">
                             <strong>Stock:</strong> {{ $area->farmacos->pluck('stock_fisico')->sum() }}/{{ $area->farmacos->pluck('stock_maximo')->sum() }}
-                        </div>
+                        </div> -->
                         @php
                             $areaSlug = $areaSlugMapping[$area->nombre_area] ?? null;
                         @endphp
@@ -44,11 +44,11 @@
                 <div class="card card-danger card-outline h-100">
                     <div class="card-header">
                         <h5 class="card-title m-0">
-                            <i class="fas fa-exclamation-triangle"></i> Bajo Stock ({{ $bajo->count() }})
+                            <!-- <i class="fas fa-exclamation-triangle"></i> Bajo Stock () -->
                         </h5>
                     </div>
-                    <div class="card-body p-0" style="max-height: 350px; overflow-y: auto;">
-                        @if($bajo->count() > 0)
+                    <!-- <div class="card-body p-0" style="max-height: 350px; overflow-y: auto;">
+                        @if(bajo->count() > 0)
                             <div class="table-responsive">
                                 <table class="table table-sm table-hover mb-0">
                                     <thead class="bg-light">
@@ -74,7 +74,7 @@
                                 <i class="fas fa-check-circle"></i> Stock adecuado en todos
                             </div>
                         @endif
-                    </div>
+                    </div> -->
                 </div>
             </div>
 

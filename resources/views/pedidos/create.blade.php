@@ -12,9 +12,9 @@
             <h3 class="card-title">Formulario de Creación</h3>
         </div>
 
-        {!! Html::form('POST', route('pedidos.store'))
+        {{ html()->form('POST', route('pedidos.store'))
             ->class('needs-validation')
-            ->open() !!}
+            ->open() }}
 
             <div class="card-body">
                 @if($errors->any())
@@ -61,26 +61,26 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            {!! Html::label('solicitante', 'Solicitante')
-                                ->attribute('class', 'font-weight-bold') !!}
-                            {!! Html::input('text', 'solicitante')
+                            {{ html()->label('solicitante', 'Solicitante')
+                                ->attribute('class', 'font-weight-bold') }}
+                            {{ html()->text('solicitante')
                                 ->class('form-control ' . ($errors->has('solicitante') ? 'is-invalid' : ''))
                                 ->value(old('solicitante'))
                                 ->placeholder('Nombre del solicitante')
-                                ->maxlength(100) !!}
+                                ->maxlength(100) }}
                             @error('solicitante')<span class="invalid-feedback d-block">{{ $message }}</span>@enderror
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    {!! Html::label('observaciones', 'Observaciones')
-                        ->attribute('class', 'font-weight-bold') !!}
-                    {!! Html::textarea('observaciones')
+                    {{ html()->label('observaciones', 'Observaciones')
+                        ->attribute('class', 'font-weight-bold') }}
+                    {{ html()->textarea('observaciones')
                         ->class('form-control ' . ($errors->has('observaciones') ? 'is-invalid' : ''))
                         ->value(old('observaciones'))
                         ->rows(3)
-                        ->placeholder('Notas adicionales') !!}
+                        ->placeholder('Notas adicionales') }}
                     @error('observaciones')<span class="invalid-feedback d-block">{{ $message }}</span>@enderror
                 </div>
 
@@ -116,12 +116,12 @@
                                         <span class="badge badge-primary">{{ $farmaco->stock_maximo }}</span>
                                     </td>
                                     <td>
-                                        <span class="badge {{ $farmaco->stock_fisico < $farmaco->stock_maximo ? 'badge-danger' : 'badge-success' }}">
-                                            {{ $farmaco->stock_fisico }}
+                                        <span class="badge {{ $farmaco->getStockFisicoCalculado() < $farmaco->stock_maximo ? 'badge-danger' : 'badge-success' }}">
+                                            {{ $farmaco->getStockFisicoCalculado() }}
                                         </span>
                                     </td>
                                     <td>
-                                        <strong>{{ $farmaco->cantidad_a_pedir }}</strong>
+                                        <strong>{{ $farmaco->stock_maximo - $farmaco->stock_fisico }}</strong>
                                     </td>
                                     <td>
                                         @if($farmaco->area_predeterminada)
@@ -132,13 +132,13 @@
                                     </td>
                                     <td>
                                         <input type="number" class="form-control form-control-sm farmaco-cantidad"
-                                            value="{{ $farmaco->cantidad_a_pedir }}"
+                                            value="{{ $farmaco->stock_maximo - $farmaco->stock_fisico }}"
                                             data-index="{{ $index }}"
-                                            data-max="{{ $farmaco->cantidad_a_pedir }}"
+                                            data-max="{{ $farmaco->stock_maximo - $farmaco->stock_fisico }}"
                                             data-farmaco-id="{{ $farmaco->id }}"
                                             data-farmaco-nombre="{{ $farmaco->descripcion }}"
                                             min="1"
-                                            max="{{ $farmaco->cantidad_a_pedir }}"
+                                            max="{{ $farmaco->stock_maximo - $farmaco->stock_fisico }}"
                                             style="width: 100px;">
                                     </td>
                                 </tr>
@@ -153,51 +153,61 @@
             </div>
 
             <div class="card-footer">
-                {!! Html::submit('Crear Pedido')
+                {{ html()->submit('Crear Pedido')
                     ->class('btn btn-success')
-                    ->attribute('id', 'submitBtn') !!}
+                    ->attribute('id', 'submitBtn') }}
                 <a href="{{ route('pedidos.index') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Cancelar
                 </a>
             </div>
 
-        {!! Html::form()->close() !!}
+        {{ html()->form()->close() }}
     </div>
-
+@stop
+@section('js')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('form');
-            const cantidadInputs = document.querySelectorAll('.farmaco-cantidad');
+        $(document).ready(function() {
+            console.log('✓ Script jQuery iniciado');
+            console.log('Checkboxes encontrados:', $('.farmaco-select').length);
 
-            cantidadInputs.forEach(input => {
-                input.addEventListener('change', function() {
-                    const maxValue = parseInt(this.dataset.max);
-                    const currentValue = parseInt(this.value) || 0;
-                    const farmacoNombre = this.dataset.farmacoNombre;
+            // Validar cantidad máxima
+            $(document).on('change', '.farmaco-cantidad', function() {
+                const $this = $(this);
+                const maxValue = parseInt($this.data('max'));
+                const currentValue = parseInt($this.val()) || 0;
+                const farmacoNombre = $this.data('farmaco-nombre');
 
-                    if (currentValue > maxValue) {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Cantidad excede el máximo',
-                            text: `La cantidad no puede exceder ${maxValue} para "${farmacoNombre}"`,
-                            confirmButtonText: 'Ajustar'
-                        }).then(() => {
-                            this.value = maxValue;
-                        });
-                    }
-                });
+                if (currentValue > maxValue) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Cantidad excede el máximo',
+                        text: `La cantidad no puede exceder ${maxValue} para "${farmacoNombre}"`,
+                        confirmButtonText: 'Ajustar'
+                    }).then(() => {
+                        $this.val(maxValue);
+                    });
+                }
             });
 
-            // Validar y preparar datos antes de enviar
-            document.getElementById('submitBtn').addEventListener('click', function(e) {
+            // Manejar click del botón submit
+            $('#submitBtn').on('click', function(e) {
                 e.preventDefault();
                 
+                console.log('📝 Botón clickeado');
+                
                 let selectedFarmacos = [];
-                document.querySelectorAll('.farmaco-select:checked').forEach(checkbox => {
-                    const index = checkbox.dataset.index;
-                    const farmacoId = checkbox.dataset.farmacoId;
-                    const cantidadInput = document.querySelector(`.farmaco-cantidad[data-index="${index}"]`);
-                    const cantidad = parseInt(cantidadInput.value) || 0;
+                const $checkedBoxes = $('.farmaco-select:checked');
+                
+                console.log('✓ Checkboxes seleccionados:', $checkedBoxes.length);
+
+                $checkedBoxes.each(function() {
+                    const $checkbox = $(this);
+                    const index = $checkbox.data('index');
+                    const farmacoId = $checkbox.data('farmaco-id');
+                    const $cantidadInput = $(`.farmaco-cantidad[data-index="${index}"]`);
+                    const cantidad = parseInt($cantidadInput.val()) || 0;
+
+                    console.log(`  Farmaco ID: ${farmacoId}, Cantidad: ${cantidad}`);
 
                     if (cantidad > 0) {
                         selectedFarmacos.push({
@@ -207,36 +217,39 @@
                     }
                 });
 
+                console.log('Final - Fármacos a enviar:', selectedFarmacos);
+
                 if (selectedFarmacos.length === 0) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Sin fármacos seleccionados',
-                        text: 'Por favor selecciona al menos un fármaco',
+                        text: 'Por favor selecciona al menos un fármaco marcando los checkboxes',
                         confirmButtonText: 'Entendido'
                     });
                     return;
                 }
 
-                // Limpiar inputs anteriores si existen
-                document.querySelectorAll('input[name^="farmacos["]').forEach(el => el.remove());
+                // Limpiar inputs ocultos anteriores
+                $('input[name^="farmacos["]').remove();
 
                 // Crear inputs dinámicamente para los fármacos seleccionados
+                const $form = $('form');
                 selectedFarmacos.forEach((farmaco, index) => {
-                    const farmacoIdInput = document.createElement('input');
-                    farmacoIdInput.type = 'hidden';
-                    farmacoIdInput.name = `farmacos[${index}][farmaco_id]`;
-                    farmacoIdInput.value = farmaco.farmaco_id;
-                    form.appendChild(farmacoIdInput);
+                    $form.append($('<input>').attr({
+                        type: 'hidden',
+                        name: `farmacos[${index}][farmaco_id]`,
+                        value: farmaco.farmaco_id
+                    }));
 
-                    const cantidadInput = document.createElement('input');
-                    cantidadInput.type = 'hidden';
-                    cantidadInput.name = `farmacos[${index}][cantidad]`;
-                    cantidadInput.value = farmaco.cantidad;
-                    form.appendChild(cantidadInput);
+                    $form.append($('<input>').attr({
+                        type: 'hidden',
+                        name: `farmacos[${index}][cantidad]`,
+                        value: farmaco.cantidad
+                    }));
                 });
 
-                // Enviar el formulario
-                form.submit();
+                console.log('✓ Enviando formulario...');
+                $form.submit();
             });
         });
     </script>

@@ -49,6 +49,7 @@
                                     <h3 class="card-title">Fármacos a Despachar</h3>
                                 </div>
                                 <div class="card-body">
+                                    @php $despacho_index = 0; @endphp
                                     @forelse($farmacos_despacho as $farmaco_id => $info)
                                         <div class="card card-outline card-light mb-3">
                                             <div class="card-header">
@@ -78,6 +79,7 @@
                                                         @else
                                                             <div class="lotes-container">
                                                                 @forelse($info['lotes'] as $lote)
+                                                                    <?php $despacho_index++; ?>
                                                                     <div class="form-group border p-3 mb-2">
                                                                         <div class="row">
                                                                             <div class="col-md-6">
@@ -94,15 +96,17 @@
                                                                                     Cantidad a Despachar:
                                                                                 </label>
                                                                                 <input type="hidden" 
-                                                                                       name="despachos[][farmaco_id]" 
-                                                                                       value="{{ $farmaco_id }}">
+                                                                                       name="despachos[{{ $despacho_index }}][farmaco_id]" 
+                                                                                       value="{{ $farmaco_id }}" 
+                                                                                       class="despacho-farmaco-id">
                                                                                 <input type="hidden" 
-                                                                                       name="despachos[][lote_id]" 
-                                                                                       value="{{ $lote->id }}">
+                                                                                       name="despachos[{{ $despacho_index }}][lote_id]" 
+                                                                                       value="{{ $lote->id }}" 
+                                                                                       class="despacho-lote-id">
                                                                                 <input type="number" 
                                                                                        id="cant_{{ $farmaco_id }}_{{ $lote->id }}"
-                                                                                       name="despachos[][cantidad_despacho]" 
-                                                                                       class="form-control" 
+                                                                                       name="despachos[{{ $despacho_index }}][cantidad_despacho]" 
+                                                                                       class="form-control despacho-cantidad" 
                                                                                        min="0"
                                                                                        max="{{ $lote->cantidad_disponible }}"
                                                                                        value="0">
@@ -157,7 +161,7 @@
     <script>
         // Validación básica antes de enviar
         document.querySelector('form').addEventListener('submit', function(e) {
-            const cantidades = document.querySelectorAll('input[name="despachos[][cantidad_despacho]"]');
+            const cantidades = document.querySelectorAll('input[name*="cantidad_despacho"]');
             let totalDespacho = 0;
             
             cantidades.forEach(input => {
