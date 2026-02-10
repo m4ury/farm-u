@@ -119,36 +119,32 @@
             @endif
         </div>
     </div>
-@endsection
 
-<script>
-    // Confirmación para eliminaciones con SweetAlert
-    document.querySelectorAll('.confirm-delete').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const form = this.closest('form');
-            const swalWithBootstrapButtons = Swal.mixin({
-                customClass: {
-                    confirmButton: 'btn btn-danger mx-2',
-                    cancelButton: 'btn btn-secondary'
-                },
-                buttonsStyling: false
-            });
-            
-            swalWithBootstrapButtons.fire({
-                title: '¿Estás seguro?',
-                text: '¡No podrás revertir esto!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.value) {
-                    form.submit();
+    <script>
+        // Confirmación para marcar como vencido
+        document.querySelectorAll('.confirm-action').forEach(button => {
+            button.addEventListener('click', function(event) {
+                const action = this.getAttribute('data-action');
+                let message = '¿Está seguro de que desea realizar esta acción?';
+                
+                if (action === 'marcar-vencido') {
+                    message = '¿Está seguro de que desea marcar este lote como vencido? Esta acción no se puede deshacer.';
+                }
+
+                if (!confirm(message)) {
+                    event.preventDefault();
                 }
             });
         });
-    });
-</script>
+
+        // Confirmación para eliminar
+        document.querySelectorAll('.confirm-delete').forEach(button => {
+            button.addEventListener('click', function(event) {
+                const message = this.getAttribute('data-mensaje') || '¿Está seguro de que desea eliminar este lote? Esta acción no se puede deshacer.';
+                if (!confirm(message)) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
 @endsection

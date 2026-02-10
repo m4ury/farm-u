@@ -336,6 +336,12 @@ return [
             'icon' => 'fas fa-fw fa-clipboard-list text-info',
             'can' => 'admin'
         ],
+        [
+            'text' => 'Gestionar Lotes',
+            'route' => 'lotes.index',
+            'icon' => 'fas fa-fw fa-boxes text-secondary',
+            'can' => 'admin'
+        ],
     ],
 
     /*

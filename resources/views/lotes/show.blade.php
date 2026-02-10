@@ -135,65 +135,64 @@
             </div>
         </div>
     </div>
-@endsection
 
-<script>
-    // Confirmación para eliminaciones
-    document.querySelectorAll('.confirm-delete').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const form = this.closest('form');
-            const swalWithBootstrapButtons = Swal.mixin({
-                customClass: {
-                    confirmButton: 'btn btn-danger mx-2',
-                    cancelButton: 'btn btn-secondary'
-                },
-                buttonsStyling: false
-            });
-            
-            swalWithBootstrapButtons.fire({
-                title: '¿Estás seguro?',
-                text: '¡No podrás revertir esto!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.value) {
-                    form.submit();
-                }
-            });
-        });
-    });
-
-    // Confirmación para marcar vencido
-    document.querySelectorAll('.confirm-action').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const form = this.closest('form');
-            const action = this.dataset.action;
-            
-            if (action === 'marcar-vencido') {
-                Swal.fire({
-                    title: '¿Marcar como vencido?',
-                    text: 'Esta acción no se puede deshacer',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sí, marcar vencido',
-                    cancelButtonText: 'Cancelar',
+    <script>
+        // Confirmación para eliminaciones
+        document.querySelectorAll('.confirm-delete').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const form = this.closest('form');
+                const swalWithBootstrapButtons = Swal.mixin({
                     customClass: {
                         confirmButton: 'btn btn-danger mx-2',
                         cancelButton: 'btn btn-secondary'
                     },
                     buttonsStyling: false
+                });
+                
+                swalWithBootstrapButtons.fire({
+                    title: '¿Estás seguro?',
+                    text: '¡No podrás revertir esto!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true
                 }).then((result) => {
                     if (result.value) {
                         form.submit();
                     }
                 });
-            }
+            });
         });
-    });
-</script>
+
+        // Confirmación para marcar vencido
+        document.querySelectorAll('.confirm-action').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const form = this.closest('form');
+                const action = this.dataset.action;
+                
+                if (action === 'marcar-vencido') {
+                    Swal.fire({
+                        title: '¿Marcar como vencido?',
+                        text: 'Esta acción no se puede deshacer',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Sí, marcar vencido',
+                        cancelButtonText: 'Cancelar',
+                        customClass: {
+                            confirmButton: 'btn btn-danger mx-2',
+                            cancelButton: 'btn btn-secondary'
+                        },
+                        buttonsStyling: false
+                    }).then((result) => {
+                        if (result.value) {
+                            form.submit();
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 @endsection

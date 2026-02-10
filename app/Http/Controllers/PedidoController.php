@@ -7,6 +7,7 @@ use App\Models\Farmaco;
 use App\Models\Area;
 use App\Models\Lote;
 use App\Models\Despacho;
+use App\Models\HistoricoMovimiento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -443,7 +444,7 @@ class PedidoController extends Controller
                 }
 
                 // Crear despacho
-                Despacho::create([
+                $despacho = Despacho::create([
                     'pedido_id' => $pedido->id,
                     'lote_id' => $lote_id,
                     'area_id' => $pedido->area_id,
@@ -455,6 +456,18 @@ class PedidoController extends Controller
 
                 // Decrementar cantidad disponible en lote
                 $lote->decrementarDisponible($cantidad);
+
+                // Registrar movimiento en historial (DESPACHO)
+                HistoricoMovimiento::create([
+                    'farmaco_id' => $farmaco_id,
+                    'lote_id' => $lote_id,
+                    'area_id' => $pedido->area_id,
+                    'user_id' => Auth::id(),
+                    'tipo' => 'despacho',
+                    'cantidad' => $cantidad,
+                    'descripcion' => "Despacho de {$cantidad} unidades a {$pedido->area->nombre_area} (Pedido #{$pedido->id})",
+                    'fecha' => now()
+                ]);
 
                 // Actualizar cantidad despachada en pivot
                 $cantidad_actual = $pedido->farmacos()->where('farmaco_id', $farmaco_id)->first()->pivot->cantidad_despachada ?? 0;

@@ -21,4 +21,9 @@ class Area extends Model
     {
         return $this->hasMany(Pedido::class);
     }
+
+    public function movimientos()
+    {
+        return $this->hasMany(HistoricoMovimiento::class);
+    }
 }

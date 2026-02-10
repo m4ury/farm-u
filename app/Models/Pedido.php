@@ -22,7 +22,7 @@ class Pedido extends Model
     ];
 
     protected $casts = [
-        'fecha_pedido' => 'datetime:Y-m-d',
+        'fecha_pedido' => 'date',
         'fecha_aprobacion' => 'datetime',
     ];
 

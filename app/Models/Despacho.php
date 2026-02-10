@@ -62,4 +62,20 @@ class Despacho extends Model
     {
         return $this->hasOneThrough(Farmaco::class, Lote::class, 'id', 'id', 'lote_id', 'farmaco_id');
     }
+
+    /**
+     * Relación con Recepción de Despacho (confirmación)
+     */
+    public function recepcion()
+    {
+        return $this->hasOne(RecepcionDespacho::class);
+    }
+
+    /**
+     * Verificar si ya fue recibido
+     */
+    public function estaRecibido()
+    {
+        return $this->recepcion()->exists();
+    }
 }

@@ -8,6 +8,8 @@ use App\Http\Controllers\SalidaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\LoteController;
+use App\Http\Controllers\RecepcionDespachoController;
+use App\Http\Controllers\HistoricoMovimientoController;
 use App\Models\Salida;
 
 /*
@@ -69,3 +71,19 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('users', UserController::class)->middleware('auth');
 Route::post('users/{id}/restore', [App\Http\Controllers\UserController::class, 'restore'])->name('users.restore');
+
+// Rutas para Recepción de Despachos
+Route::middleware('auth')->group(function () {
+    Route::get('despachos/{despacho}/confirmar', [RecepcionDespachoController::class, 'confirmarForm'])->name('despachos.confirmarForm');
+    Route::post('despachos/{despacho}/confirmar', [RecepcionDespachoController::class, 'confirmar'])->name('despachos.confirmar');
+    Route::get('recepciones/historial-area', [RecepcionDespachoController::class, 'historialArea'])->name('recepciones.historialArea');
+});
+
+// Rutas para Historial de Movimientos
+Route::middleware('auth')->group(function () {
+    Route::get('historial/movimientos', [HistoricoMovimientoController::class, 'index'])->name('historial.movimientos');
+    Route::get('historial/farmaco/{farmaco}', [HistoricoMovimientoController::class, 'porFarmaco'])->name('historial.farmaco');
+    Route::get('historial/area/{area}', [HistoricoMovimientoController::class, 'porArea'])->name('historial.area');
+    Route::get('historial/reporte-tipo', [HistoricoMovimientoController::class, 'reportePorTipo'])->name('historial.reportePorTipo');
+    Route::get('historial/exportar', [HistoricoMovimientoController::class, 'exportar'])->name('historial.exportar');
+});

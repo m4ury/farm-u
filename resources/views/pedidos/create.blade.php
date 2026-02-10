@@ -32,22 +32,19 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            {!! Html::label('fecha_pedido', 'Fecha del Pedido')
-                                ->attribute('class', 'font-weight-bold')
-                                ->addChild(Html::element('span')->text('*')->class('text-danger')) !!}
-                            {!! Html::input('date', 'fecha_pedido')
-                                ->class('form-control ' . ($errors->has('fecha_pedido') ? 'is-invalid' : ''))
-                                ->value(old('fecha_pedido', date('Y-m-d')))
-                                ->required() !!}
+                            <label class="font-weight-bold">
+                                Fecha del Pedido <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" name="fecha_pedido" class="form-control {{ $errors->has('fecha_pedido') ? 'is-invalid' : '' }}" value="{{ old('fecha_pedido', date('Y-m-d')) }}" required>
                             @error('fecha_pedido')<span class="invalid-feedback d-block">{{ $message }}</span>@enderror
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            {!! Html::label('area_id', 'Área')
-                                ->attribute('class', 'font-weight-bold')
-                                ->addChild(Html::element('span')->text('*')->class('text-danger')) !!}
+                            <label class="font-weight-bold">
+                                Área <span class="text-danger">*</span>
+                            </label>
                             <select name="area_id" class="form-control {{ $errors->has('area_id') ? 'is-invalid' : '' }}" required>
                                 <option value="">Seleccionar área</option>
                                 @foreach($areas as $area)
@@ -111,8 +108,7 @@
                             @foreach($farmacos as $index => $farmaco)
                                 <tr>
                                     <td>
-                                        <input type="checkbox" name="farmacos[{{ $index }}][farmaco_id]"
-                                            value="{{ $farmaco->id }}" class="farmaco-select">
+                                        <input type="checkbox" class="farmaco-select" data-index="{{ $index }}" data-farmaco-id="{{ $farmaco->id }}">
                                     </td>
                                     <td>{{ $farmaco->descripcion }}</td>
                                     <td>{{ $farmaco->dosis }}</td>
@@ -135,10 +131,11 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <input type="number" name="farmacos[{{ $index }}][cantidad]"
-                                            class="form-control form-control-sm farmaco-cantidad"
+                                        <input type="number" class="form-control form-control-sm farmaco-cantidad"
                                             value="{{ $farmaco->cantidad_a_pedir }}"
+                                            data-index="{{ $index }}"
                                             data-max="{{ $farmaco->cantidad_a_pedir }}"
+                                            data-farmaco-id="{{ $farmaco->id }}"
                                             data-farmaco-nombre="{{ $farmaco->descripcion }}"
                                             min="1"
                                             max="{{ $farmaco->cantidad_a_pedir }}"
@@ -169,6 +166,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
             const cantidadInputs = document.querySelectorAll('.farmaco-cantidad');
 
             cantidadInputs.forEach(input => {
@@ -190,22 +188,55 @@
                 });
             });
 
-            // Validar antes de enviar
+            // Validar y preparar datos antes de enviar
             document.getElementById('submitBtn').addEventListener('click', function(e) {
-                let hasChecked = false;
+                e.preventDefault();
+                
+                let selectedFarmacos = [];
                 document.querySelectorAll('.farmaco-select:checked').forEach(checkbox => {
-                    hasChecked = true;
+                    const index = checkbox.dataset.index;
+                    const farmacoId = checkbox.dataset.farmacoId;
+                    const cantidadInput = document.querySelector(`.farmaco-cantidad[data-index="${index}"]`);
+                    const cantidad = parseInt(cantidadInput.value) || 0;
+
+                    if (cantidad > 0) {
+                        selectedFarmacos.push({
+                            farmaco_id: farmacoId,
+                            cantidad: cantidad
+                        });
+                    }
                 });
 
-                if (!hasChecked) {
-                    e.preventDefault();
+                if (selectedFarmacos.length === 0) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Sin fármacos seleccionados',
                         text: 'Por favor selecciona al menos un fármaco',
                         confirmButtonText: 'Entendido'
                     });
+                    return;
                 }
+
+                // Limpiar inputs anteriores si existen
+                document.querySelectorAll('input[name^="farmacos["]').forEach(el => el.remove());
+
+                // Crear inputs dinámicamente para los fármacos seleccionados
+                selectedFarmacos.forEach((farmaco, index) => {
+                    const farmacoIdInput = document.createElement('input');
+                    farmacoIdInput.type = 'hidden';
+                    farmacoIdInput.name = `farmacos[${index}][farmaco_id]`;
+                    farmacoIdInput.value = farmaco.farmaco_id;
+                    form.appendChild(farmacoIdInput);
+
+                    const cantidadInput = document.createElement('input');
+                    cantidadInput.type = 'hidden';
+                    cantidadInput.name = `farmacos[${index}][cantidad]`;
+                    cantidadInput.value = farmaco.cantidad;
+                    form.appendChild(cantidadInput);
+                });
+
+                // Enviar el formulario
+                form.submit();
             });
         });
     </script>

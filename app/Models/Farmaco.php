@@ -69,4 +69,12 @@ class Farmaco extends Model
     {
         return $this->getStockFisicoCalculado() >= $cantidad;
     }
+
+    /**
+     * Relación con Historial de Movimientos
+     */
+    public function movimientos()
+    {
+        return $this->hasMany(HistoricoMovimiento::class);
+    }
 }
