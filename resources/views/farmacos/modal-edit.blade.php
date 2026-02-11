@@ -19,11 +19,11 @@
     document.addEventListener('click', function(e) {
         const btn = e.target.closest('.edit-farmaco-btn');
         if (!btn) return;
-        
+
         e.preventDefault();
         const farmacoId = btn.dataset.farmacoId;
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        
+
         // Cargar los datos del farmaco mediante AJAX
         fetch(`/farmacos/${farmacoId}/edit`, {
             headers: {
@@ -33,25 +33,22 @@
         .then(response => response.json())
         .then(data => {
             const { farmaco, areas } = data;
-            
+
             // Construir opciones de area
             let areaOptions = '<option value="">Seleccione</option>';
             const areaSeleccionada = farmaco.areas && farmaco.areas.length > 0 ? farmaco.areas[0].id : null;
-            
+
             areas.forEach(area => {
                 const selected = areaSeleccionada === area.id ? 'selected' : '';
                 areaOptions += `<option value="${area.id}" ${selected}>${area.nombre_area}</option>`;
             });
-            
-            // Validar y formatear fecha (null or undefined = empty string)
-            const fechaValue = farmaco.fecha_vencimiento ? farmaco.fecha_vencimiento.split(' ')[0] : '';
-            
+
             // Construir el formulario dinámicamente
             const formHtml = `
                 <form id="editFarmacoForm" action="/farmacos/${farmacoId}" method="POST">
                     <input type="hidden" name="_token" value="${csrfToken}">
                     <input type="hidden" name="_method" value="PATCH">
-                    
+
                     <div class="form-horizontal">
                         <div class="form-group row">
                             <label for="descripcion" class="col-sm-2 col-form-label">Descripción:</label>
@@ -76,17 +73,9 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="fecha_vencimiento" class="col-sm-2 col-form-label">Vencimiento:</label>
-                            <div class="col-sm-2">
-                                <input type="date" name="fecha_vencimiento" id="fecha_vencimiento" class="form-control form-control-sm" value="${fechaValue}">
-                            </div>
                             <label for="stock_maximo" class="col-sm-2 col-form-label">Stock maximo:</label>
                             <div class="col-sm">
                                 <input type="number" name="stock_maximo" id="stock_maximo" class="form-control form-control-sm" value="${farmaco.stock_maximo}" disabled>
-                            </div>
-                            <label for="stock_fisico" class="col-sm-2 col-form-label">Stock fisico:</label>
-                            <div class="col-sm">
-                                <input type="number" name="stock_fisico" id="stock_fisico" class="form-control form-control-sm" value="${farmaco.stock_fisico}">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -109,17 +98,17 @@
                     </div>
                 </form>
             `;
-            
+
             document.getElementById('editFarmacoBody').innerHTML = formHtml;
             $('#edit-farmaco').modal('show');
-            
+
             // Agregar event listener para el envío del formulario
             document.getElementById('editFarmacoForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                
+
                 const form = this;
                 const formData = new FormData(form);
-                
+
                 fetch(form.action, {
                     method: 'POST',
                     body: formData,

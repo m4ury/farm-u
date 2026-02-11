@@ -9,7 +9,6 @@
                 <th>Dosis</th>
                 <th>Stock maximo</th>
                 <th>Stock fisico</th>
-                <th>Fecha vencimiento</th>
                 @if ($showActions)
                     <th>Acciones</th>
                 @endif
@@ -26,35 +25,28 @@
                     <td>{{ $item->forma_farmaceutica }}</td>
                     <td nowrap>{{ $item->dosis }}</td>
                     <td>{{ $item->stock_maximo }}</td>
-                    <td nowrap>
-                        {{ $item->stock_fisico }}
-                        @if ($item->stock_fisico < 5 && $item->stock_fisico > 0)
-                            <span class="btn rounded-pill bg-gradient-warning btn-xs text-bold ml-3">Bajo Stock</span>
-                        @endif
-                    </td>
-                    <td nowrap>
-                        {{ $item->fecha_vencimiento }}
-                        @if ($item->fecha_vencimiento && Carbon\Carbon::parse($item->fecha_vencimiento)->isPast())
-                            <span class="btn rounded-pill bg-gradient-danger btn-xs text-bold ml-3 text-uppercase">Vencido</span>
-                        @elseif ($item->fecha_vencimiento && Carbon\Carbon::now()->diffInDays(Carbon\Carbon::parse($item->fecha_vencimiento)) < 20)
-                            <span class="btn rounded-pill bg-gradient-warning btn-xs text-bold ml-3 text-uppercase">Pronto a Vencer</span>
-                        @endif
-                    </td>
+                    <td>{{ $item->getStockFisicoCalculado() }}</td>
                     @if ($showActions)
                         <td>
-                            <a class="btn btn-outline-warning btn-sm {{ $item->stock_fisico < 1 ? 'disabled' : '' }} {{ $item->fecha_vencimiento && Carbon\Carbon::parse($item->fecha_vencimiento)->isPast() ? 'disabled' : '' }} {{ auth()->user()->type == 'farmacia' ? 'disabled' : '' }}"
+                            <a class="btn btn-outline-warning btn-sm {{ $item->getStockFisicoCalculado() < 1 ? 'disabled' : '' }} {{ auth()->user()->type == 'farmacia' ? 'disabled' : '' }}"
                                 href="#" data-toggle="modal" data-target="#productModal{{ $item->id }}"
                                 title="Generar Salida"><i class="fas fa-share-square"></i>
                             </a>
                         </td>
                     @endif
                 </tr>
-                @include('salidas.modal', ['area' => $item])
             @empty
                 <tr>
-                    <td colspan="7" class="text-center text-muted py-4">No hay medicamentos registrados</td>
+                    <td colspan="6" class="text-center text-muted py-4">No hay medicamentos registrados</td>
                 </tr>
             @endforelse
         </tbody>
     </table>
 </div>
+
+{{-- Modales fuera de la tabla para evitar HTML inválido --}}
+@if ($showActions)
+    @foreach ($items as $item)
+        @include('salidas.modal', ['area' => $item])
+    @endforeach
+@endif

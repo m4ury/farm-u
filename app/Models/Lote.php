@@ -40,6 +40,16 @@ class Lote extends Model
     }
 
     /**
+     * Relación con Salidas
+     */
+    public function salidas()
+    {
+        return $this->belongsToMany(Salida::class, 'lote_salida')
+            ->withPivot('cantidad')
+            ->withTimestamps();
+    }
+
+    /**
      * Verificar si el lote está vencido
      */
     public function isVencido()

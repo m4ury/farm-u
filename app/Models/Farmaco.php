@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 class Farmaco extends Model
 {
-    protected $fillable = ['descripcion', 'dosis', 'forma_farmaceutica', 'stock_maximo', 'stock_fisico', 'controlado', 'fecha_vencimiento'];
+    protected $fillable = ['descripcion', 'dosis', 'forma_farmaceutica', 'stock_maximo', 'controlado'];
 
     use HasFactory;
 

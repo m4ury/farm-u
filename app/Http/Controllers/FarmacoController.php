@@ -62,7 +62,7 @@ class FarmacoController extends Controller
                 'areas' => $areas
             ]);
         }
-        
+
         $areas = Area::orderBy('nombre_area', 'ASC')->pluck('nombre_area', 'id');
         //$patologias = Patologia::orderBy('nombre_patologia', 'ASC')->pluck('nombre_patologia', 'id');
         return view('farmacos.edit', compact('farmaco', 'areas'));
@@ -79,16 +79,14 @@ class FarmacoController extends Controller
             'dosis' => 'sometimes|string|max:100',
             'forma_farmaceutica' => 'sometimes|string|max:100',
             'stock_maximo' => 'sometimes|integer|min:0',
-            'stock_fisico' => 'sometimes|integer|min:0',
             'controlado' => 'sometimes|boolean',
-            'fecha_vencimiento' => 'sometimes|nullable|date',
             'area_id' => 'sometimes|nullable|exists:areas,id'
         ]);
 
         // Actualizar farmaco (excluye area_id para manejarlo por separado)
         $farmaco->update($request->except('area_id'));
         $farmaco->controlado = $request->input('controlado', 0);
-        
+
         // Sincronizar áreas
         $areaId = $request->area_id;
         if ($areaId) {
@@ -96,11 +94,11 @@ class FarmacoController extends Controller
         } else {
             $farmaco->areas()->detach();
         }
-        
+
         $farmaco->save();
-        
+
         Log::info('UPDATE FARMACO: ' . $farmaco->descripcion . ' USER: ' . auth()->user()->rut . ' - HORA/FECHA: ' . now());
-        
+
         // Si es AJAX, retornar JSON
         if (request()->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json([
@@ -109,7 +107,7 @@ class FarmacoController extends Controller
                 'farmaco' => $farmaco
             ]);
         }
-        
+
         return redirect('farmacos')->withSuccess('Farmaco actualizado con exito!');
     }
 

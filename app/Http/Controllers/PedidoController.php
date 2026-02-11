@@ -51,21 +51,23 @@ class PedidoController extends Controller
     public function create()
     {
         $areas = Area::all();
-        
-        // Obtener fármacos con bajo stock
-        $farmacos = Farmaco::whereColumn('stock_fisico', '<', 'stock_maximo')
-                            ->with('areas')
-                            ->get();
-        
-        // Procesar cada fármaco para calcular cantidad a pedir y asegurar tipos correctos
+
+        // Obtener todos los fármacos con sus lotes y áreas
+        $farmacos = Farmaco::with(['areas', 'lotes'])->get();
+
+        // Filtrar fármacos con bajo stock (stock calculado < stock_maximo)
+        $farmacos = $farmacos->filter(function ($farmaco) {
+            return $farmaco->getStockFisicoCalculado() < $farmaco->stock_maximo;
+        });
+
+        // Procesar cada fármaco para calcular cantidad a pedir
         $farmacos = $farmacos->map(function ($farmaco) {
             $farmaco->stock_maximo = (int) $farmaco->stock_maximo;
-            $farmaco->stock_fisico = (int) $farmaco->stock_fisico;
-            $farmaco->cantidad_a_pedir = $farmaco->stock_maximo - $farmaco->stock_fisico;
+            $farmaco->cantidad_a_pedir = $farmaco->stock_maximo - $farmaco->getStockFisicoCalculado();
             $farmaco->area_predeterminada = $farmaco->areas->first();
             return $farmaco;
-        });
-        
+        })->values();
+
         return view('pedidos.create', compact('areas', 'farmacos'));
     }
 
@@ -228,7 +230,7 @@ class PedidoController extends Controller
             if (isset($farmaco['farmaco_id']) && isset($farmaco['cantidad'])) {
                 $farmacoModel = $farmacos->get($farmaco['farmaco_id']);
                 if ($farmacoModel) {
-                    $cantidadPermitida = $farmacoModel->stock_maximo - $farmacoModel->stock_fisico;
+                    $cantidadPermitida = $farmacoModel->stock_maximo - $farmacoModel->getStockFisicoCalculado();
                     if ($farmaco['cantidad'] > $cantidadPermitida) {
                         throw \Illuminate\Validation\ValidationException::withMessages([
                             "farmacos.{$index}.cantidad" => "La cantidad solicitada ({$farmaco['cantidad']}) no puede exceder el stock a reponer ({$cantidadPermitida}) para {$farmacoModel->descripcion}."

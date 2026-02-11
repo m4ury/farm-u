@@ -65,16 +65,16 @@ class AreaController extends Controller
     private function getAreaConfig(){
         $areas = Area::all();
         $config = [];
-        
+
         foreach($areas as $area){
             // Generar slug automáticamente del nombre_area
             $slug = \Illuminate\Support\Str::slug($area->nombre_area, '-');
             // Capitalizar el nombre para el título
             $titulo = ucwords($area->nombre_area);
-            
+
             $config[$slug] = [$area->nombre_area, $titulo];
         }
-        
+
         return $config;
     }
 
@@ -96,11 +96,11 @@ class AreaController extends Controller
      */
     public function showArea($areaType){
         $config = $this->getAreaConfig();
-        
+
         if(!isset($config[$areaType])){
             abort(404, "Área no encontrada");
         }
-        
+
         [$areaName, $titulo] = $config[$areaType];
         return $this->showAreaMedicamentos($areaName, 'areas.show', $titulo);
     }
@@ -112,15 +112,12 @@ class AreaController extends Controller
      * @param string $titulo - Título a mostrar en la vista
      */
     public function showAreaMedicamentos($areaName, $viewName, $titulo){
-        $areas = Farmaco::join('area_farmaco','area_farmaco.farmaco_id','farmacos.id')
-            ->join('areas','areas.id','area_farmaco.area_id')
-            ->select('areas.nombre_area','farmacos.descripcion','farmacos.stock_maximo',
-                     'farmacos.controlado','farmacos.fecha_vencimiento','areas.id', 
-                     'farmacos.id', 'farmacos.forma_farmaceutica', 'farmacos.dosis', 
-                     'farmacos.stock_fisico')
-            ->where('nombre_area', $areaName)
+        $areas = Farmaco::whereHas('areas', function ($q) use ($areaName) {
+                $q->where('nombre_area', $areaName);
+            })
+            ->with('lotes')
             ->get();
-        
+
         return view($viewName, compact('areas', 'titulo'));
     }
 }

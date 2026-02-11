@@ -121,7 +121,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <strong>{{ $farmaco->stock_maximo - $farmaco->stock_fisico }}</strong>
+                                        <strong>{{ $farmaco->stock_maximo - $farmaco->getStockFisicoCalculado() }}</strong>
                                     </td>
                                     <td>
                                         @if($farmaco->area_predeterminada)
@@ -132,13 +132,13 @@
                                     </td>
                                     <td>
                                         <input type="number" class="form-control form-control-sm farmaco-cantidad"
-                                            value="{{ $farmaco->stock_maximo - $farmaco->stock_fisico }}"
+                                            value="{{ $farmaco->stock_maximo - $farmaco->getStockFisicoCalculado() }}"
                                             data-index="{{ $index }}"
-                                            data-max="{{ $farmaco->stock_maximo - $farmaco->stock_fisico }}"
+                                            data-max="{{ $farmaco->stock_maximo - $farmaco->getStockFisicoCalculado() }}"
                                             data-farmaco-id="{{ $farmaco->id }}"
                                             data-farmaco-nombre="{{ $farmaco->descripcion }}"
                                             min="1"
-                                            max="{{ $farmaco->stock_maximo - $farmaco->stock_fisico }}"
+                                            max="{{ $farmaco->stock_maximo - $farmaco->getStockFisicoCalculado() }}"
                                             style="width: 100px;">
                                     </td>
                                 </tr>
@@ -192,12 +192,12 @@
             // Manejar click del botón submit
             $('#submitBtn').on('click', function(e) {
                 e.preventDefault();
-                
+
                 console.log('📝 Botón clickeado');
-                
+
                 let selectedFarmacos = [];
                 const $checkedBoxes = $('.farmaco-select:checked');
-                
+
                 console.log('✓ Checkboxes seleccionados:', $checkedBoxes.length);
 
                 $checkedBoxes.each(function() {

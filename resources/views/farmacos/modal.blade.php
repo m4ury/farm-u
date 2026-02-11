@@ -87,19 +87,6 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            {{ html()->label('Vencimiento: ', 'fecha_vencimiento')->class('col-sm-2 col-form-label') }}
-                            <div class="col-sm-2">
-                                {{ html()
-                                    ->date('fecha_vencimiento')
-                                    ->value(old('fecha_vencimiento'))
-                                    ->class('form-control form-control-sm' . ($errors->has('fecha_vencimiento') ? ' is-invalid' : ''))
-                                    ->placeholder('ej.: paracetamol') }}
-                                @if ($errors->has('fecha_vencimiento'))
-                                    <span class="invalid-feedback">
-                                        <strong>{{ $errors->first('fecha_vencimiento') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
                             {{ html()->label('Stock maximo: ', 'stock_maximo')->class('col-sm-2 col-form-label') }}
                             <div class="col-sm">
                                 {{ html()
@@ -109,18 +96,6 @@
                                 @if ($errors->has('stock_maximo'))
                                     <span class="invalid-feedback">
                                         <strong>{{ $errors->first('stock_maximo') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                            {{ html()->label('Stock fisico: ', 'stock_fisico')->class('col-sm-2 col-form-label') }}
-                            <div class="col-sm">
-                                {{ html()
-                                    ->number('stock_fisico')
-                                    ->value(old('stock_fisico'))
-                                    ->class('form-control form-control-sm' . ($errors->has('stock_fisico') ? ' is-invalid' : '')) }}
-                                @if ($errors->has('stock_fisico'))
-                                    <span class="invalid-feedback">
-                                        <strong>{{ $errors->first('stock_fisico') }}</strong>
                                     </span>
                                 @endif
                             </div>

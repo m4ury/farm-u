@@ -68,6 +68,26 @@
     </script>
 
     <script>
+        // Sugerir lotes FIFO al hacer click
+        document.querySelectorAll('[data-action="sugerir-lotes"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const farmacoId = this.dataset.farmacoId;
+                const modal = this.closest('.modal');
+                const cantidadInput = modal.querySelector('input[name="cantidad_salida"]');
+                const cantidadSolicitada = parseInt(cantidadInput.value, 10) || 0;
+                let restante = cantidadSolicitada;
+
+                modal.querySelectorAll(`input[name^="lotes["][data-farmaco-id="${farmacoId}"]`).forEach(input => {
+                    const disponible = parseInt(input.dataset.loteDisponible, 10) || 0;
+                    const asignar = Math.min(disponible, restante);
+                    input.value = asignar > 0 ? asignar : 0;
+                    restante -= asignar;
+                });
+            });
+        });
+    </script>
+
+    <script>
         $(".confirm").on('submit', function(e) {
             e.preventDefault();
             const swalWithBootstrapButtons = Swal.mixin({

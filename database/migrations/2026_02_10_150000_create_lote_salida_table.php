@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('farmacos', function (Blueprint $table) {
+        Schema::create('lote_salida', function (Blueprint $table) {
             $table->id();
-            $table->string('descripcion', 100);
-            $table->string('dosis',100);
-            $table->string('forma_farmaceutica', 100)->nullable();
-            $table->integer('stock_maximo')->unsigned()->nullable()->default(0);
-            $table->boolean('controlado')->nullable()->default(false);
+            $table->foreignId('lote_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('salida_id')->constrained()->cascadeOnDelete();
+            $table->integer('cantidad')->unsigned();
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('farmacos');
+        Schema::dropIfExists('lote_salida');
     }
 };

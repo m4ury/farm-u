@@ -79,8 +79,8 @@
                             <p>
                                 <strong>Stock Actual:</strong>
                                 <br>
-                                <span class="badge badge-{{ $farmaco->stock_fisico > $farmaco->stock_maximo / 2 ? 'success' : 'danger' }} badge-lg">
-                                    {{ $farmaco->stock_fisico }}
+                                <span class="badge badge-{{ $farmaco->getStockFisicoCalculado() > $farmaco->stock_maximo / 2 ? 'success' : 'danger' }} badge-lg">
+                                    {{ $farmaco->getStockFisicoCalculado() }}
                                 </span>
                             </p>
                         </div>
