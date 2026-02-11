@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('rut', 100);
             $table->string('apellido_p', 100);
             $table->string('apellido_m', 100)->nullable();
-            $table->string('type', 100)->nullable()->default('normal_user');
+            $table->string('type', 100)->nullable()->default('urgencias');
         });
     }
 
@@ -25,7 +25,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->dropColumn(['rut', 'apellido_p', 'apellido_m', 'type']);
         });
     }
 };

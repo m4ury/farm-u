@@ -40,7 +40,7 @@ class LoteController extends Controller
         }
 
         // Ordenar por fecha de vencimiento
-        $lotes = $query->orderBy('fecha_vencimiento', 'asc')->paginate(20);
+        $lotes = $query->orderBy('fecha_vencimiento', 'asc')->paginate(10);
 
         // Marcar los vencidos
         $lotes->getCollection()->transform(function ($lote) {

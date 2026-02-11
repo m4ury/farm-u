@@ -27,7 +27,7 @@
                 <form method="GET" action="{{ route('lotes.index') }}" class="form-inline">
                     <input type="text" name="farmaco_id" placeholder="ID Farmaco" class="form-control mr-2">
                     
-                    <select name="vencidos" class="form-control mr-2">
+                    <select name="vencidos" class="form-control mr-2 select2-vencidos">
                         <option value="">Todos</option>
                         <option value="no">No Vencidos</option>
                         <option value="si">Vencidos</option>
@@ -147,4 +147,18 @@
             });
         });
     </script>
+@endsection
+
+@section('plugins.Select2', true)
+
+@section('js')
+<script>
+    $(document).ready(function() {
+        $('.select2-vencidos').select2({
+            theme: 'bootstrap4',
+            width: '150px',
+            minimumResultsForSearch: Infinity
+        });
+    });
+</script>
 @endsection

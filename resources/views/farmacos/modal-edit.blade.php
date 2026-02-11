@@ -102,6 +102,18 @@
             document.getElementById('editFarmacoBody').innerHTML = formHtml;
             $('#edit-farmaco').modal('show');
 
+            // Inicializar Select2 en el select de área dentro del modal
+            if ($ && $.fn.select2) {
+                $('#edit-farmaco select[name="area_id"]').select2({
+                    theme: 'bootstrap4',
+                    width: '100%',
+                    placeholder: 'Seleccione',
+                    allowClear: true,
+                    minimumResultsForSearch: Infinity,
+                    dropdownParent: $('#edit-farmaco')
+                });
+            }
+
             // Agregar event listener para el envío del formulario
             document.getElementById('editFarmacoForm').addEventListener('submit', function(e) {
                 e.preventDefault();

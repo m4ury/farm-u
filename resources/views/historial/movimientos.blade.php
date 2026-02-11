@@ -24,7 +24,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Tipo de Movimiento</label>
-                        <select name="tipo" class="form-control">
+                        <select name="tipo" class="form-control select2-tipo">
                             <option value="">Todos</option>
                             <option value="entrada" {{ request('tipo') == 'entrada' ? 'selected' : '' }}>Entrada</option>
                             <option value="salida" {{ request('tipo') == 'salida' ? 'selected' : '' }}>Salida</option>
@@ -39,7 +39,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Fármaco</label>
-                        <select name="farmaco_id" class="form-control">
+                        <select name="farmaco_id" class="form-control select2-farmaco">
                             <option value="">Todos</option>
                             @foreach($farmacos as $farmaco)
                                 <option value="{{ $farmaco->id }}" {{ request('farmaco_id') == $farmaco->id ? 'selected' : '' }}>
@@ -53,7 +53,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Área</label>
-                        <select name="area_id" class="form-control">
+                        <select name="area_id" class="form-control select2-area">
                             <option value="">Todas</option>
                             @foreach($areas as $area)
                                 <option value="{{ $area->id }}" {{ request('area_id') == $area->id ? 'selected' : '' }}>
@@ -175,4 +175,33 @@
             @endif
         </div>
     </div>
+@endsection
+
+@section('plugins.Select2', true)
+
+@section('js')
+<script>
+    $(document).ready(function() {
+        $('.select2-tipo').select2({
+            theme: 'bootstrap4',
+            width: '100%',
+            placeholder: 'Todos',
+            allowClear: true,
+            minimumResultsForSearch: Infinity
+        });
+        $('.select2-farmaco').select2({
+            theme: 'bootstrap4',
+            width: '100%',
+            placeholder: 'Todos',
+            allowClear: true
+        });
+        $('.select2-area').select2({
+            theme: 'bootstrap4',
+            width: '100%',
+            placeholder: 'Todas',
+            allowClear: true,
+            minimumResultsForSearch: Infinity
+        });
+    });
+</script>
 @endsection

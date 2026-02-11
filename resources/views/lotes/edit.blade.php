@@ -23,7 +23,7 @@
 
                         <div class="form-group">
                             <label for="farmaco_id">Farmaco *</label>
-                            <select id="farmaco_id" name="farmaco_id" class="form-control @error('farmaco_id') is-invalid @enderror" required>
+                            <select id="farmaco_id" name="farmaco_id" class="form-control select2-farmaco @error('farmaco_id') is-invalid @enderror" required>
                                 <option value="">-- Seleccionar --</option>
                                 @foreach($farmacos as $farmaco)
                                     <option value="{{ $farmaco->id }}" {{ $lote->farmaco_id == $farmaco->id ? 'selected' : '' }}>
@@ -82,4 +82,19 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('plugins.Select2', true)
+
+@section('js')
+<script>
+    $(document).ready(function() {
+        $('.select2-farmaco').select2({
+            theme: 'bootstrap4',
+            placeholder: '-- Seleccionar --',
+            allowClear: true,
+            width: '100%'
+        });
+    });
+</script>
 @endsection

@@ -45,7 +45,7 @@
                             <label class="font-weight-bold">
                                 Área <span class="text-danger">*</span>
                             </label>
-                            <select name="area_id" class="form-control {{ $errors->has('area_id') ? 'is-invalid' : '' }}" required>
+                            <select name="area_id" class="form-control select2-area {{ $errors->has('area_id') ? 'is-invalid' : '' }}" required>
                                 <option value="">Seleccionar área</option>
                                 @foreach($areas as $area)
                                     <option value="{{ $area->id }}" {{ old('area_id') == $area->id ? 'selected' : '' }}>
@@ -91,7 +91,7 @@
                     <span class="text-danger">*</span>
                 </h5>
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover table-sm">
+                    <table id="farmacos-pedido-table" class="table table-striped table-hover table-sm">
                         <thead class="thead-light">
                             <tr>
                                 <th style="width: 50px;"></th>
@@ -164,62 +164,107 @@
         {{ html()->form()->close() }}
     </div>
 @stop
+
+@section('plugins.Datatables', true)
+@section('plugins.Select2', true)
+
 @section('js')
     <script>
         $(document).ready(function() {
-            console.log('✓ Script jQuery iniciado');
-            console.log('Checkboxes encontrados:', $('.farmaco-select').length);
+            // Select2 para área (pocas opciones, sin buscador)
+            $('.select2-area').select2({
+                theme: 'bootstrap4',
+                placeholder: 'Seleccionar área',
+                allowClear: true,
+                width: '100%',
+                minimumResultsForSearch: Infinity
+            });
 
-            // Validar cantidad máxima
+            // Almacenar selecciones entre páginas de DataTables
+            var selectedData = {}; // { farmacoId: cantidad }
+
+            // Inicializar DataTable
+            var table = $('#farmacos-pedido-table').DataTable({
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'Todos']],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+                },
+                order: [[1, 'asc']],
+                columnDefs: [
+                    { orderable: false, targets: [0, 7] },
+                    { searchable: false, targets: [0, 3, 4, 5, 7] }
+                ],
+                drawCallback: function() {
+                    // Restaurar estado de checkboxes al cambiar de página
+                    $('#farmacos-pedido-table tbody input.farmaco-select').each(function() {
+                        var fId = $(this).data('farmaco-id').toString();
+                        if (selectedData[fId] !== undefined) {
+                            $(this).prop('checked', true);
+                            $(this).closest('tr').find('.farmaco-cantidad').val(selectedData[fId]);
+                        }
+                    });
+                }
+            });
+
+            // Guardar estado del checkbox al cambiar
+            $(document).on('change', '.farmaco-select', function() {
+                var fId = $(this).data('farmaco-id').toString();
+                if ($(this).is(':checked')) {
+                    var cantidad = $(this).closest('tr').find('.farmaco-cantidad').val();
+                    selectedData[fId] = parseInt(cantidad) || 0;
+                } else {
+                    delete selectedData[fId];
+                }
+            });
+
+            // Guardar cantidad al cambiarla
             $(document).on('change', '.farmaco-cantidad', function() {
-                const $this = $(this);
-                const maxValue = parseInt($this.data('max'));
-                const currentValue = parseInt($this.val()) || 0;
-                const farmacoNombre = $this.data('farmaco-nombre');
+                var $this = $(this);
+                var maxValue = parseInt($this.data('max'));
+                var currentValue = parseInt($this.val()) || 0;
+                var farmacoNombre = $this.data('farmaco-nombre');
+                var fId = $this.data('farmaco-id').toString();
 
                 if (currentValue > maxValue) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Cantidad excede el máximo',
-                        text: `La cantidad no puede exceder ${maxValue} para "${farmacoNombre}"`,
+                        text: 'La cantidad no puede exceder ' + maxValue + ' para "' + farmacoNombre + '"',
                         confirmButtonText: 'Ajustar'
-                    }).then(() => {
+                    }).then(function() {
                         $this.val(maxValue);
+                        if (selectedData[fId] !== undefined) {
+                            selectedData[fId] = maxValue;
+                        }
                     });
+                } else {
+                    // Si está seleccionado, actualizar la cantidad guardada
+                    if (selectedData[fId] !== undefined) {
+                        selectedData[fId] = currentValue;
+                    }
                 }
             });
 
-            // Manejar click del botón submit
+            // Manejar submit - recoger de TODAS las páginas via selectedData
             $('#submitBtn').on('click', function(e) {
                 e.preventDefault();
 
-                console.log('📝 Botón clickeado');
+                // También capturar los que están checkeados en la página visible actual
+                $('#farmacos-pedido-table tbody input.farmaco-select:checked').each(function() {
+                    var fId = $(this).data('farmaco-id').toString();
+                    var cantidad = $(this).closest('tr').find('.farmaco-cantidad').val();
+                    selectedData[fId] = parseInt(cantidad) || 0;
+                });
 
-                let selectedFarmacos = [];
-                const $checkedBoxes = $('.farmaco-select:checked');
-
-                console.log('✓ Checkboxes seleccionados:', $checkedBoxes.length);
-
-                $checkedBoxes.each(function() {
-                    const $checkbox = $(this);
-                    const index = $checkbox.data('index');
-                    const farmacoId = $checkbox.data('farmaco-id');
-                    const $cantidadInput = $(`.farmaco-cantidad[data-index="${index}"]`);
-                    const cantidad = parseInt($cantidadInput.val()) || 0;
-
-                    console.log(`  Farmaco ID: ${farmacoId}, Cantidad: ${cantidad}`);
-
+                var farmacosToSend = [];
+                $.each(selectedData, function(fId, cantidad) {
                     if (cantidad > 0) {
-                        selectedFarmacos.push({
-                            farmaco_id: farmacoId,
-                            cantidad: cantidad
-                        });
+                        farmacosToSend.push({ farmaco_id: fId, cantidad: cantidad });
                     }
                 });
 
-                console.log('Final - Fármacos a enviar:', selectedFarmacos);
-
-                if (selectedFarmacos.length === 0) {
+                if (farmacosToSend.length === 0) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Sin fármacos seleccionados',
@@ -232,23 +277,20 @@
                 // Limpiar inputs ocultos anteriores
                 $('input[name^="farmacos["]').remove();
 
-                // Crear inputs dinámicamente para los fármacos seleccionados
-                const $form = $('form');
-                selectedFarmacos.forEach((farmaco, index) => {
+                var $form = $('form');
+                farmacosToSend.forEach(function(farmaco, index) {
                     $form.append($('<input>').attr({
                         type: 'hidden',
-                        name: `farmacos[${index}][farmaco_id]`,
+                        name: 'farmacos[' + index + '][farmaco_id]',
                         value: farmaco.farmaco_id
                     }));
-
                     $form.append($('<input>').attr({
                         type: 'hidden',
-                        name: `farmacos[${index}][cantidad]`,
+                        name: 'farmacos[' + index + '][cantidad]',
                         value: farmaco.cantidad
                     }));
                 });
 
-                console.log('✓ Enviando formulario...');
                 $form.submit();
             });
         });

@@ -300,46 +300,67 @@ return [
             'type' => 'darkmode-widget',
             'topnav_right' => true,     // Or "topnav => true" to place on the left.
         ],
-
         [
-            'text' => 'Areas',
-            'route' => 'areas.index',
-            'icon' => 'fas fa-fw fa-hospital text-secondary',
-            'can' => 'areas'
+            'text' => 'Dashboard',
+            'route' => 'home',
+            'icon' => 'fas fa-fw fa-tachometer-alt text-primary',
         ],
-
-        [
-            'text' => 'Farmacos',
-            'route' => 'farmacos.index',
-            'icon' => 'fas fa-fw fa-pills text-success',
-            'can' => 'farmacos'
-        ],
-        [
+        /* [
             'text' => 'Salidas',
             'route' => 'salidas.index',
             'icon' => 'fas fa-fw fa-share text-primary',
-            'can' => 'salidas'
-        ],
+        ], */
         [
             'header' => 'ADMINISTRACION',
+            'can' => 'admin'
+        ],
+        [
+            'text' => 'Gestionar Áreas',
+            'route' => 'areas.index',
+            'icon' => 'fas fa-fw fa-hospital text-success',
+            'can' => 'admin'
+        ],
+
+        /* [
+            'text' => 'Gestionar Fármacos',
+            'route' => 'farmacos.index',
+            'icon' => 'fas fa-fw fa-pills text-success',
+            'can' => 'admin'
+        ], */
+        [
+            'text' => 'Gestionar Pedidos',
+            'route' => 'pedidos.index',
+            'icon' => 'fas fa-fw fa-clipboard-list text-info',
+            'can' => 'pedidos'
+        ],
+        [
+            'text' => 'Gestionar Lotes',
+            'route' => 'lotes.index',
+            'icon' => 'fas fa-fw fa-boxes text-secondary',
+            'can' => 'farmacia'
+        ],
+        [
+            'text' => 'Recepciones por Area',
+            'route' => 'recepciones.historialArea',
+            'icon' => 'fas fa-fw fa-chart-bar text-danger',
+            'can' => 'admin'
+        ],
+        [
+            'text' => 'Historial de Movimientos',
+            'route' => 'historial.movimientos',
+            'icon' => 'fas fa-fw fa-history text-secondary',
+            'can' => 'admin'
+        ],
+        [
+            'text' => 'Reporte de Movimientos',
+            'route' => 'historial.reportePorTipo',
+            'icon' => 'fas fa-fw fa-file-alt text-primary',
             'can' => 'admin'
         ],
         [
             'text' => 'Gestionar Usuarios',
             'route' => 'users.index',
             'icon' => 'fas fa-fw fa-users-cog text-warning',
-            'can' => 'admin'
-        ],
-        [
-            'text' => 'Gestionar Pedidos',
-            'route' => 'pedidos.index',
-            'icon' => 'fas fa-fw fa-clipboard-list text-info',
-            'can' => 'admin'
-        ],
-        [
-            'text' => 'Gestionar Lotes',
-            'route' => 'lotes.index',
-            'icon' => 'fas fa-fw fa-boxes text-secondary',
             'can' => 'admin'
         ],
     ],
@@ -410,12 +431,17 @@ return [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.min.js',
                 ],
                 [
                     'type' => 'css',
                     'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css',
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => false,
+                    'location' => 'https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css',
                 ],
             ],
         ],

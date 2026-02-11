@@ -107,9 +107,10 @@
                     const selectElement = document.getElementById('type');
                     if ($ && $.fn.select2 && !selectElement.hasAttribute('data-select2-id')) {
                         $(selectElement).select2({
-                            theme: 'classic',
+                            theme: 'bootstrap4',
                             width: '100%',
-                            minimumResultsForSearch: Infinity
+                            minimumResultsForSearch: Infinity,
+                            dropdownParent: $('#edit-user')
                         });
                     }
                     $('#edit-user').modal('show');

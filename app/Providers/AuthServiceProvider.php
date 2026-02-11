@@ -50,5 +50,20 @@ class AuthServiceProvider extends ServiceProvider
             }
             return false;
         });
+
+        Gate::define('farmacia', function ($user) {
+            if ($user->type == 'farmacia' || $user->type == 'admin') {
+                return true;
+            }
+            return false;
+        });
+        
+        Gate::define('pedidos', function ($user) {
+            $allowedTypes = ['admin', 'farmacia', 'area'];
+            if (in_array($user->type, $allowedTypes)) {
+                return true;
+            }
+            return false;
+        });
     }
 }

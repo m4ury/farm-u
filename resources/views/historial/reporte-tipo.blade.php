@@ -20,7 +20,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Tipo de Movimiento</label>
-                        <select name="tipo" class="form-control">
+                        <select name="tipo" class="form-control select2-tipo">
                             <option value="entrada" {{ $tipo == 'entrada' ? 'selected' : '' }}>Entrada</option>
                             <option value="salida" {{ $tipo == 'salida' ? 'selected' : '' }}>Salida</option>
                             <option value="despacho" {{ $tipo == 'despacho' ? 'selected' : '' }}>Despacho</option>
@@ -218,4 +218,18 @@
             @endif
         </div>
     </div>
+@endsection
+
+@section('plugins.Select2', true)
+
+@section('js')
+<script>
+    $(document).ready(function() {
+        $('.select2-tipo').select2({
+            theme: 'bootstrap4',
+            width: '100%',
+            minimumResultsForSearch: Infinity
+        });
+    });
+</script>
 @endsection
