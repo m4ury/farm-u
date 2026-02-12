@@ -305,6 +305,11 @@ return [
             'route' => 'home',
             'icon' => 'fas fa-fw fa-tachometer-alt text-primary',
         ],
+        [
+            'text' => 'Recetas / DAU',
+            'route' => 'recetas.index',
+            'icon' => 'fas fa-fw fa-file-prescription text-primary',
+        ],
         /* [
             'text' => 'Salidas',
             'route' => 'salidas.index',

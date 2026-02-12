@@ -10,6 +10,7 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\LoteController;
 use App\Http\Controllers\RecepcionDespachoController;
 use App\Http\Controllers\HistoricoMovimientoController;
+use App\Http\Controllers\RecetaController;
 use App\Models\Salida;
 
 /*
@@ -44,6 +45,14 @@ Route::get('areas/{areaType}', [AreaController::class, 'showArea'])->name('areas
 
 Route::resource('areas', AreaController::class)->middleware('auth');
 Route::resource('salidas', SalidaController::class)->middleware('auth');
+
+// Rutas para Recetas / DAU
+Route::middleware('auth')->group(function () {
+    // API routes ANTES del resource para evitar conflicto con {receta}
+    Route::get('recetas/api/farmacos/{farmaco_id}/lotes', [RecetaController::class, 'lotesDisponiblesApi'])->name('recetas.lotesApi');
+    Route::get('recetas/api/farmacos', [RecetaController::class, 'buscarFarmacos'])->name('recetas.buscarFarmacos');
+    Route::resource('recetas', RecetaController::class)->only(['index', 'create', 'store', 'show']);
+});
 
 Route::resource('pedidos', PedidoController::class)->middleware('auth');
 Route::post('pedidos/selection/store', [PedidoController::class, 'storeFromSelection'])->name('pedidos.storeFromSelection')->middleware('auth');

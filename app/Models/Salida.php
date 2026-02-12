@@ -15,12 +15,29 @@ class Salida extends Model
         'numero_dau',
         'farmaco_id',
         'user_id',
-        'stock_actual'
+        'stock_actual',
+        'receta_id'
     ];
 
     public function farmacos()
     {
         return $this->belongsToMany(Farmaco::class)->withTimestamps();
+    }
+
+    /**
+     * Relación con Receta
+     */
+    public function receta()
+    {
+        return $this->belongsTo(Receta::class);
+    }
+
+    /**
+     * Relación directa con Farmaco (para salidas vía receta)
+     */
+    public function farmaco()
+    {
+        return $this->belongsTo(Farmaco::class);
     }
 
     public function lotes()
