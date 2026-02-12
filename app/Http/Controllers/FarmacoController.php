@@ -45,7 +45,43 @@ class FarmacoController extends Controller
      */
     public function show(Farmaco $farmaco)
     {
-        //
+        $farmaco->load(['areas', 'lotes' => function ($q) {
+            $q->orderBy('fecha_vencimiento', 'asc');
+        }, 'movimientos' => function ($q) {
+            $q->with(['lote', 'area', 'usuario'])->orderBy('fecha', 'desc')->limit(20);
+        }]);
+
+        $stockFisico = $farmaco->getStockFisicoCalculado();
+        $stockFarmacia = $farmaco->getStockEnFarmacia();
+        $stockAreas = $farmaco->getStockEnAreas();
+        $lotesDisponibles = $farmaco->lotesDisponibles()->get();
+        $lotesVencidos = $farmaco->lotesVencidos()->get();
+        $totalLotes = $farmaco->lotes->count();
+
+        // Stock por área
+        $stockPorArea = [];
+        foreach ($farmaco->areas as $area) {
+            $stockPorArea[$area->nombre_area] = $farmaco->getStockEnArea($area->id);
+        }
+
+        // Salidas recientes del fármaco (últimas 10)
+        $salidasRecientes = \App\Models\Salida::whereHas('farmacos', function ($q) use ($farmaco) {
+            $q->where('farmaco_id', $farmaco->id);
+        })->with(['user', 'lotes'])->orderBy('created_at', 'desc')->limit(10)->get();
+
+        // Estadísticas de movimientos
+        $movimientos = $farmaco->movimientos;
+        $stats = [
+            'total_despachado' => $movimientos->where('tipo', 'despacho')->sum('cantidad'),
+            'total_recibido'   => $movimientos->where('tipo', 'recepcion')->sum('cantidad'),
+            'total_salidas'    => $movimientos->where('tipo', 'salida')->sum('cantidad'),
+            'total_movimientos'=> $movimientos->count(),
+        ];
+
+        return view('farmacos.show', compact(
+            'farmaco', 'stockFisico', 'stockFarmacia', 'stockAreas', 'stockPorArea',
+            'lotesDisponibles', 'lotesVencidos', 'totalLotes', 'salidasRecientes', 'stats'
+        ));
     }
 
     /**
@@ -78,7 +114,7 @@ class FarmacoController extends Controller
             'descripcion' => 'sometimes|string|max:255',
             'dosis' => 'sometimes|string|max:100',
             'forma_farmaceutica' => 'sometimes|string|max:100',
-            'stock_maximo' => 'sometimes|integer|min:0',
+            'stock_minimo' => 'sometimes|integer|min:0',
             'controlado' => 'sometimes|boolean',
             'area_id' => 'sometimes|nullable|exists:areas,id'
         ]);

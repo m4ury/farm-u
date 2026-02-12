@@ -73,9 +73,9 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="stock_maximo" class="col-sm-2 col-form-label">Stock maximo:</label>
+                            <label for="stock_minimo" class="col-sm-2 col-form-label">Stock maximo:</label>
                             <div class="col-sm">
-                                <input type="number" name="stock_maximo" id="stock_maximo" class="form-control form-control-sm" value="${farmaco.stock_maximo}" disabled>
+                                <input type="number" name="stock_minimo" id="stock_minimo" class="form-control form-control-sm" value="${farmaco.stock_minimo}" disabled>
                             </div>
                         </div>
                         <div class="form-group row">

@@ -40,10 +40,10 @@ class LoteController extends Controller
         }
 
         // Ordenar por fecha de vencimiento
-        $lotes = $query->orderBy('fecha_vencimiento', 'asc')->paginate(10);
+        $lotes = $query->orderBy('fecha_vencimiento', 'asc')->get();
 
         // Marcar los vencidos
-        $lotes->getCollection()->transform(function ($lote) {
+        $lotes->transform(function ($lote) {
             $lote->vencido = $lote->isVencido();
             return $lote;
         });
@@ -191,7 +191,7 @@ class LoteController extends Controller
     {
         $farmaco = Farmaco::findOrFail($farmaco_id);
         $lotes = $farmaco->lotesDisponibles()->select(['id', 'num_serie', 'fecha_vencimiento', 'cantidad_disponible'])->get();
-        
+
         return response()->json($lotes);
     }
 }

@@ -13,7 +13,7 @@
                     <span class="text-bold">{{ $titulo }}</span>
                 </h3>
             </div>
-            <x-medicamentos-table :items="$areas" />
+            <x-medicamentos-table :items="$areas" :area-model="$areaModel ?? null" />
         </div>
     </div>
 @endsection

@@ -87,15 +87,15 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            {{ html()->label('Stock maximo: ', 'stock_maximo')->class('col-sm-2 col-form-label') }}
+                            {{ html()->label('Stock maximo: ', 'stock_minimo')->class('col-sm-2 col-form-label') }}
                             <div class="col-sm">
                                 {{ html()
-                                    ->number('stock_maximo')
-                                    ->value(old('stock_maximo'))
-                                    ->class('form-control form-control-sm' . ($errors->has('stock_maximo') ? ' is-invalid' : '')) }}
-                                @if ($errors->has('stock_maximo'))
+                                    ->number('stock_minimo')
+                                    ->value(old('stock_minimo'))
+                                    ->class('form-control form-control-sm' . ($errors->has('stock_minimo') ? ' is-invalid' : '')) }}
+                                @if ($errors->has('stock_minimo'))
                                     <span class="invalid-feedback">
-                                        <strong>{{ $errors->first('stock_maximo') }}</strong>
+                                        <strong>{{ $errors->first('stock_minimo') }}</strong>
                                     </span>
                                 @endif
                             </div>

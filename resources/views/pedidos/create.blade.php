@@ -97,8 +97,9 @@
                                 <th style="width: 50px;"></th>
                                 <th>Fármaco</th>
                                 <th>Dosis</th>
-                                <th>Stock Máximo</th>
-                                <th>Stock Físico</th>
+                                <th>Stock Mínimo</th>
+                                <th>En Farmacia</th>
+                                <th>En Áreas</th>
                                 <th>A Reponer</th>
                                 <th>Área</th>
                                 <th>Cantidad a Pedir</th>
@@ -113,15 +114,20 @@
                                     <td>{{ $farmaco->descripcion }}</td>
                                     <td>{{ $farmaco->dosis }}</td>
                                     <td>
-                                        <span class="badge badge-primary">{{ $farmaco->stock_maximo }}</span>
+                                        <span class="badge badge-primary">{{ $farmaco->stock_minimo }}</span>
                                     </td>
                                     <td>
-                                        <span class="badge {{ $farmaco->getStockFisicoCalculado() < $farmaco->stock_maximo ? 'badge-danger' : 'badge-success' }}">
-                                            {{ $farmaco->getStockFisicoCalculado() }}
+                                        <span class="badge badge-info" title="Stock disponible en Farmacia Central">
+                                            <i class="fas fa-clinic-medical"></i> {{ $farmaco->stock_en_farmacia }}
                                         </span>
                                     </td>
                                     <td>
-                                        <strong>{{ $farmaco->stock_maximo - $farmaco->getStockFisicoCalculado() }}</strong>
+                                        <span class="badge {{ $farmaco->stock_en_areas < $farmaco->stock_minimo ? 'badge-danger' : 'badge-success' }}" title="Stock en áreas asignadas">
+                                            <i class="fas fa-hospital"></i> {{ $farmaco->stock_en_areas }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <strong>{{ $farmaco->cantidad_a_pedir }}</strong>
                                     </td>
                                     <td>
                                         @if($farmaco->area_predeterminada)
@@ -132,13 +138,13 @@
                                     </td>
                                     <td>
                                         <input type="number" class="form-control form-control-sm farmaco-cantidad"
-                                            value="{{ $farmaco->stock_maximo - $farmaco->getStockFisicoCalculado() }}"
+                                            value="{{ $farmaco->cantidad_a_pedir }}"
                                             data-index="{{ $index }}"
-                                            data-max="{{ $farmaco->stock_maximo - $farmaco->getStockFisicoCalculado() }}"
+                                            data-max="{{ $farmaco->cantidad_a_pedir }}"
                                             data-farmaco-id="{{ $farmaco->id }}"
                                             data-farmaco-nombre="{{ $farmaco->descripcion }}"
                                             min="1"
-                                            max="{{ $farmaco->stock_maximo - $farmaco->getStockFisicoCalculado() }}"
+                                            max="{{ $farmaco->cantidad_a_pedir }}"
                                             style="width: 100px;">
                                     </td>
                                 </tr>

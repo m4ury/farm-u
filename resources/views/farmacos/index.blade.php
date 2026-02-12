@@ -38,12 +38,12 @@
                                 </td>
                                 <td>{{ $farmaco->forma_farmaceutica }}</td>
                                 <td>{{ $farmaco->dosis }}</td>
-                                <td>{{ $farmaco->stock_maximo }}</td>
+                                <td>{{ $farmaco->stock_minimo }}</td>
                                 <td>
                                     {{ $stock_fisico = $farmaco->getStockFisicoCalculado() }}
 
                                     @php
-                                        $diferencia = $farmaco->stock_maximo - $stock_fisico; // Diferencia entre stock máximo y físico calculado
+                                        $diferencia = $farmaco->stock_minimo - $stock_fisico; // Diferencia entre stock máximo y físico calculado
                                         $umbral = $stock_fisico * 0.5; // 50% del stock físico calculado
                                     @endphp
                                     @if ($stock_fisico > 0 && $diferencia > 0 && $diferencia > $umbral)
@@ -69,10 +69,10 @@
                                         <i class="fas fa-pen"></i>
                                     </button>
                                     {{ html()->form()->close() }}
-                                    {{-- <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-placement="bottom"
-                                        title="farmaco" href="{{ route('farmacos.show', $farmaco) }}" target="_blank"><i
-                                            class="fas fa-envelope"></i>
-                                    </a> --}}
+                                    <a class="btn btn-outline-info btn-sm" data-toggle="tooltip" data-placement="bottom"
+                                        title="Ver detalle" href="{{ route('farmacos.show', $farmaco) }}"><i
+                                            class="fas fa-eye"></i>
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach

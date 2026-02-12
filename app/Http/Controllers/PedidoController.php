@@ -55,15 +55,26 @@ class PedidoController extends Controller
         // Obtener todos los fármacos con sus lotes y áreas
         $farmacos = Farmaco::with(['areas', 'lotes'])->get();
 
-        // Filtrar fármacos con bajo stock (stock calculado < stock_maximo)
+        // Filtrar fármacos cuyas áreas necesitan reposición
+        // (stock en áreas < stock_minimo = el área necesita más unidades)
         $farmacos = $farmacos->filter(function ($farmaco) {
-            return $farmaco->getStockFisicoCalculado() < $farmaco->stock_maximo;
+            if ($farmaco->areas->isEmpty()) return false;
+
+            foreach ($farmaco->areas as $area) {
+                if ($farmaco->getStockEnArea($area->id) < $farmaco->stock_minimo) {
+                    return true;
+                }
+            }
+            return false;
         });
 
         // Procesar cada fármaco para calcular cantidad a pedir
         $farmacos = $farmacos->map(function ($farmaco) {
-            $farmaco->stock_maximo = (int) $farmaco->stock_maximo;
-            $farmaco->cantidad_a_pedir = $farmaco->stock_maximo - $farmaco->getStockFisicoCalculado();
+            $farmaco->stock_minimo = (int) $farmaco->stock_minimo;
+            $stockEnAreas = $farmaco->getStockEnAreas();
+            $farmaco->cantidad_a_pedir = max(1, $farmaco->stock_minimo - $stockEnAreas);
+            $farmaco->stock_en_farmacia = $farmaco->getStockEnFarmacia();
+            $farmaco->stock_en_areas = $stockEnAreas;
             $farmaco->area_predeterminada = $farmaco->areas->first();
             return $farmaco;
         })->values();
@@ -230,7 +241,8 @@ class PedidoController extends Controller
             if (isset($farmaco['farmaco_id']) && isset($farmaco['cantidad'])) {
                 $farmacoModel = $farmacos->get($farmaco['farmaco_id']);
                 if ($farmacoModel) {
-                    $cantidadPermitida = $farmacoModel->stock_maximo - $farmacoModel->getStockFisicoCalculado();
+                    $stockEnAreas = $farmacoModel->getStockEnAreas();
+                    $cantidadPermitida = max(1, $farmacoModel->stock_minimo - $stockEnAreas);
                     if ($farmaco['cantidad'] > $cantidadPermitida) {
                         throw \Illuminate\Validation\ValidationException::withMessages([
                             "farmacos.{$index}.cantidad" => "La cantidad solicitada ({$farmaco['cantidad']}) no puede exceder el stock a reponer ({$cantidadPermitida}) para {$farmacoModel->descripcion}."
@@ -257,7 +269,7 @@ class PedidoController extends Controller
         $farmacos_info = [];
         foreach ($pedido->farmacos as $farmaco) {
             $cantidad_pedida = $farmaco->pivot->cantidad_pedida;
-            $stock_disponible = $farmaco->getStockFisicoCalculado();
+            $stock_disponible = $farmaco->getStockEnFarmacia();
             $lotes_disponibles = $farmaco->lotesDisponibles()->get();
 
             $farmacos_info[$farmaco->id] = [
@@ -513,7 +525,7 @@ class PedidoController extends Controller
 
         $farmacos_info = [];
         foreach ($pedido->farmacos as $farmaco) {
-            $stock_disponible = $farmaco->getStockFisicoCalculado();
+            $stock_disponible = $farmaco->getStockEnFarmacia();
             $farmacos_info[$farmaco->id] = [
                 'farmaco' => $farmaco,
                 'cantidad_pedida' => $farmaco->pivot->cantidad_pedida,

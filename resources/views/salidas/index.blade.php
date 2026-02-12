@@ -39,7 +39,7 @@
                                 <td>{{ $salida->farmacos->pluck('forma_farmaceutica')->first() }}</td>
                                 <td>{{ $salida->farmacos->pluck('dosis')->first() }}</td>
                                 <td class="text-success text-bold">
-                                    {{ $salida->farmacos->pluck('stock_maximo')->first() }}
+                                    {{ $salida->farmacos->pluck('stock_minimo')->first() }}
                                 </td>
                                 <td class="text-primary text-bold">
                                     {{ $salida->stock_actual }}

@@ -8,7 +8,7 @@
 
 @section('content')
     @include('components.sweetalert')
-    
+
     <div class="row">
         <div class="col-md-8">
             <div class="card">
@@ -48,10 +48,10 @@
                                     {{ strtoupper($pedido->estado) }}
                                 </span>
                             </p>
-                            <p>
+                            {{-- <p>
                                 <strong>Solicitante:</strong>
                                 {{ $pedido->solicitante ?? 'N/A' }}
-                            </p>
+                            </p> --}}
                         </div>
                     </div>
 
@@ -89,6 +89,7 @@
                                 <tr>
                                     <th>Fármaco</th>
                                     <th>Forma Farmacéutica</th>
+                                    <th>Stock Minimo</th>
                                     <th>Pedido</th>
                                     <th>Aprobado</th>
                                     <th>Despachado</th>
@@ -98,7 +99,10 @@
                                 @foreach($pedido->farmacos as $farmaco)
                                     <tr>
                                         <td>{{ $farmaco->descripcion }}</td>
-                                        <td>{{ $farmaco->forma_farmaceutica }}</td>
+                                        <td>{{ $farmaco->forma_farmaceutica }} - {{ $farmaco->dosis }}</td>
+                                        <td>
+                                            <span class="badge badge-secondary">{{ $farmaco->stock_minimo }}</span>
+                                        </td>
                                         <td>
                                             <span class="badge badge-primary">{{ $farmaco->pivot->cantidad_pedida }}</span>
                                         </td>

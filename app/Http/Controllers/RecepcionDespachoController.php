@@ -76,7 +76,7 @@ class RecepcionDespachoController extends Controller
             // Si la cantidad recibida es menor que la despachada, registrar ajuste
             if ($request->cantidad_recibida < $despacho->cantidad) {
                 $diferencia = $despacho->cantidad - $request->cantidad_recibida;
-                
+
                 // Restaurar cantidad al lote (la diferencia no recibida)
                 $despacho->lote->incrementarDisponible($diferencia);
 
@@ -93,9 +93,29 @@ class RecepcionDespachoController extends Controller
                 ]);
             }
 
+            // Registrar stock en el área (lote_area)
+            $existing = DB::table('lote_area')
+                ->where('lote_id', $despacho->lote_id)
+                ->where('area_id', $despacho->area_id)
+                ->first();
+
+            if ($existing) {
+                DB::table('lote_area')
+                    ->where('id', $existing->id)
+                    ->increment('cantidad_disponible', $request->cantidad_recibida);
+            } else {
+                DB::table('lote_area')->insert([
+                    'lote_id' => $despacho->lote_id,
+                    'area_id' => $despacho->area_id,
+                    'cantidad_disponible' => $request->cantidad_recibida,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
             DB::commit();
 
-            return redirect()->route('despachos.index')
+            return redirect()->route('farmacos.show', $despacho->lote->farmaco)
                             ->with('success', "Recepción confirmada: {$request->cantidad_recibida} unidades recibidas.");
 
         } catch (\Exception $e) {
@@ -109,18 +129,22 @@ class RecepcionDespachoController extends Controller
      */
     public function historialArea()
     {
-        $areaId = Auth::user()->area_id;
-        
-        $recepciones = RecepcionDespacho::whereHas('despacho', function ($query) use ($areaId) {
-            $query->where('area_id', $areaId);
-        })
-        ->with([
+        $query = RecepcionDespacho::with([
             'despacho.lote.farmaco',
             'despacho.area',
+            'despacho.pedido',
             'usuario'
-        ])
-        ->orderBy('fecha_recepcion', 'desc')
-        ->paginate(15);
+        ]);
+
+        // Si no es admin, filtrar por su área
+        if (!Auth::user()->isAdmin()) {
+            $areaId = Auth::user()->area_id;
+            $query->whereHas('despacho', function ($q) use ($areaId) {
+                $q->where('area_id', $areaId);
+            });
+        }
+
+        $recepciones = $query->orderBy('fecha_recepcion', 'desc')->paginate(15);
 
         return view('recepciones.historial-area', compact('recepciones'));
     }

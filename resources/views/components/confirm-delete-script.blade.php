@@ -7,12 +7,12 @@
 
 <script>
     // Función general para confirmaciones de eliminación
-    function confirmarEliminacion(event, mensaje = '¿Estás seguro? ¡No podrás revertir esto!') {
+    function confirmarEliminacion(event, mensaje = '¡No podrás revertir esto!') {
         event.preventDefault();
-        
+
         const form = event.target.closest('form');
         if (!form) return;
-        
+
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: 'btn btn-danger mx-2',
@@ -20,7 +20,7 @@
             },
             buttonsStyling: false
         });
-        
+
         swalWithBootstrapButtons.fire({
             title: '¿Estás seguro?',
             text: mensaje,
@@ -28,8 +28,7 @@
             showCancelButton: true,
             confirmButtonText: '<i class="fas fa-trash"></i> Sí, eliminar',
             cancelButtonText: '<i class="fas fa-times"></i> Cancelar',
-            reverseButtons: true,
-            html: true
+            reverseButtons: true
         }).then((result) => {
             if (result.value) {
                 form.submit();
@@ -64,7 +63,7 @@
             e.preventDefault();
             const mensaje = link.dataset.mensaje || '¿Estás seguro? ¡No podrás revertir esto!';
             const url = link.href;
-            
+
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
                     confirmButton: 'btn btn-danger mx-2',
@@ -72,7 +71,7 @@
                 },
                 buttonsStyling: false
             });
-            
+
             swalWithBootstrapButtons.fire({
                 title: '¿Estás seguro?',
                 text: mensaje,
@@ -80,8 +79,7 @@
                 showCancelButton: true,
                 confirmButtonText: '<i class="fas fa-trash"></i> Sí, eliminar',
                 cancelButtonText: '<i class="fas fa-times"></i> Cancelar',
-                reverseButtons: true,
-                html: true
+                reverseButtons: true
             }).then((result) => {
                 if (result.value) {
                     // Crear un formulario temporal para DELETE

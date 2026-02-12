@@ -67,10 +67,10 @@ class HomeController extends Controller
             ->get();
 
         // === FÁRMACOS ===
-        // Bajo stock: fármacos cuyo stock calculado es < 20% del stock_maximo
+        // Bajo stock: fármacos cuyo stock calculado es < 20% del stock_minimo
         $bajoStock = Farmaco::with(['lotes', 'areas'])->get()->filter(function ($farmaco) {
             $stock = $farmaco->getStockFisicoCalculado();
-            return $farmaco->stock_maximo > 0 && $stock <= ($farmaco->stock_maximo * 0.2);
+            return $farmaco->stock_minimo > 0 && $stock <= ($farmaco->stock_minimo * 0.2);
         })->sortBy(function ($farmaco) {
             return $farmaco->getStockFisicoCalculado();
         });

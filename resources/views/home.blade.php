@@ -101,7 +101,7 @@
                     $stockArea = $area->farmacos->sum(function($farmaco) {
                         return $farmaco->getStockFisicoCalculado();
                     });
-                    $stockMaxArea = $area->farmacos->sum('stock_maximo');
+                    $stockMaxArea = $area->farmacos->sum('stock_minimo');
                     $areaSlug = $areaSlugMapping[$area->nombre_area] ?? null;
                 @endphp
                 <div class="col-lg col-md col-sm mb-3">
@@ -344,14 +344,14 @@
                                         @foreach($bajoStock as $farmaco)
                                             @php
                                                 $stockActual = $farmaco->getStockFisicoCalculado();
-                                                $porcentaje = $farmaco->stock_maximo > 0 ? round(($stockActual / $farmaco->stock_maximo) * 100) : 0;
+                                                $porcentaje = $farmaco->stock_minimo > 0 ? round(($stockActual / $farmaco->stock_minimo) * 100) : 0;
                                             @endphp
                                             <tr>
                                                 <td class="small">{{ $farmaco->descripcion }}</td>
                                                 <td class="text-center">
                                                     <span class="badge {{ $stockActual == 0 ? 'badge-dark' : 'badge-danger' }}">{{ $stockActual }}</span>
                                                 </td>
-                                                <td class="text-center small">{{ $farmaco->stock_maximo }}</td>
+                                                <td class="text-center small">{{ $farmaco->stock_minimo }}</td>
                                                 <td class="text-center">
                                                     <div class="progress progress-sm" style="height: 8px; width: 60px; display: inline-block;">
                                                         <div class="progress-bar bg-danger" style="width: {{ $porcentaje }}%"></div>
@@ -429,7 +429,7 @@
                             @foreach($mayorStock as $farmaco)
                                 @php
                                     $stockCalc = $farmaco->getStockFisicoCalculado();
-                                    $porcentaje = $farmaco->stock_maximo > 0 ? round(($stockCalc / $farmaco->stock_maximo) * 100) : 0;
+                                    $porcentaje = $farmaco->stock_minimo > 0 ? round(($stockCalc / $farmaco->stock_minimo) * 100) : 0;
                                 @endphp
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -439,7 +439,7 @@
                                     <div class="progress progress-sm">
                                         <div class="progress-bar bg-success" style="width: {{ min($porcentaje, 100) }}%"></div>
                                     </div>
-                                    <small class="text-muted">{{ $porcentaje }}% del máximo ({{ $farmaco->stock_maximo }})</small>
+                                    <small class="text-muted">{{ $porcentaje }}% del máximo ({{ $farmaco->stock_minimo }})</small>
                                 </div>
                             @endforeach
                         @else

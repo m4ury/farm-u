@@ -4,7 +4,7 @@
 
 @section('content_header')
     <h1>Historial de Despachos Recibidos</h1>
-    <p class="text-muted">Área: <strong>{{ Auth::user()->area->nombre_area ?? 'Admin' }}</strong></p>
+    <p class="text-muted">Área: <strong>{{ Auth::user()->area->nombre_area ?? 'Todas las áreas' }}</strong></p>
 @endsection
 
 @section('content')
@@ -73,13 +73,13 @@
                                     </td>
                                     <td>
                                         @if($recepcion->observaciones)
-                                            <button class="btn btn-sm btn-info" 
-                                                    data-toggle="tooltip" 
+                                            <button class="btn btn-sm btn-info"
+                                                    data-toggle="tooltip"
                                                     title="{{ $recepcion->observaciones }}">
                                                 <i class="fas fa-comment"></i>
                                             </button>
                                         @endif
-                                        <a href="{{ route('pedidos.show', $recepcion->despacho->pedido) }}" 
+                                        <a href="{{ route('pedidos.show', $recepcion->despacho->pedido) }}"
                                            class="btn btn-sm btn-primary">
                                             <i class="fas fa-eye"></i> Ver Pedido
                                         </a>
@@ -129,8 +129,8 @@
                 <div class="inner">
                     <h3>
                         {{
-                            $recepciones->filter(function($r) { 
-                                return $r->cantidad_recibida < $r->despacho->cantidad; 
+                            $recepciones->filter(function($r) {
+                                return $r->cantidad_recibida < $r->despacho->cantidad;
                             })->count()
                         }}
                     </h3>
@@ -147,8 +147,8 @@
                 <div class="inner">
                     <h3>
                         {{
-                            $recepciones->filter(function($r) { 
-                                return !empty($r->observaciones); 
+                            $recepciones->filter(function($r) {
+                                return !empty($r->observaciones);
                             })->count()
                         }}
                     </h3>

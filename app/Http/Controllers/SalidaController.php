@@ -39,11 +39,19 @@ class SalidaController extends Controller
             'numero_dau' => 'required|string|max:100',
             'cantidad_salida' => 'required|integer|min:1',
             'lotes' => 'required|array|min:1',
-            'lotes.*' => 'nullable|integer|min:0'
+            'lotes.*' => 'nullable|integer|min:0',
+            'area_id' => 'nullable|exists:areas,id'
         ]);
 
         $farmaco = Farmaco::findOrFail($request->input('id'));
-        $stockActual = $farmaco->getStockFisicoCalculado();
+        $areaId = $request->input('area_id');
+
+        // Verificar stock según contexto (área o farmacia)
+        if ($areaId) {
+            $stockActual = $farmaco->getStockEnArea($areaId);
+        } else {
+            $stockActual = $farmaco->getStockEnFarmacia();
+        }
 
         if ($request->cantidad_salida > $stockActual) {
             return back()->withError('No es posible realizar, no hay stock suficiente');
@@ -62,23 +70,56 @@ class SalidaController extends Controller
             return back()->withError('La cantidad total por lote debe coincidir con la salida');
         }
 
-        $lotes = $farmaco->lotes()
-            ->whereIn('id', $lotesSolicitados->keys()->all())
-            ->get();
+        // Validar lotes según contexto
+        if ($areaId) {
+            // Validar contra lote_area (stock en el área)
+            $loteIds = $lotesSolicitados->keys()->all();
+            $lotesArea = DB::table('lote_area')
+                ->join('lotes', 'lotes.id', '=', 'lote_area.lote_id')
+                ->where('lote_area.area_id', $areaId)
+                ->where('lotes.farmaco_id', $farmaco->id)
+                ->whereIn('lote_area.lote_id', $loteIds)
+                ->select('lotes.*', 'lote_area.cantidad_disponible as stock_area')
+                ->get()
+                ->keyBy('id');
 
-        if ($lotes->count() !== $lotesSolicitados->count()) {
-            return back()->withError('Algunos lotes seleccionados no pertenecen al farmaco');
-        }
-
-        foreach ($lotes as $lote) {
-            $cantidad = $lotesSolicitados->get($lote->id, 0);
-
-            if ($lote->vencido || $lote->isVencido()) {
-                return back()->withError('No se puede usar un lote vencido');
+            if ($lotesArea->count() !== $lotesSolicitados->count()) {
+                return back()->withError('Algunos lotes seleccionados no están disponibles en esta área');
             }
 
-            if ($cantidad > $lote->cantidad_disponible) {
-                return back()->withError('La cantidad solicitada excede el disponible en un lote');
+            foreach ($lotesArea as $lote) {
+                $cantidad = $lotesSolicitados->get($lote->id, 0);
+
+                if ($lote->vencido) {
+                    return back()->withError('No se puede usar un lote vencido');
+                }
+
+                if ($cantidad > $lote->stock_area) {
+                    return back()->withError('La cantidad solicitada excede el disponible en un lote del área');
+                }
+            }
+
+            $lotes = $farmaco->lotes()->whereIn('id', $loteIds)->get();
+        } else {
+            // Validar contra farmacia (comportamiento original)
+            $lotes = $farmaco->lotes()
+                ->whereIn('id', $lotesSolicitados->keys()->all())
+                ->get();
+
+            if ($lotes->count() !== $lotesSolicitados->count()) {
+                return back()->withError('Algunos lotes seleccionados no pertenecen al farmaco');
+            }
+
+            foreach ($lotes as $lote) {
+                $cantidad = $lotesSolicitados->get($lote->id, 0);
+
+                if ($lote->vencido || $lote->isVencido()) {
+                    return back()->withError('No se puede usar un lote vencido');
+                }
+
+                if ($cantidad > $lote->cantidad_disponible) {
+                    return back()->withError('La cantidad solicitada excede el disponible en un lote');
+                }
             }
         }
 
@@ -99,7 +140,17 @@ class SalidaController extends Controller
             foreach ($lotes as $lote) {
                 $cantidad = $lotesSolicitados->get($lote->id, 0);
                 $pivotData[$lote->id] = ['cantidad' => $cantidad];
-                $lote->decrementarDisponible($cantidad);
+
+                if ($areaId) {
+                    // Decrementar del stock del área (lote_area)
+                    DB::table('lote_area')
+                        ->where('lote_id', $lote->id)
+                        ->where('area_id', $areaId)
+                        ->decrement('cantidad_disponible', $cantidad);
+                } else {
+                    // Decrementar del stock de farmacia (lotes.cantidad_disponible)
+                    $lote->decrementarDisponible($cantidad);
+                }
             }
 
             $salida->lotes()->sync($pivotData);

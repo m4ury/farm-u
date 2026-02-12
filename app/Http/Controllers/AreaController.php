@@ -112,15 +112,17 @@ class AreaController extends Controller
      * @param string $titulo - Título a mostrar en la vista
      */
     public function showAreaMedicamentos($areaName, $viewName, $titulo){
+        $areaModel = Area::where('nombre_area', $areaName)->first();
+
         $areas = Farmaco::whereHas('areas', function ($q) use ($areaName) {
                 $q->where('nombre_area', $areaName);
             })
             ->with('lotes')
             ->get();
 
-        return view($viewName, compact('areas', 'titulo'));
+        return view($viewName, compact('areas', 'titulo', 'areaModel'));
     }
 }
 
-/* select `areas`.`nombre_area`, `farmacos`.`descripcion`, `farmacos`.`stock_maximo`, `farmacos`.`controlado`, `farmacos`.`fecha_vencimiento`, `areas`.`area_id` from `farmacos` inner join `area_farmaco` on `area_farmaco`.`farmaco_id` = `farmacos`.`id` inner join `areas` on `areas`.`id` = `area_farmaco`.`area_id` where `nombre_area` = ?
+/* select `areas`.`nombre_area`, `farmacos`.`descripcion`, `farmacos`.`stock_minimo`, `farmacos`.`controlado`, `farmacos`.`fecha_vencimiento`, `areas`.`area_id` from `farmacos` inner join `area_farmaco` on `area_farmaco`.`farmaco_id` = `farmacos`.`id` inner join `areas` on `areas`.`id` = `area_farmaco`.`area_id` where `nombre_area` = ?
  */

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('descripcion', 100);
             $table->string('dosis',100);
             $table->string('forma_farmaceutica', 100)->nullable();
-            $table->integer('stock_maximo')->unsigned()->nullable()->default(0);
+            $table->integer('stock_minimo')->unsigned()->nullable()->default(0);
             $table->boolean('controlado')->nullable()->default(false);
             $table->timestamps();
         });

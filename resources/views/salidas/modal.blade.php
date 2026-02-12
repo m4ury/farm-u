@@ -13,6 +13,9 @@
                 {{ html()->form('POST', route('salidas.store'))->open() }}
                     @csrf
                     {{ html()->hidden('id', $area->id) }}
+                    @if (isset($areaModel) && $areaModel)
+                        {{ html()->hidden('area_id', $areaModel->id) }}
+                    @endif
                     <div class="form-horizontal">
                         <div class="form-group row">
                             {{ html()->label('Numero DAU o Receta: ', 'numero_dau')->class('col-sm-4 col-form-label') }}
@@ -38,7 +41,7 @@
                                     ->number('cantidad_salida')
                                     ->value(old('cantidad_salida'))
                                     ->class('form-control form-control-sm' . ($errors->has('cantidad_salida') ? ' is-invalid' : ''))
-                                    ->placeholder('' . $area->getStockFisicoCalculado()) }}
+                                    ->placeholder('' . (isset($areaModel) && $areaModel ? $area->getStockEnArea($areaModel->id) : $area->getStockFisicoCalculado())) }}
                                 @if ($errors->has('cantidad_salida'))
                                     <span class="invalid-feedback">
                                         <strong>{{ $errors->first('cantidad_salida') }}</strong>
@@ -48,8 +51,15 @@
                         </div>
 
                         @php
-                            $lotesDisponibles = $area->lotesDisponibles()->get();
-                            $lotesVencidos = $area->lotesVencidos()->get();
+                            if (isset($areaModel) && $areaModel) {
+                                // Lotes disponibles EN EL ÁREA (desde lote_area)
+                                $lotesDisponibles = $areaModel->lotesDisponiblesFarmaco($area->id)->get();
+                                $lotesVencidos = collect(); // Lotes vencidos se manejan por separado
+                            } else {
+                                // Sin contexto de área, usar lotes de farmacia
+                                $lotesDisponibles = $area->lotesDisponibles()->get();
+                                $lotesVencidos = $area->lotesVencidos()->get();
+                            }
                         @endphp
 
                         <div class="form-group">
@@ -71,17 +81,22 @@
                                     </thead>
                                     <tbody>
                                         @forelse ($lotesDisponibles as $lote)
+                                            @php
+                                                $disponibleLote = (isset($areaModel) && $areaModel)
+                                                    ? $lote->pivot->cantidad_disponible
+                                                    : $lote->cantidad_disponible;
+                                            @endphp
                                             <tr>
                                                 <td>{{ $lote->num_serie }}</td>
                                                 <td>{{ $lote->fecha_vencimiento?->format('d-m-Y') }}</td>
-                                                <td>{{ $lote->cantidad_disponible }}</td>
+                                                <td>{{ $disponibleLote }}</td>
                                                 <td style="width: 120px;">
                                                     <input type="number"
                                                         class="form-control form-control-sm"
                                                         name="lotes[{{ $lote->id }}]"
                                                         min="0"
-                                                        max="{{ $lote->cantidad_disponible }}"
-                                                        data-lote-disponible="{{ $lote->cantidad_disponible }}"
+                                                        max="{{ $disponibleLote }}"
+                                                        data-lote-disponible="{{ $disponibleLote }}"
                                                         data-lote-orden="{{ $loop->index }}"
                                                         data-farmaco-id="{{ $area->id }}"
                                                         value="0">

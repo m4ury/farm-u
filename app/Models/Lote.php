@@ -50,6 +50,25 @@ class Lote extends Model
     }
 
     /**
+     * Relación con Áreas - stock disponible por área (post-recepción)
+     */
+    public function areas()
+    {
+        return $this->belongsToMany(Area::class, 'lote_area')
+            ->withPivot('cantidad_disponible')
+            ->withTimestamps();
+    }
+
+    /**
+     * Obtener cantidad disponible de este lote en un área específica
+     */
+    public function cantidadEnArea($areaId)
+    {
+        $pivot = $this->areas()->where('area_id', $areaId)->first();
+        return $pivot ? $pivot->pivot->cantidad_disponible : 0;
+    }
+
+    /**
      * Verificar si el lote está vencido
      */
     public function isVencido()
