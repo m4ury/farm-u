@@ -16,6 +16,8 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const baseUrl = "{{ url('/') }}";
+
         // Al hacer click en el botón de editar usuario
         document.querySelectorAll('.edit-user-btn').forEach(function(btn) {
             btn.addEventListener('click', function(e) {
@@ -24,18 +26,23 @@
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                 
                 // Cargar los datos del usuario mediante AJAX
-                fetch(`/users/${userId}/edit`, {
+                fetch(`${baseUrl}/users/${userId}/edit`, {
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest'
                     }
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     const { user } = data;
                     
                     // Construir el formulario dinámicamente
                     const formHtml = `
-                        <form action="/users/${userId}" method="POST">
+                        <form action="${baseUrl}/users/${userId}" method="POST">
                             <input type="hidden" name="_token" value="${csrfToken}">
                             <input type="hidden" name="_method" value="PUT">
                             
