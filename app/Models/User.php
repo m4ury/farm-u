@@ -24,7 +24,8 @@ class User extends Authenticatable
         'password',
         'rut',
         'apellido_p',
-        'apellido_m'
+        'apellido_m',
+        'type'
     ];
 
     protected $dates = ['deleted_at'];
