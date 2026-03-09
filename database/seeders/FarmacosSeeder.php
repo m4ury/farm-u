@@ -40,8 +40,8 @@ class FarmacosSeeder extends Seeder
             ['descripcion' =>	'CLARITROMICINA',	'forma_farmaceutica' =>	'Polvo para suspensión oral',	'dosis' =>	'250 mg/5 mL',	'stock_minimo' =>	 5 	,'controlado' =>	 null 	],
             ['descripcion' =>	'CLONIXINATO DE LISINA ',	'forma_farmaceutica' =>	'Solución inyectable',	'dosis' =>	'100 mg/2 mL',	'stock_minimo' =>	 10 	,'controlado' =>	 null 	],
             ['descripcion' =>	'CLONIXINATO DE LISINA ',	'forma_farmaceutica' =>	'Comprimidos',	'dosis' =>	'125 mg',	'stock_minimo' =>	 50 	,'controlado' =>	 null 	],
-            ['descripcion' =>	'CLOPIDROGEL',	'forma_farmaceutica' =>	'Comprimidos',	'dosis' =>	'75 mg',	'stock_minimo' =>	 4 	,'controlado' =>	 null 	],
-            ['descripcion' =>	'CLOPIDROGEL',	'forma_farmaceutica' =>	'Comprimidos',	'dosis' =>	'300 mg',	'stock_minimo' =>	 8 	,'controlado' =>	 null 	],
+            ['descripcion' =>	'CLOPIDOGREL',	'forma_farmaceutica' =>	'Comprimidos',	'dosis' =>	'75 mg',	'stock_minimo' =>	 4 	,'controlado' =>	 null 	],
+            ['descripcion' =>	'CLOPIDOGREL',	'forma_farmaceutica' =>	'Comprimidos',	'dosis' =>	'300 mg',	'stock_minimo' =>	 8 	,'controlado' =>	 null 	],
             ['descripcion' =>	'CLORAMFENICOL',	'forma_farmaceutica' =>	'Solución oftálmica',	'dosis' =>	'0,005',	'stock_minimo' =>	 5 	,'controlado' =>	 null 	],
             ['descripcion' =>	'CLORAMFENICOL',	'forma_farmaceutica' =>	'Ungüento oftálmico',	'dosis' =>	'0,01',	'stock_minimo' =>	 5 	,'controlado' =>	 null 	],
             ['descripcion' =>	'CLORFENAMINA',	'forma_farmaceutica' =>	'Comprimido',	'dosis' =>	'4 mg',	'stock_minimo' =>	 40 	,'controlado' =>	 null 	],
@@ -139,8 +139,8 @@ class FarmacosSeeder extends Seeder
 ['descripcion' =>	'ATROPINA Sulfato',	'forma_farmaceutica' =>	'Solución inyectable',	'dosis' =>	'1 mg/mL',	'stock_minimo' =>	 10 	,	'controlado' =>	null],
 ['descripcion' =>	'BETAMETASONA (FOSFATO DISODICO)',	'forma_farmaceutica' =>	'Solución inyectable',	'dosis' =>	'4 mg/1 mL',	'stock_minimo' =>	 3 	,	'controlado' =>	null],
 ['descripcion' =>	'CALCIO GLUCONATO',	'forma_farmaceutica' =>	'Solución inyectable',	'dosis' =>	'0,1',	'stock_minimo' =>	 3 	,	'controlado' =>	null],
-['descripcion' =>	'CLOPIDROGEL',	'forma_farmaceutica' =>	'Comprimidos',	'dosis' =>	'75 mg',	'stock_minimo' =>	 6 	,	'controlado' =>	null],
-['descripcion' =>	'CLOPIDROGEL',	'forma_farmaceutica' =>	'Comprimidos',	'dosis' =>	'300 mg',	'stock_minimo' =>	 6 	,	'controlado' =>	null],
+['descripcion' =>	'CLOPIDOGREL',	'forma_farmaceutica' =>	'Comprimidos',	'dosis' =>	'75 mg',	'stock_minimo' =>	 6 	,	'controlado' =>	null],
+['descripcion' =>	'CLOPIDOGREL',	'forma_farmaceutica' =>	'Comprimidos',	'dosis' =>	'300 mg',	'stock_minimo' =>	 6 	,	'controlado' =>	null],
 ['descripcion' =>	'CLORFENAMINA',	'forma_farmaceutica' =>	'Solución inyectable',	'dosis' =>	'10 mg/ml',	'stock_minimo' =>	 3 	,	'controlado' =>	null],
 ['descripcion' =>	'DEXAMETASONA (FOSFATO DISODICO)',	'forma_farmaceutica' =>	'Solución inyectable',	'dosis' =>	'4 mg/ml',	'stock_minimo' =>	 3 	,	'controlado' =>	null],
 ['descripcion' =>	'DIAZEPAM ',	'forma_farmaceutica' =>	'Solución inyectable',	'dosis' =>	'10 mg/2 mL',	'stock_minimo' =>	 5 	,	'controlado' =>	1],
@@ -199,8 +199,27 @@ class FarmacosSeeder extends Seeder
 ['descripcion' =>	'VERAPAMILO (CLOHIDRATO)',	'forma_farmaceutica' =>	'Solución inyectable',	'dosis' =>	'2.5 mg/ml',	'stock_minimo' =>	 2 	,	'controlado' =>	null],
 
         ];
-        foreach ($farmacos as $farmaco) {
-            Farmaco::updateOrCreate($farmaco);
+        $farmacosUnicos = collect($farmacos)
+            ->unique(function ($farmaco) {
+                $descripcion = strtoupper(trim(preg_replace('/\s+/', ' ', $farmaco['descripcion'])));
+                $forma = strtoupper(trim(preg_replace('/\s+/', ' ', $farmaco['forma_farmaceutica'])));
+                $dosis = strtoupper(trim(preg_replace('/\s+/', ' ', $farmaco['dosis'])));
+
+                return "{$descripcion}|{$forma}|{$dosis}";
+            })
+            ->values();
+
+        foreach ($farmacosUnicos as $farmaco) {
+            Farmaco::updateOrCreate(
+                [
+                    'descripcion' => trim($farmaco['descripcion']),
+                    'forma_farmaceutica' => trim($farmaco['forma_farmaceutica']),
+                    'dosis' => trim($farmaco['dosis']),
+                ],
+                [
+                    'controlado' => $farmaco['controlado'],
+                ]
+            );
         }
     }
 }

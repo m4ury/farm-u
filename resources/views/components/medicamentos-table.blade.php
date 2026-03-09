@@ -32,7 +32,7 @@
                     </td>
                     <td>{{ $item->forma_farmaceutica }}</td>
                     <td nowrap>{{ $item->dosis }}</td>
-                    <td>{{ $item->stock_minimo }}</td>
+                    <td>{{ $item->pivot->stock_minimo ?? '—' }}</td>
                     <td>{{ $stockMostrar }}</td>
                     @if ($showActions)
                         <td>

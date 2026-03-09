@@ -10,4 +10,6 @@ class AreaFarmaco extends Pivot
 {
     use HasFactory;
     public $table   = 'area_farmaco';
+
+    protected $fillable = ['farmaco_id', 'area_id', 'stock_minimo'];
 }

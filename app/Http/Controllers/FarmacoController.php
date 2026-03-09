@@ -114,19 +114,20 @@ class FarmacoController extends Controller
             'descripcion' => 'sometimes|string|max:255',
             'dosis' => 'sometimes|string|max:100',
             'forma_farmaceutica' => 'sometimes|string|max:100',
-            'stock_minimo' => 'sometimes|integer|min:0',
+            'stock_minimo' => 'sometimes|nullable|integer|min:0',
             'controlado' => 'sometimes|boolean',
             'area_id' => 'sometimes|nullable|exists:areas,id'
         ]);
 
-        // Actualizar farmaco (excluye area_id para manejarlo por separado)
-        $farmaco->update($request->except('area_id'));
+        // Actualizar farmaco (excluye area_id y stock_minimo, que ahora vive en el pivot)
+        $farmaco->update($request->except('area_id', 'stock_minimo'));
         $farmaco->controlado = $request->input('controlado', 0);
 
-        // Sincronizar áreas
+        // Sincronizar áreas, pasando stock_minimo al pivot
         $areaId = $request->area_id;
         if ($areaId) {
-            $farmaco->areas()->sync([$areaId]);
+            $pivotData = ['stock_minimo' => $request->input('stock_minimo', 0)];
+            $farmaco->areas()->sync([$areaId => $pivotData]);
         } else {
             $farmaco->areas()->detach();
         }

@@ -87,12 +87,13 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            {{ html()->label('Stock maximo: ', 'stock_minimo')->class('col-sm-2 col-form-label') }}
+                            {{ html()->label('Stock mínimo: ', 'stock_minimo')->class('col-sm-2 col-form-label') }}
                             <div class="col-sm">
                                 {{ html()
                                     ->number('stock_minimo')
-                                    ->value(old('stock_minimo'))
+                                    ->value(old('stock_minimo', 0))
                                     ->class('form-control form-control-sm' . ($errors->has('stock_minimo') ? ' is-invalid' : '')) }}
+                                <small class="form-text text-muted">Stock mínimo para el área asignada.</small>
                                 @if ($errors->has('stock_minimo'))
                                     <span class="invalid-feedback">
                                         <strong>{{ $errors->first('stock_minimo') }}</strong>

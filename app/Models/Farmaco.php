@@ -6,9 +6,10 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Models\AreaFarmaco;
 class Farmaco extends Model
 {
-    protected $fillable = ['descripcion', 'dosis', 'forma_farmaceutica', 'stock_minimo', 'controlado'];
+    protected $fillable = ['descripcion', 'dosis', 'forma_farmaceutica', 'controlado'];
 
     use HasFactory;
 
@@ -24,7 +25,20 @@ class Farmaco extends Model
     }
 
     public function areas(){
-        return $this->belongsToMany(Area::class);
+        return $this->belongsToMany(Area::class)
+                    ->withPivot('stock_minimo')
+                    ->using(AreaFarmaco::class);
+    }
+
+    /**
+     * Stock mínimo total sumado de todas las áreas donde está asignado este fármaco.
+     * Útil para comparaciones globales (bajo stock, resúmenes).
+     */
+    public function getStockMinimoCalculado(): int
+    {
+        return (int) \DB::table('area_farmaco')
+            ->where('farmaco_id', $this->id)
+            ->sum('stock_minimo');
     }
 
     public function salidas(){
