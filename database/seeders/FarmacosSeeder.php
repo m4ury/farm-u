@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\AreaFarmaco;
 use App\Models\Farmaco;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -220,6 +221,34 @@ class FarmacosSeeder extends Seeder
                     'controlado' => $farmaco['controlado'],
                 ]
             );
+        }
+
+        // Create area_farmaco relationships with stock_minimo
+        foreach ($farmacos as $index => $farmaco) {
+            if ($index <= 115) {
+                $areaId = 1; // botiquin urgencias
+            } elseif ($index <= 157) {
+                $areaId = 2; // carro de urgencias
+            } else {
+                $areaId = 3; // maletin urgencias
+            }
+
+            $farmacoModel = Farmaco::where('descripcion', trim($farmaco['descripcion']))
+                ->where('forma_farmaceutica', trim($farmaco['forma_farmaceutica']))
+                ->where('dosis', trim($farmaco['dosis']))
+                ->first();
+
+            if ($farmacoModel) {
+                AreaFarmaco::updateOrCreate(
+                    [
+                        'area_id' => $areaId,
+                        'farmaco_id' => $farmacoModel->id,
+                    ],
+                    [
+                        'stock_minimo' => $farmaco['stock_minimo'],
+                    ]
+                );
+            }
         }
     }
 }

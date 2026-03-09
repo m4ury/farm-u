@@ -78,8 +78,8 @@ Route::middleware('auth')->group(function () {
     Route::get('api/farmaco/{farmaco_id}/lotes-disponibles', [LoteController::class, 'lotesDisponibles'])->name('api.lotesDisponibles');
 });
 
-Route::resource('users', UserController::class)->middleware('auth');
-Route::post('users/{id}/restore', [App\Http\Controllers\UserController::class, 'restore'])->name('users.restore');
+Route::resource('users', UserController::class)->middleware(['auth', 'can:admin']);
+Route::post('users/{id}/restore', [App\Http\Controllers\UserController::class, 'restore'])->name('users.restore')->middleware(['auth', 'can:admin']);
 
 // Rutas para Recepción de Despachos
 Route::middleware('auth')->group(function () {

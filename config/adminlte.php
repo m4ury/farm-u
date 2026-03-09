@@ -323,20 +323,20 @@ return [
             'text' => 'Gestionar Áreas',
             'route' => 'areas.index',
             'icon' => 'fas fa-fw fa-hospital text-success',
-            'can' => 'admin'
+            'can' => 'areas'
         ],
 
-        /* [
+        [
             'text' => 'Gestionar Fármacos',
             'route' => 'farmacos.index',
             'icon' => 'fas fa-fw fa-pills text-success',
-            'can' => 'admin'
-        ], */
+            'can' => 'farmacos'
+        ],
         [
             'text' => 'Gestionar Pedidos',
             'route' => 'pedidos.index',
             'icon' => 'fas fa-fw fa-clipboard-list text-info',
-            'can' => 'pedidos'
+            'can' => 'farmacia'
         ],
         [
             'text' => 'Gestionar Lotes',
