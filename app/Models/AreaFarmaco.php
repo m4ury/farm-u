@@ -12,4 +12,14 @@ class AreaFarmaco extends Pivot
     public $table   = 'area_farmaco';
 
     protected $fillable = ['farmaco_id', 'area_id', 'stock_minimo'];
+
+    public function farmaco()
+    {
+        return $this->belongsTo(Farmaco::class);
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
+    }
 }
