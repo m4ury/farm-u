@@ -54,6 +54,7 @@ class FarmacoController extends Controller
         $stockFisico = $farmaco->getStockFisicoCalculado();
         $stockFarmacia = $farmaco->getStockEnFarmacia();
         $stockAreas = $farmaco->getStockEnAreas();
+        $stockMinimo = $farmaco->getStockMinimoCalculado();
         $lotesDisponibles = $farmaco->lotesDisponibles()->get();
         $lotesVencidos = $farmaco->lotesVencidos()->get();
         $totalLotes = $farmaco->lotes->count();
@@ -79,7 +80,7 @@ class FarmacoController extends Controller
         ];
 
         return view('farmacos.show', compact(
-            'farmaco', 'stockFisico', 'stockFarmacia', 'stockAreas', 'stockPorArea',
+            'farmaco', 'stockFisico', 'stockFarmacia', 'stockAreas', 'stockMinimo', 'stockPorArea',
             'lotesDisponibles', 'lotesVencidos', 'totalLotes', 'salidasRecientes', 'stats'
         ));
     }
@@ -95,7 +96,8 @@ class FarmacoController extends Controller
             $areas = Area::orderBy('nombre_area', 'ASC')->get();
             return response()->json([
                 'farmaco' => $farmaco,
-                'areas' => $areas
+                'areas' => $areas,
+                'stockMinimo' => $farmaco->getStockMinimoCalculado()
             ]);
         }
 

@@ -70,16 +70,16 @@
                     <div class="row">
                         <div class="col-md-6">
                             <p>
-                                <strong>Stock Máximo:</strong>
+                                <strong>Stock Mínimo:</strong>
                                 <br>
-                                <span class="badge badge-primary badge-lg">{{ $farmaco->stock_minimo }}</span>
+                                <span class="badge badge-primary badge-lg">{{ $farmaco->getStockMinimoCalculado() }}</span>
                             </p>
                         </div>
                         <div class="col-md-6">
                             <p>
                                 <strong>Stock Actual:</strong>
                                 <br>
-                                <span class="badge badge-{{ $farmaco->getStockFisicoCalculado() > $farmaco->stock_minimo / 2 ? 'success' : 'danger' }} badge-lg">
+                                <span class="badge badge-{{ $farmaco->getStockFisicoCalculado() > $farmaco->getStockMinimoCalculado() / 2 ? 'success' : 'danger' }} badge-lg">
                                     {{ $farmaco->getStockFisicoCalculado() }}
                                 </span>
                             </p>

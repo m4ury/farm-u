@@ -57,6 +57,7 @@ class HistoricoMovimientoController extends Controller
      */
     public function porFarmaco(Farmaco $farmaco)
     {
+        $farmaco->load('areas');
         $movimientos = $farmaco->movimientos()
             ->with(['lote', 'area', 'usuario'])
             ->orderBy('fecha', 'desc')

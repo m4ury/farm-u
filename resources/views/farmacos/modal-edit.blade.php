@@ -53,11 +53,11 @@
                         <div class="form-group row">
                             <label for="descripcion" class="col-sm-2 col-form-label">Descripción:</label>
                             <div class="col-sm">
-                                <input type="text" name="descripcion" id="descripcion" class="form-control form-control-sm" value="${farmaco.descripcion}" placeholder="ej.: paracetamol" disabled>
+                                <input type="text" name="descripcion" id="descripcion" class="form-control form-control-sm" value="${farmaco.descripcion}" placeholder="ej.: paracetamol" @if(!auth()->user()->isAdmin()) disabled @endif>
                             </div>
                             <label for="forma_farmaceutica" class="col-sm-2 col-form-label">Forma farmaceutica:</label>
                             <div class="col-sm">
-                                <select name="forma_farmaceutica" id="forma_farmaceutica" class="form-control form-control-sm" disabled>
+                                <select name="forma_farmaceutica" id="forma_farmaceutica" class="form-control form-control-sm" @if(!auth()->user()->isAdmin()) disabled @endif>
                                     <option value="${farmaco.forma_farmaceutica}">${farmaco.forma_farmaceutica}</option>
                                 </select>
                             </div>
@@ -65,17 +65,17 @@
                         <div class="form-group row">
                             <label for="dosis" class="col-sm-2 col-form-label">Dosis:</label>
                             <div class="col-sm">
-                                <input type="text" name="dosis" id="dosis" class="form-control form-control-sm" value="${farmaco.dosis}" placeholder="ej.: 100 mg" disabled>
+                                <input type="text" name="dosis" id="dosis" class="form-control form-control-sm" value="${farmaco.dosis}" placeholder="ej.: 100 mg" @if(!auth()->user()->isAdmin()) disabled @endif>
                             </div>
                             <label for="controlado" class="col-sm-2 col-form-label">Controlado:</label>
                             <div class="col-sm">
-                                <input type="checkbox" name="controlado" id="controlado" class="form-control my-2 controlado" value="1" ${farmaco.controlado ? 'checked' : ''} disabled>
+                                <input type="checkbox" name="controlado" id="controlado" class="form-control my-2 controlado" value="1" ${farmaco.controlado ? 'checked' : ''} @if(!auth()->user()->isAdmin()) disabled @endif>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="stock_minimo" class="col-sm-2 col-form-label">Stock maximo:</label>
+                            <label for="stock_minimo" class="col-sm-2 col-form-label">Stock mínimo:</label>
                             <div class="col-sm">
-                                <input type="number" name="stock_minimo" id="stock_minimo" class="form-control form-control-sm" value="${farmaco.stock_minimo}" disabled>
+                                <input type="number" name="stock_minimo" id="stock_minimo" class="form-control form-control-sm" value="${farmaco.areas[0]?.pivot?.stock_minimo || 0}" @if(!auth()->user()->isAdmin()) disabled @endif>
                             </div>
                         </div>
                         <div class="form-group row">

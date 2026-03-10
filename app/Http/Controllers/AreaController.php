@@ -117,7 +117,7 @@ class AreaController extends Controller
         $areas = Farmaco::whereHas('areas', function ($q) use ($areaName) {
                 $q->where('nombre_area', $areaName);
             })
-            ->with('lotes')
+            ->with(['lotes', 'areas'])
             ->get();
 
         return view($viewName, compact('areas', 'titulo', 'areaModel'));

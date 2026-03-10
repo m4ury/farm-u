@@ -43,9 +43,9 @@
     <div class="row mb-4">
         {{-- Stock actual --}}
         <div class="col-lg-3 col-md-6 col-sm-6 mb-3">
-            <div class="small-box {{ $stockFisico <= 0 ? 'bg-danger' : ($stockFisico < $farmaco->stock_minimo * 0.25 ? 'bg-warning' : 'bg-success') }}">
+            <div class="small-box {{ $stockFisico <= 0 ? 'bg-danger' : ($stockFisico < $stockMinimo * 0.25 ? 'bg-warning' : 'bg-success') }}">
                 <div class="inner">
-                    <h3>{{ $stockFisico }}<sup style="font-size:18px"> / {{ $farmaco->stock_minimo }}</sup></h3>
+                    <h3>{{ $stockFisico }}<sup style="font-size:18px"> / {{ $stockMinimo }}</sup></h3>
                     <p>Stock Total</p>
                 </div>
                 <div class="icon"><i class="fas fa-boxes"></i></div>
@@ -53,8 +53,8 @@
                     <i class="fas fa-clinic-medical"></i> Farmacia: <strong>{{ $stockFarmacia }}</strong>
                     &nbsp;|&nbsp;
                     <i class="fas fa-hospital"></i> Áreas: <strong>{{ $stockAreas }}</strong>
-                    @if($farmaco->stock_minimo > 0)
-                        @php $pct = min(($stockFisico / $farmaco->stock_minimo) * 100, 100); @endphp
+                    @if($stockMinimo > 0)
+                        @php $pct = min(($stockFisico / $stockMinimo) * 100, 100); @endphp
                         <div class="progress progress-sm mt-1" style="height: 5px; background: rgba(255,255,255,0.3);">
                             <div class="progress-bar bg-white" style="width: {{ $pct }}%"></div>
                         </div>
@@ -141,8 +141,8 @@
                                 <td>{{ $farmaco->dosis }}</td>
                             </tr>
                             <tr>
-                                <th><i class="fas fa-layer-group text-muted mr-1"></i> Stock Máximo</th>
-                                <td><span class="badge badge-primary" style="font-size: 14px;">{{ $farmaco->stock_minimo }}</span></td>
+                                <th><i class="fas fa-layer-group text-muted mr-1"></i> Stock Mínimo</th>
+                                <td><span class="badge badge-primary" style="font-size: 14px;">{{ $stockMinimo }}</span></td>
                             </tr>
                             <tr>
                                 <th><i class="fas fa-shield-alt text-muted mr-1"></i> Controlado</th>

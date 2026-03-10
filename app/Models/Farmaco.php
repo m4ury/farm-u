@@ -94,11 +94,21 @@ class Farmaco extends Model
      */
     public function getStockEnArea($areaId)
     {
-        return \DB::table('lote_area')
-            ->join('lotes', 'lotes.id', '=', 'lote_area.lote_id')
+        $despachos = \DB::table('historico_movimientos')
+            ->join('lotes', 'lotes.id', '=', 'historico_movimientos.lote_id')
             ->where('lotes.farmaco_id', $this->id)
-            ->where('lote_area.area_id', $areaId)
-            ->sum('lote_area.cantidad_disponible');
+            ->where('historico_movimientos.area_id', $areaId)
+            ->where('historico_movimientos.tipo', 'despacho')
+            ->sum('historico_movimientos.cantidad');
+
+        $salidas = \DB::table('historico_movimientos')
+            ->join('lotes', 'lotes.id', '=', 'historico_movimientos.lote_id')
+            ->where('lotes.farmaco_id', $this->id)
+            ->where('historico_movimientos.area_id', $areaId)
+            ->where('historico_movimientos.tipo', 'salida')
+            ->sum('historico_movimientos.cantidad');
+
+        return $despachos - $salidas;
     }
 
     /**

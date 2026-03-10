@@ -22,9 +22,8 @@
                             <th>Farmaco</th>
                             <th>Forma Farmaceutica</th>
                             <th>Dosis</th>
-                            <th>Stock maximo</th>
-                            <th>Stock fisico</th>
-                            <th>Area</th>
+                            <th>Stock mínimo</th>
+                            <th>Stock en farmacia</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -38,21 +37,18 @@
                                 </td>
                                 <td>{{ $farmaco->forma_farmaceutica }}</td>
                                 <td>{{ $farmaco->dosis }}</td>
-                                <td>{{ $farmaco->stock_minimo }}</td>
+                                <td>{{ $farmaco->getStockMinimoCalculado() }}</td>
                                 <td>
-                                    {{ $stock_fisico = $farmaco->getStockFisicoCalculado() }}
+                                    {{ $stock_fisico = $farmaco->getStockEnFarmacia() }}
 
                                     @php
-                                        $diferencia = $farmaco->stock_minimo - $stock_fisico; // Diferencia entre stock máximo y físico calculado
+                                        $diferencia = $farmaco->getStockMinimoCalculado() - $stock_fisico; // Diferencia entre stock mínimo y físico calculado
                                         $umbral = $stock_fisico * 0.5; // 50% del stock físico calculado
                                     @endphp
                                     @if ($stock_fisico > 0 && $diferencia > 0 && $diferencia > $umbral)
                                         <span class="btn rounded-pill bg-gradient-warning btn-xs text-bold ml-3">Bajo
                                             Stock</span>
                                     @endif
-                                </td>
-                                <td class="text-bold text-uppercase text-muted text-center">
-                                    {{ $farmaco->areas->pluck('nombre_area')->first() }}
                                 </td>
                                 <td>
                                     {{ html()->form('DELETE', route('farmacos.destroy', $farmaco->id))->class('confirm')->open() }}

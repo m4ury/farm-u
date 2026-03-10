@@ -21,7 +21,7 @@
                         ? $item->getStockEnArea($areaModel->id)
                         : $item->getStockFisicoCalculado();
                     $stockMinimoMostrar = $areaModel
-                        ? ($item->pivot->stock_minimo ?? 0)
+                        ? ($item->areas->where('id', $areaModel->id)->first()->pivot->stock_minimo ?? 0)
                         : $item->getStockMinimoCalculado();
                 @endphp
                 <tr>
