@@ -20,6 +20,9 @@
                     $stockMostrar = $areaModel
                         ? $item->getStockEnArea($areaModel->id)
                         : $item->getStockFisicoCalculado();
+                    $stockMinimoMostrar = $areaModel
+                        ? ($item->pivot->stock_minimo ?? 0)
+                        : $item->getStockMinimoCalculado();
                 @endphp
                 <tr>
                     <td class="text-uppercase" nowrap>
@@ -32,7 +35,7 @@
                     </td>
                     <td>{{ $item->forma_farmaceutica }}</td>
                     <td nowrap>{{ $item->dosis }}</td>
-                    <td>{{ $item->pivot->stock_minimo ?? '—' }}</td>
+                    <td>{{ $stockMinimoMostrar }}</td>
                     <td>{{ $stockMostrar }}</td>
                     @if ($showActions)
                         <td>

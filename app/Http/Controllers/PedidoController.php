@@ -440,14 +440,27 @@ class PedidoController extends Controller
             'despachos' => 'required|array',
             'despachos.*.farmaco_id' => 'required|exists:farmacos,id',
             'despachos.*.lote_id' => 'required|exists:lotes,id',
-            'despachos.*.cantidad_despacho' => 'required|integer|min:1',
+            'despachos.*.cantidad_despacho' => 'integer|min:0',
             'observaciones' => 'nullable|string'
         ]);
+
+        // Filtrar solo los despachos con cantidad > 0
+        $despachosValidos = collect($request->despachos)
+            ->filter(function ($despacho) {
+                return ($despacho['cantidad_despacho'] ?? 0) > 0;
+            })
+            ->values();
+
+        if ($despachosValidos->isEmpty()) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Debe indicar al menos una cantidad a despachar mayor a 0');
+        }
 
         DB::beginTransaction();
 
         try {
-            foreach ($request->despachos as $despacho_data) {
+            foreach ($despachosValidos as $despacho_data) {
                 $farmaco_id = $despacho_data['farmaco_id'];
                 $lote_id = $despacho_data['lote_id'];
                 $cantidad = $despacho_data['cantidad_despacho'];
