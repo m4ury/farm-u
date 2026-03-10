@@ -21,7 +21,7 @@
                 <div class="small-box bg-success">
                     <div class="inner">
                         <h3>{{ $stockTotal }}</h3>
-                        <p>Stock Total Disponible</p>
+                        <p>Stock en Farmacia</p>
                     </div>
                     <div class="icon"><i class="fas fa-boxes"></i></div>
                     <a href="{{ route('lotes.index') }}" class="small-box-footer">Ver lotes <i class="fas fa-arrow-circle-right"></i></a>
@@ -98,8 +98,8 @@
             </div>
             @foreach($areas as $area)
                 @php
-                    $stockArea = $area->farmacos->sum(function($farmaco) {
-                        return $farmaco->getStockFisicoCalculado();
+                    $stockArea = $area->farmacos->sum(function($farmaco) use ($area) {
+                        return $farmaco->getStockEnArea($area->id);
                     });
                     $stockMaxArea = $area->farmacos->sum(function($farmaco) {
                         return $farmaco->getStockMinimoCalculado();
@@ -321,6 +321,7 @@
         </div>
 
         <!-- Bajo Stock y Controlados -->
+        @if(auth()->user()->isAdmin())
         <div class="row mb-4">
             <!-- Bajo Stock -->
             <div class="col-lg-6 col-md-12 mb-3">
@@ -416,8 +417,10 @@
                 </div>
             </div>
         </div>
+        @endif
 
         <!-- Mayor Stock y Mayor Salida -->
+        @if(auth()->user()->isAdmin())
         <div class="row mb-4">
             <!-- Top 5 Mayor Stock -->
             <div class="col-lg-6 col-md-12 mb-3">
@@ -494,8 +497,10 @@
                 </div>
             </div>
         </div>
+        @endif
 
         <!-- Despachos Recientes -->
+        @if(auth()->user()->isAdmin())
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card card-outline card-primary">
@@ -549,6 +554,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 @endsection
 
