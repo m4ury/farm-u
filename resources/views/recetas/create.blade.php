@@ -319,7 +319,8 @@
 
         function cargarLotes(idx, farmacoId) {
             const areaId = $('#area_id').val() || '';
-            const url = `/recetas/api/farmacos/${farmacoId}/lotes?area_id=${areaId}`;
+            const baseUrl = "{{ url('') }}";
+            const url = `${baseUrl}/recetas/api/farmacos/${farmacoId}/lotes?area_id=${areaId}`;
 
             fetch(url)
                 .then(r => r.json())
