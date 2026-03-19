@@ -16,6 +16,16 @@
                 @endif
             </div>
         </div>
+        @if(request()->filled('vencimiento') && request()->vencimiento == 'proximo')
+            <div class="card-body pb-0">
+                <div class="alert alert-warning mb-3" role="alert">
+                    <i class="fas fa-filter"></i> <strong>Filtro Activo:</strong> Mostrando lotes próximos a vencer (menos de 30 días)
+                    <a href="{{ route('lotes.index') }}" class="btn btn-sm btn-outline-warning float-right">
+                        <i class="fas fa-times"></i> Limpiar filtro
+                    </a>
+                </div>
+            </div>
+        @endif
         <div class="card-body">
             <div class="table-responsive">
                 <table id="lotes-table" class="table table-striped table-hover table-bordered">

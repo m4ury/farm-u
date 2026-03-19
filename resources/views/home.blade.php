@@ -44,7 +44,7 @@
                         <p>Alertas de Vencimiento</p>
                     </div>
                     <div class="icon"><i class="fas fa-exclamation-triangle"></i></div>
-                    <a href="{{ route('lotes.index') }}" class="small-box-footer">Ver lotes <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('lotes.index', ['vencimiento' => 'proximo']) }}" class="small-box-footer">Ver lotes <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
         </div>

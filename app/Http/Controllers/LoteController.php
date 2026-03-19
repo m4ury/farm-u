@@ -39,6 +39,14 @@ class LoteController extends Controller
             }
         }
 
+        // Filtrar próximos a vencer (menos de 30 días)
+        if ($request->filled('vencimiento') && $request->vencimiento == 'proximo') {
+            $query->where('vencido', false)
+                  ->where('cantidad_disponible', '>', 0)
+                  ->where('fecha_vencimiento', '>', now())
+                  ->where('fecha_vencimiento', '<=', now()->addDays(30));
+        }
+
         // Ordenar por fecha de vencimiento
         $lotes = $query->orderBy('fecha_vencimiento', 'asc')->get();
 

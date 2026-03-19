@@ -38,7 +38,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('salidas', function ($user) {
-            if ($user->type == 'admin' || $user->type == 'farmacia') {
+            if ($user->type == 'admin') {
                 return true;
             }
             return false;
@@ -59,7 +59,7 @@ class AuthServiceProvider extends ServiceProvider
         });
         
         Gate::define('pedidos', function ($user) {
-            $allowedTypes = ['admin', 'farmacia', 'area'];
+            $allowedTypes = ['admin', 'farmacia', 'urgencias'];
             if (in_array($user->type, $allowedTypes)) {
                 return true;
             }

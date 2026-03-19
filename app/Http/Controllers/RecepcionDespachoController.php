@@ -12,12 +12,26 @@ use Illuminate\Support\Facades\DB;
 class RecepcionDespachoController extends Controller
 {
     /**
+     * Determina si el usuario actual puede recepcionar el despacho.
+     */
+    private function puedeRecepcionar(Despacho $despacho)
+    {
+        $user = Auth::user();
+
+        if ($user->isAdmin() || $user->isUrgencias()) {
+            return true;
+        }
+
+        return $despacho->area_id == $user->area_id;
+    }
+
+    /**
      * Mostrar formulario para confirmar recepción de despacho
      */
     public function confirmarForm(Despacho $despacho)
     {
-        // Verificar que sea usuario del área que recibe
-        if ($despacho->area_id != Auth::user()->area_id && !Auth::user()->isAdmin()) {
+        // Verificar autorización de recepcionamiento: admin, farmacia o área destino
+        if (!$this->puedeRecepcionar($despacho)) {
             abort(403, 'No autorizado');
         }
 
@@ -34,8 +48,8 @@ class RecepcionDespachoController extends Controller
      */
     public function confirmar(Request $request, Despacho $despacho)
     {
-        // Verificar que sea usuario del área que recibe
-        if ($despacho->area_id != Auth::user()->area_id && !Auth::user()->isAdmin()) {
+        // Verificar autorización de recepcionamiento: admin, farmacia o área destino
+        if (!$this->puedeRecepcionar($despacho)) {
             abort(403, 'No autorizado');
         }
 
@@ -136,8 +150,8 @@ class RecepcionDespachoController extends Controller
             'usuario'
         ]);
 
-        // Si no es admin, filtrar por su área
-        if (!Auth::user()->isAdmin()) {
+        // Si no es admin ni urgencias, filtrar por su área
+        if (!Auth::user()->isAdmin() && !Auth::user()->isUrgencias()) {
             $areaId = Auth::user()->area_id;
             $query->whereHas('despacho', function ($q) use ($areaId) {
                 $q->where('area_id', $areaId);
