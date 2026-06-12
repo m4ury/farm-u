@@ -15,7 +15,7 @@ class FarmacoController extends Controller
      */
     public function index()
     {
-        $farmacos = Farmaco::all();
+        $farmacos = Farmaco::with('areas')->get();
         return view("farmacos.index", compact("farmacos"));
     }
 
@@ -99,7 +99,8 @@ class FarmacoController extends Controller
             return response()->json([
                 'farmaco' => $farmaco,
                 'areas' => $areas,
-                'stockMinimo' => $farmaco->getStockMinimoCalculado()
+                'stockMinimo' => $farmaco->getStockMinimoCalculado(),
+                'stockMinimoPorArea' => $farmaco->getStockMinimoPorArea()
             ]);
         }
 
@@ -119,21 +120,38 @@ class FarmacoController extends Controller
             'dosis' => 'sometimes|string|max:100',
             'forma_farmaceutica' => 'sometimes|string|max:100',
             'stock_minimo' => 'sometimes|nullable|integer|min:0',
+            'stock_minimos' => 'sometimes|array',
+            'stock_minimos.*' => 'nullable|integer|min:0',
             'controlado' => 'sometimes|boolean',
             'area_id' => 'sometimes|nullable|exists:areas,id'
         ]);
 
         // Actualizar farmaco (excluye area_id y stock_minimo, que ahora vive en el pivot)
-        $farmaco->update($request->except('area_id', 'stock_minimo'));
+        $farmaco->update($request->except('area_id', 'stock_minimo', 'stock_minimos'));
         $farmaco->controlado = $request->input('controlado', 0);
 
-        // Sincronizar áreas, pasando stock_minimo al pivot
-        $areaId = $request->area_id;
-        if ($areaId) {
-            $pivotData = ['stock_minimo' => $request->input('stock_minimo', 0)];
-            $farmaco->areas()->sync([$areaId => $pivotData]);
+        // Actualizar los stock_minimo por area sin quitar otras areas del farmaco.
+        if ($request->has('stock_minimos')) {
+            $areaIds = $farmaco->areas()->pluck('areas.id')->map(fn ($id) => (int) $id);
+
+            foreach ($request->input('stock_minimos', []) as $areaId => $stockMinimo) {
+                $areaId = (int) $areaId;
+
+                if (! $areaIds->contains($areaId)) {
+                    continue;
+                }
+
+                $farmaco->areas()->updateExistingPivot($areaId, [
+                    'stock_minimo' => $stockMinimo ?? 0,
+                ]);
+            }
         } else {
-            $farmaco->areas()->detach();
+            $areaId = $request->area_id;
+
+            if ($areaId) {
+                $pivotData = ['stock_minimo' => $request->input('stock_minimo', 0)];
+                $farmaco->areas()->syncWithoutDetaching([$areaId => $pivotData]);
+            }
         }
 
         $farmaco->save();

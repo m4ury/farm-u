@@ -22,7 +22,7 @@
                             <th>Farmaco</th>
                             <th>Forma Farmaceutica</th>
                             <th>Dosis</th>
-                            <th>Stock mínimo</th>
+                            <th>Stock mínimo por área</th>
                             <th>Stock en farmacia</th>
                             <th>Acciones</th>
                         </tr>
@@ -37,12 +37,20 @@
                                 </td>
                                 <td>{{ $farmaco->forma_farmaceutica }}</td>
                                 <td>{{ $farmaco->dosis }}</td>
-                                <td>{{ $farmaco->getStockMinimoCalculado() }}</td>
+                                <td>
+                                    @forelse ($farmaco->getStockMinimoPorArea() as $stockArea)
+                                        <span class="badge badge-info d-inline-block mb-1">
+                                            {{ $stockArea['area'] }}: {{ $stockArea['stock_minimo'] }}
+                                        </span>
+                                    @empty
+                                        <span class="text-muted">Sin área</span>
+                                    @endforelse
+                                </td>
                                 <td>
                                     {{ $stock_fisico = $farmaco->getStockEnFarmacia() }}
 
                                     @php
-                                        $diferencia = $farmaco->getStockMinimoCalculado() - $stock_fisico; // Diferencia entre stock mínimo y físico calculado
+                                        $diferencia = $farmaco->getStockMinimoCalculado() - $stock_fisico; // Diferencia entre stock mínimo total y stock en farmacia
                                         $umbral = $stock_fisico * 0.5; // 50% del stock físico calculado
                                     @endphp
                                     @if ($stock_fisico > 0 && $diferencia > 0 && $diferencia > $umbral)
@@ -61,7 +69,9 @@
                                         ->attribute('title', 'Eliminar')
                                         ->attribute('data-mensaje', 'Este farmaco será eliminado permanentemente. ¿Estás seguro?') }}
                                     <button type="button" class="btn btn-outline-primary btn-sm edit-farmaco-btn" data-toggle="tooltip" data-placement="top"
-                                        title="Editar" data-farmaco-id="{{ $farmaco->id }}">
+                                        title="Editar" data-farmaco-id="{{ $farmaco->id }}"
+                                        data-edit-url="{{ route('farmacos.edit', $farmaco) }}"
+                                        data-update-url="{{ route('farmacos.update', $farmaco) }}">
                                         <i class="fas fa-pen"></i>
                                     </button>
                                     {{ html()->form()->close() }}
@@ -89,12 +99,6 @@
 @section('plugins.Datatables', true)
 @section('js')
     {{-- <script src="//cdn.datatables.net/plug-ins/1.12.1/sorting/datetime-moment.js"></script> --}}
-    <script>
-        $('#forma, #area').select2({
-            theme: "classic",
-            width: "100%"
-        })
-    </script>
     <script>
         // $.fn.dataTable.moment('DD-MM-YYYY');
         $("#farmacos").DataTable({

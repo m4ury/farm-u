@@ -124,10 +124,10 @@
                 <div class="card-body">
                     <table class="table table-sm table-borderless">
                         <tbody>
-                            <tr>
+                            <!-- <tr>
                                 <th style="width: 40%;"><i class="fas fa-hashtag text-muted mr-1"></i> ID</th>
                                 <td>{{ $farmaco->id }}</td>
-                            </tr>
+                            </tr> -->
                             <tr>
                                 <th><i class="fas fa-pills text-muted mr-1"></i> Descripción</th>
                                 <td class="font-weight-bold text-uppercase">{{ $farmaco->descripcion }}</td>
@@ -141,7 +141,7 @@
                                 <td>{{ $farmaco->dosis }}</td>
                             </tr>
                             <tr>
-                                <th><i class="fas fa-layer-group text-muted mr-1"></i> Stock Mínimo</th>
+                                <th><i class="fas fa-layer-group text-muted mr-1"></i> Suma Stock Maximo en Areas</th>
                                 <td><span class="badge badge-primary" style="font-size: 14px;">{{ $stockMinimo }}</span></td>
                             </tr>
                             <tr>

@@ -7,7 +7,7 @@
                 <th>Farmaco</th>
                 <th>Forma Farmaceutica</th>
                 <th>Dosis</th>
-                <th>Stock minimo</th>
+                <th>Stock maximo</th>
                 <th>Stock en {{ $areaModel ? $areaModel->nombre_area : 'total' }}</th>
                 @if ($showActions)
                     <th>Acciones</th>

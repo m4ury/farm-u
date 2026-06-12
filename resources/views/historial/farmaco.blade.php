@@ -70,7 +70,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <p>
-                                <strong>Stock Mínimo:</strong>
+                                <strong>Stock Maximo:</strong>
                                 <br>
                                 <span class="badge badge-primary badge-lg">{{ $farmaco->getStockMinimoCalculado() }}</span>
                             </p>

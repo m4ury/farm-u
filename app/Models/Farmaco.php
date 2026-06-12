@@ -31,14 +31,61 @@ class Farmaco extends Model
     }
 
     /**
-     * Stock mínimo total sumado de todas las áreas donde está asignado este fármaco.
+     * Stock separado por areas donde esta el farmaco de todas las áreas donde está asignado este fármaco.
      * Útil para comparaciones globales (bajo stock, resúmenes).
+     */
+    public function getStockMaximoCalculado(): int
+    {
+        $stockAreas = $this->getStockEnAreas();
+        $stockFarmacia = $this->getStockEnFarmacia();
+        return max($stockFarmacia, $stockAreas);
+    }
+
+    /**
+     * Stock minimo total configurado en todas las areas asignadas.
      */
     public function getStockMinimoCalculado(): int
     {
-        return (int) \DB::table('area_farmaco')
-            ->where('farmaco_id', $this->id)
-            ->sum('stock_minimo');
+        if ($this->relationLoaded('areas')) {
+            return (int) $this->areas->sum(fn ($area) => $area->pivot->stock_minimo ?? 0);
+        }
+
+        return (int) $this->areas()->sum('area_farmaco.stock_minimo');
+    }
+
+    /**
+     * Stock minimo configurado para un area especifica desde area_farmaco.
+     */
+    public function getStockMinimoEnArea($areaId): int
+    {
+        if (! $areaId) {
+            return 0;
+        }
+
+        if ($this->relationLoaded('areas')) {
+            $area = $this->areas->firstWhere('id', (int) $areaId);
+            return (int) ($area?->pivot?->stock_minimo ?? 0);
+        }
+
+        return (int) $this->areas()
+            ->where('areas.id', $areaId)
+            ->value('area_farmaco.stock_minimo');
+    }
+
+    /**
+     * Lista de stock minimo por area para mostrar sin perder el detalle.
+     */
+    public function getStockMinimoPorArea()
+    {
+        $areas = $this->relationLoaded('areas')
+            ? $this->areas->sortBy('nombre_area')->values()
+            : $this->areas()->orderBy('nombre_area')->get();
+
+        return $areas->map(fn ($area) => [
+            'area_id' => $area->id,
+            'area' => $area->nombre_area,
+            'stock_minimo' => (int) ($area->pivot->stock_minimo ?? 0),
+        ]);
     }
 
     public function salidas(){
@@ -79,7 +126,7 @@ class Farmaco extends Model
     }
 
     /**
-     * Stock total en todas las áreas (lote_area.cantidad_disponible)
+     * Stock total en todas las áreas (lote_area.cantidad_disponible)   
      */
     public function getStockEnAreas()
     {

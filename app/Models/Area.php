@@ -14,7 +14,8 @@ class Area extends Model
 
     public function farmacos()
     {
-        return $this->belongsToMany(Farmaco::class);
+        return $this->belongsToMany(Farmaco::class)
+            ->withPivot('stock_minimo');
     }
 
     public function pedidos()
