@@ -1,4 +1,4 @@
-<div class="modal fade" id="edit-farmaco" tabindex="-1" role="dialog" aria-labelledby="editFarmacoModalLabel" aria-hidden="true">
+<div class="modal fade" id="edit-farmaco" tabindex="-1" role="dialog" aria-labelledby="editFarmacoModalLabel" aria-hidden="false">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -30,7 +30,16 @@
                 'X-Requested-With': 'XMLHttpRequest'
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('Response is not JSON. Status: ' + response.status);
+            }
+            return response.json();
+        })
         .then(data => {
             const { farmaco, areas } = data;
 
@@ -159,8 +168,13 @@
             });
         })
         .catch(error => {
-            console.error('Error:', error);
-            alert('Error al cargar los datos del fármaco');
+            console.error('Error al cargar farmaco:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al cargar',
+                text: error.message || 'Error al cargar los datos del fármaco. Verifica que el fármaco existe y tienes permisos de acceso.',
+                confirmButtonText: 'OK'
+            });
         });
     });
 </script>

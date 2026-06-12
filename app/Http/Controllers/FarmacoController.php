@@ -92,6 +92,8 @@ class FarmacoController extends Controller
     {
         // Si es una petición AJAX, retornar JSON
         if (request()->header('X-Requested-With') === 'XMLHttpRequest') {
+            $this->authorize('update', $farmaco);
+            
             $farmaco->load('areas'); // Cargar las áreas asociadas
             $areas = Area::orderBy('nombre_area', 'ASC')->get();
             return response()->json([
